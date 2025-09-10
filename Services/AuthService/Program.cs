@@ -18,6 +18,19 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
+var assembly = typeof(Program).Assembly;
+
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssembly(assembly);
+
+    //Congigure Mediator pre behavior (execute before reach the handle method)
+    //config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+});
+
+builder.Services.AddCarter();
+
 // Configure Authentication
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -43,26 +56,9 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.MapCarter();
 
 app.UseHttpsRedirection();
-
-var scope = app.Services.CreateScope();
-
-
-var authRepository = scope.ServiceProvider.GetRequiredService<IAuthRepository>();
-app.MapPost("/api/auth/login", async ([FromBody] AuthRequest authRequest) =>
-{
-    var authResponse = await authRepository.Login(authRequest);
-
-    return Results.Ok(authResponse);
-});
-
-app.MapPost("/api/auth/register", async ([FromBody] RegisterRequest request) =>
-{
-    await authRepository.RegisterUser(request);
-    return Results.Ok("User registred succesfully!x");
-});
-
 app.UseAuthentication();
 app.UseAuthorization();
 

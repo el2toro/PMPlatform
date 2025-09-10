@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{00D6311A-C386-44CD-A6E4-3E9DC621DEA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "Services\AuthService\AuthService.csproj", "{F58EA904-F9B3-4A3E-9392-8D3C6C4D4E87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Services\AuthService\Auth.API.csproj", "{F58EA904-F9B3-4A3E-9392-8D3C6C4D4E87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{2AE65493-DEF4-438F-B6B0-0B4986A6C484}"
 EndProject

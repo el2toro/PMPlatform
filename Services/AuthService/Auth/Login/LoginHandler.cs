@@ -1,0 +1,22 @@
+﻿using AuthService.Repository;
+
+namespace Auth.API.Auth.Login;
+
+public record LoginCommand(string Email, string Password) : IRequest<LoginResult>;
+public record LoginResult(
+        Guid UserId,
+        Guid TenantId,
+        string Email,
+        string Token,
+        string RefreshToken,
+        IEnumerable<string> Roles);
+
+public class LoginHandler(IAuthRepository repository)
+    : IRequestHandler<LoginCommand, LoginResult>
+{
+    public async Task<LoginResult> Handle(LoginCommand command, CancellationToken cancellationToken)
+    {
+        var response = await repository.Login(command.Email, command.Password);
+        return response.Adapt<LoginResult>();
+    }
+}

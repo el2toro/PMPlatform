@@ -1,5 +1,4 @@
-﻿using AuthService.Dtos;
-using AuthService.Models;
+﻿using AuthService.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -55,22 +54,5 @@ public class JwtTokenService : IJwtTokenService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public Task<AuthResponse> RefreshTokenAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<AuthResponse> RevokeTokenAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool ValidateToken(string token, out Guid userId, out string email, out IEnumerable<string> roles)
-    {
-        // Implementation for validating JWT token
-
-        throw new NotImplementedException();
     }
 }

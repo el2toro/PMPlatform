@@ -16,15 +16,15 @@ public class AuthRepository : IAuthRepository
         _jwtTokenService = jwtTokenService;
     }
 
-    public async Task<AuthResponse> Login(AuthRequest request)
+    public async Task<AuthResponse> Login(string email, string password)
     {
         var user = await _authContext.Users
             .Include(u => u.UserTenants)
             .ThenInclude(ut => ut.Tenant)
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
+            .FirstOrDefaultAsync(u => u.Email == email);
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
-        var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+        var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
         if (!isPasswordValid)
         {
@@ -50,9 +50,21 @@ public class AuthRepository : IAuthRepository
         );
     }
 
-    public Task<AuthResponse> Logout(Guid userId)
+    public async Task Logout(string refreshToken, Guid tenantId)
     {
-        throw new NotImplementedException();
+        var user = await _authContext.Users
+        .Include(u => u.RefreshTokens)
+        .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t =>
+            t.Token == refreshToken && t.TenantId == tenantId));
+
+        ArgumentNullException.ThrowIfNull(user, "User not found");
+
+        var token = user.RefreshTokens.Single(t =>
+            t.Token == refreshToken && t.TenantId == tenantId);
+
+        token.RevokedAt = DateTime.UtcNow;
+
+        await _authContext.SaveChangesAsync();
     }
 
     public async Task<AuthResponse> RefreshTokenAsync(string refreshToken, Guid tenantId)
@@ -64,25 +76,28 @@ public class AuthRepository : IAuthRepository
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
 
-        var oldToken = user.RefreshTokens.Single(t => t.Token == refreshToken && t.TenantId == tenantId);
+        RefreshToken oldToken = user.RefreshTokens
+            .Single(t => t.Token == refreshToken && t.TenantId == tenantId && t.UserId == user.Id);
 
         ArgumentNullException.ThrowIfNull(oldToken, "Invalid refresh token");
 
         oldToken.RevokedAt = DateTime.UtcNow;
 
-        var newRefreshToken = _jwtTokenService.GenerateRefreshToken(tenantId);
+        RefreshToken newRefreshToken = _jwtTokenService.GenerateRefreshToken(tenantId);
         user.RefreshTokens.Add(newRefreshToken);
 
         await _authContext.SaveChangesAsync();
 
+        string jwtToken = _jwtTokenService.GenerateToken(user, user.UserTenants.FirstOrDefault()!.Role.ToString(), tenantId);
+        List<string> roles = [user.UserTenants.FirstOrDefault()!.Role.ToString()];
+
         return new AuthResponse(
             user.Id,
-                tenantId,
-                user.Email,
-                _jwtTokenService.GenerateToken(user, user.UserTenants.FirstOrDefault()!.Role.ToString(), tenantId),
-                newRefreshToken.Token,
-                [user.UserTenants.FirstOrDefault()!.Role.ToString()]
-            );
+            tenantId,
+            user.Email,
+            jwtToken,
+            newRefreshToken.Token,
+            roles);
 
     }
 
@@ -132,23 +147,6 @@ public class AuthRepository : IAuthRepository
         });
 
         //TODO: Assign the user to the tenant
-
-        await _authContext.SaveChangesAsync();
-    }
-
-    public async Task RevokeTokenAsync(string refreshToken, Guid tenantId)
-    {
-        var user = await _authContext.Users
-        .Include(u => u.RefreshTokens)
-        .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t =>
-            t.Token == refreshToken && t.TenantId == tenantId));
-
-        ArgumentNullException.ThrowIfNull(user, "User not found");
-
-        var token = user.RefreshTokens.Single(t =>
-            t.Token == refreshToken && t.TenantId == tenantId);
-
-        token.RevokedAt = DateTime.UtcNow;
 
         await _authContext.SaveChangesAsync();
     }

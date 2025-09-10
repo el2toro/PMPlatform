@@ -61,5 +61,13 @@ public class AuthDbContext : DbContext
                   .HasForeignKey(rt => rt.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+
+        // Tenant entity configuration
+        modelBuilder.Entity<Tenant>(entity =>
+        {
+            entity.HasKey(e => e.TenantId);
+            entity.HasIndex(e => e.Name).IsUnique();
+            entity.Property(e => e.Domain).HasMaxLength(100);
+        });
     }
 }
