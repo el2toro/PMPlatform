@@ -17,7 +17,7 @@ public class AuthRepository : IAuthRepository
         _jwtTokenService = jwtTokenService;
     }
 
-    public async Task<AuthResponse> Login(string email, string password, CancellationToken cancellationToken)
+    public async Task<UserProfileDto> Login(string email, string password, CancellationToken cancellationToken)
     {
         var user = await _authContext.Users
             .Include(u => u.UserTenants)
@@ -41,7 +41,7 @@ public class AuthRepository : IAuthRepository
         _authContext.RefreshTokens.Add(refreshToken);
         await _authContext.SaveChangesAsync(cancellationToken);
 
-        return MapToAuthResponse(user, token, refreshToken.Token, tenantId);
+        return MapToUserProfile(user, token, refreshToken.Token, tenantId);
     }
 
     public async Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
@@ -61,7 +61,7 @@ public class AuthRepository : IAuthRepository
         await _authContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<AuthResponse> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
+    public async Task<UserProfileDto> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
     {
         using var transaction = await _authContext.Database.BeginTransactionAsync();
 
@@ -94,10 +94,10 @@ public class AuthRepository : IAuthRepository
         string jwtToken = _jwtTokenService.GenerateToken(user, user.UserTenants.FirstOrDefault()!.Role.ToString(), tenantId);
         List<string> roles = [user.UserTenants.FirstOrDefault()!.Role.ToString()];
 
-        return MapToAuthResponse(user, jwtToken, newRefreshToken.Token, tenantId);
+        return MapToUserProfile(user, jwtToken, newRefreshToken.Token, tenantId);
     }
 
-    public async Task RegisterUser(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task RegisterUser(RegisterRequestDto request, CancellationToken cancellationToken)
     {
         var user = _authContext.Users.FirstOrDefault(u => u.Email == request.Email);
 
@@ -115,7 +115,7 @@ public class AuthRepository : IAuthRepository
         await _authContext.SaveChangesAsync(cancellationToken);
     }
 
-    private User CreateUser(RegisterRequest request)
+    private User CreateUser(RegisterRequestDto request)
     {
         var user = new User
         {
@@ -166,11 +166,11 @@ public class AuthRepository : IAuthRepository
         });
     }
 
-    private AuthResponse MapToAuthResponse(User user, string token, string refreshToken, Guid tenantId)
+    private UserProfileDto MapToUserProfile(User user, string token, string refreshToken, Guid tenantId)
     {
         var roles = user.UserTenants.Select(ut => ut.Role.ToString());
 
-        return new AuthResponse(
+        return new UserProfileDto(
             user.Id,
             tenantId,
             user.Email,

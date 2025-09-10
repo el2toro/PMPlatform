@@ -1,6 +1,6 @@
 ﻿namespace AuthService.Dtos;
 
-public record AuthResponse(
+public record UserProfileDto(
         Guid UserId,
         Guid TenantId,
         string Email,
