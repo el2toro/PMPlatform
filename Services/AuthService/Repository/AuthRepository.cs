@@ -3,8 +3,6 @@ using AuthService.Dtos;
 using AuthService.Enums;
 using AuthService.Models;
 using AuthService.Services;
-using Azure.Core;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,6 +25,7 @@ public class AuthRepository : IAuthRepository
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
+
         var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
         if (!isPasswordValid)
@@ -42,16 +41,7 @@ public class AuthRepository : IAuthRepository
         _authContext.RefreshTokens.Add(refreshToken);
         await _authContext.SaveChangesAsync(cancellationToken);
 
-        //TODO: Add proper mapping
-        return new AuthResponse
-        (
-             user.Id,
-             tenantId,
-             user.Email,
-             token,
-             refreshToken.Token,
-             [userRole.ToString()]
-        );
+        return MapToAuthResponse(user, token, refreshToken.Token, tenantId);
     }
 
     public async Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
@@ -104,14 +94,7 @@ public class AuthRepository : IAuthRepository
         string jwtToken = _jwtTokenService.GenerateToken(user, user.UserTenants.FirstOrDefault()!.Role.ToString(), tenantId);
         List<string> roles = [user.UserTenants.FirstOrDefault()!.Role.ToString()];
 
-        return new AuthResponse(
-            user.Id,
-            tenantId,
-            user.Email,
-            jwtToken,
-            newRefreshToken.Token,
-            roles);
-
+        return MapToAuthResponse(user, jwtToken, newRefreshToken.Token, tenantId);
     }
 
     public async Task RegisterUser(RegisterRequest request, CancellationToken cancellationToken)
@@ -181,5 +164,18 @@ public class AuthRepository : IAuthRepository
             Role = TenantRole.Admin,
             CreatedAt = DateTime.UtcNow
         });
+    }
+
+    private AuthResponse MapToAuthResponse(User user, string token, string refreshToken, Guid tenantId)
+    {
+        var roles = user.UserTenants.Select(ut => ut.Role.ToString());
+
+        return new AuthResponse(
+            user.Id,
+            tenantId,
+            user.Email,
+            token,
+            refreshToken,
+            roles);
     }
 }
