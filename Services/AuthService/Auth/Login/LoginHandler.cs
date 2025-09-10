@@ -16,7 +16,7 @@ public class LoginHandler(IAuthRepository repository)
 {
     public async Task<LoginResult> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
-        var response = await repository.Login(command.Email, command.Password);
+        var response = await repository.Login(command.Email, command.Password, cancellationToken);
         return response.Adapt<LoginResult>();
     }
 }

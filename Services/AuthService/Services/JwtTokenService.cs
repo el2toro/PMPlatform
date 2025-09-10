@@ -15,7 +15,7 @@ public class JwtTokenService : IJwtTokenService
         _configuration = configuration;
     }
 
-    public RefreshToken GenerateRefreshToken(Guid tenantId)
+    public RefreshToken GenerateRefreshToken(Guid tenantId, Guid userId)
     {
         var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
@@ -25,7 +25,8 @@ public class JwtTokenService : IJwtTokenService
         {
             Token = Convert.ToBase64String(randomBytes),
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            TenantId = tenantId
+            TenantId = tenantId,
+            UserId = userId
         };
     }
 
