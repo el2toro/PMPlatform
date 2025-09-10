@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Tenant.API.Data;
 using Tenant.API.Repository;
+using Tenant.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddHttpClient<AuthServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7194/"); // replace with your service URL
+});
+
 
 builder.Services.AddDbContext<TenantDbContext>(options =>
 {

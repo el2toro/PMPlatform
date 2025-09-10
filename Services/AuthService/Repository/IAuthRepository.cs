@@ -1,4 +1,5 @@
-﻿using AuthService.Dtos;
+﻿using Auth.API.Dtos;
+using AuthService.Dtos;
 
 namespace AuthService.Repository;
 
@@ -8,4 +9,5 @@ public interface IAuthRepository
     Task<UserProfileDto> Login(string email, string password, CancellationToken cancellationToken);
     Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken);
     Task<UserProfileDto> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken);
+    Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken);
 }

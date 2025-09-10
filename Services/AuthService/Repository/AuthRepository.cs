@@ -1,4 +1,5 @@
-﻿using AuthService.Data;
+﻿using Auth.API.Dtos;
+using AuthService.Data;
 using AuthService.Dtos;
 using AuthService.Enums;
 using AuthService.Models;
@@ -113,6 +114,16 @@ public class AuthRepository : IAuthRepository
         AssignUserToTenant(newUser.Id, tenantId);
 
         await _authContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
+    {
+        var users = await _authContext.Users.Include(u => u.UserTenants)
+            .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId))
+            .Select(user => new UserDto(user.Id, user.FirstName, user.LastName, user.Email))
+            .ToListAsync();
+
+        return users;
     }
 
     private User CreateUser(RegisterRequestDto request)
