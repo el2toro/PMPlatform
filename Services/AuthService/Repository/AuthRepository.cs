@@ -1,10 +1,4 @@
-﻿using Auth.API.Dtos;
-using AuthService.Data;
-using AuthService.Dtos;
-using AuthService.Enums;
-using AuthService.Models;
-using AuthService.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Repository;
@@ -12,10 +6,14 @@ public class AuthRepository : IAuthRepository
 {
     private readonly AuthDbContext _authContext;
     private readonly IJwtTokenService _jwtTokenService;
-    public AuthRepository(AuthDbContext authDbContext, IJwtTokenService jwtTokenService)
+    private readonly TenantServiceClient _tenantServiceClient;
+    public AuthRepository(AuthDbContext authDbContext,
+        IJwtTokenService jwtTokenService,
+        TenantServiceClient tenantServiceClient)
     {
         _authContext = authDbContext;
         _jwtTokenService = jwtTokenService;
+        _tenantServiceClient = tenantServiceClient;
     }
 
     public async Task<UserProfileDto> Login(string email, string password, CancellationToken cancellationToken)
@@ -69,7 +67,7 @@ public class AuthRepository : IAuthRepository
         var user = await _authContext.Users
         .Include(u => u.RefreshTokens)
         .Include(u => u.UserTenants)
-        .ThenInclude(ut => ut.Tenant)
+        //.ThenInclude(ut => ut.Tenant)
         .SingleOrDefaultAsync(u =>
             u.RefreshTokens.Any(t => t.Token == refreshToken && t.TenantId == tenantId));
 
@@ -109,9 +107,9 @@ public class AuthRepository : IAuthRepository
 
         var newUser = CreateUser(request);
 
-        var tenantId = await CreateTenant(request.TenantName);
+        var tenant = await _tenantServiceClient.CreateTenant(MapDtoToTenant(request.TenantName));
 
-        AssignUserToTenant(newUser.Id, tenantId);
+        AssignUserToTenant(newUser.Id, tenant.TenantId);
 
         await _authContext.SaveChangesAsync(cancellationToken);
     }
@@ -162,29 +160,6 @@ public class AuthRepository : IAuthRepository
         return user;
     }
 
-    private async Task<Guid> CreateTenant(string tenantName)
-    {
-        var tenant = await _authContext.Tenants.FirstOrDefaultAsync(t => t.Name == tenantName);
-
-        if (tenant is not null)
-        {
-            return tenant.TenantId;
-        }
-
-        tenant = new Tenant
-        {
-            Name = tenantName,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            Domain = tenantName.ToLower() + ".com",
-            Plan = TenantPlan.Free
-        };
-
-        _authContext.Tenants.Add(tenant);
-
-        return tenant.TenantId;
-    }
-
     private void AssignUserToTenant(Guid userId, Guid tenantId)
     {
         _authContext.UserTenants.Add(new UserTenant
@@ -207,5 +182,16 @@ public class AuthRepository : IAuthRepository
             token,
             refreshToken,
             roles);
+    }
+
+    private Tenant MapDtoToTenant(string tenantName)
+    {
+        return new Tenant
+        {
+            Name = tenantName,
+            OwnerId = Guid.NewGuid(),// add logged in user id,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
     }
 }

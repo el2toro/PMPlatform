@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Tenant.API.Dtos;
 using Tenant.API.Enum;
-using Tenant.API.Models;
 
 namespace Tenant.API.Services;
 
@@ -39,7 +38,7 @@ public class AuthServiceClient
     public async Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole tenantRole)
     {
         var response = await _httpClient
-            .PostAsJsonAsync($"/api/users/{userId}/tenants/{tenantId}", new UserTenant
+            .PostAsJsonAsync($"/api/users/{userId}/tenants/{tenantId}", new
             {
                 TenantId = tenantId,
                 UserId = userId,

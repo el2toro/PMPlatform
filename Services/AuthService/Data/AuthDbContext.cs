@@ -41,11 +41,6 @@ public class AuthDbContext : DbContext
                 .WithMany(u => u.UserTenants)
                 .HasForeignKey(ut => ut.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasOne(ut => ut.Tenant)
-                .WithMany(t => t.UserTenants)
-                .HasForeignKey(ut => ut.TenantId)
-                .OnDelete(DeleteBehavior.NoAction);
         });
 
         // RefreshToken entity configuration
@@ -60,14 +55,6 @@ public class AuthDbContext : DbContext
                   .WithMany(u => u.RefreshTokens)
                   .HasForeignKey(rt => rt.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        // Tenant entity configuration
-        modelBuilder.Entity<Tenant>(entity =>
-        {
-            entity.HasKey(e => e.TenantId);
-            entity.HasIndex(e => e.Name).IsUnique();
-            entity.Property(e => e.Domain).HasMaxLength(100);
         });
     }
 }

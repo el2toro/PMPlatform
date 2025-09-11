@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tenant.API.Data;
-using Tenant.API.Dtos;
-using Tenant.API.Enum;
 using Tenant.API.Services;
 
 namespace Tenant.API.Repository;
@@ -10,7 +8,6 @@ public interface ITenantRepository
 {
     Task CreateTenant(string name, string description, Guid ownerId, CancellationToken cancellationToken);
     Task<Models.Tenant> GetTenantById(Guid tenantId, CancellationToken cancellationToken);
-    Task<IEnumerable<UserDto>> GetTenantUsers(Guid tenantId);
     Task DeleteTenant(Guid tenantId, CancellationToken cancellationToken);
 }
 
@@ -53,10 +50,5 @@ public class TenantRepository : ITenantRepository
         ArgumentNullException.ThrowIfNull(tenant);
 
         return tenant;
-    }
-
-    public async Task<IEnumerable<UserDto>> GetTenantUsers(Guid tenantId)
-    {
-        return await _authServiceClient.GetUsersByTenantIdAsync(tenantId);
     }
 }

@@ -2,3 +2,11 @@
 global using Mapster;
 global using MediatR;
 global using AuthService.Repository;
+global using AuthService.Models;
+global using Auth.API.Dtos;
+global using Auth.API.Services;
+global using AuthService.Data;
+global using AuthService.Dtos;
+global using AuthService.Enums;
+global using AuthService.Services;
+global using System.Text;

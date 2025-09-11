@@ -12,8 +12,5 @@ public class Tenant
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-    // Navigation
-    public ICollection<UserTenant> UserTenants { get; set; } = new List<UserTenant>();
 }
 

@@ -10,7 +10,6 @@ public class TenantDbContext : DbContext
 
     // DbSets for your entities
     public DbSet<Models.Tenant> Tenants { get; set; } = default!;
-    public DbSet<Models.UserTenant> UserTenants { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,23 +30,5 @@ public class TenantDbContext : DbContext
             entity.Property(t => t.Description)
                   .HasMaxLength(1000);
         });
-
-        modelBuilder.Entity<Models.UserTenant>(entity =>
-        {
-            entity.HasKey(ut => ut.Id);
-
-            entity.HasIndex(ut => new { ut.UserId, ut.TenantId })
-                  .IsUnique(); // user cannot join same tenant twice
-
-            entity.Property(ut => ut.Role)
-                  .IsRequired();
-
-            //Relationship: UserTenant → Tenant
-            entity.HasOne(ut => ut.Tenant)
-                  .WithMany(t => t.UserTenants)
-                  .HasForeignKey(ut => ut.TenantId)
-                  .OnDelete(DeleteBehavior.Cascade);
-        });
-
     }
 }

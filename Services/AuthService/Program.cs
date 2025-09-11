@@ -1,12 +1,6 @@
-using AuthService.Data;
-using AuthService.Dtos;
-using AuthService.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using AuthService.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +11,11 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 // Register JWT service
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddHttpClient<TenantServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7090/"); // replace with your service URL
+});
 
 var assembly = typeof(Program).Assembly;
 
