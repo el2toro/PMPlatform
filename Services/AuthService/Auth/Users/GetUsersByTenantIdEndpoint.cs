@@ -8,7 +8,7 @@ public class GetUsersByTenantIdEndpoint : ICarterModule
         {
             var users = await sender.Send(new GetUsersByTenantIdQuery(tenantId));
 
-            return Results.Ok(users);
+            return Results.Ok(users.Users);
         });
     }
 }

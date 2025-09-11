@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using Tenant.API.Data;
 using Tenant.API.Dtos;
+using Tenant.API.Services;
 
 namespace Tenant.API.Repository;
 
@@ -15,11 +15,11 @@ public interface ITenantRepository
 public class TenantRepository : ITenantRepository
 {
     private readonly TenantDbContext _tenantDbContext;
-    private readonly HttpClient _httpClient;
-    public TenantRepository(TenantDbContext tenantDbContext, HttpClient httpClient)
+    private readonly AuthServiceClient _authServiceClient;
+    public TenantRepository(TenantDbContext tenantDbContext, AuthServiceClient authServiceClient)
     {
         _tenantDbContext = tenantDbContext;
-        _httpClient = httpClient;
+        _authServiceClient = authServiceClient;
     }
     public async Task CreateTenant(string name, string description, Guid ownerId, CancellationToken cancellationToken)
     {
@@ -44,10 +44,6 @@ public class TenantRepository : ITenantRepository
 
     public async Task<IEnumerable<UserDto>> GetTenantUsers(Guid tenantId)
     {
-        _httpClient.BaseAddress = new Uri("https://localhost:7194/");
-        var users = await _httpClient.GetStringAsync($"api/users/tenant/0ADDB2FC-F72E-4571-A71F-B1F1DA6BF0E9");
-
-
-        return new List<UserDto>();// await JsonSerializer.Deserialize<IEnumerable<UserDto>>() ?? Enumerable.Empty<UserDto>();
+        return await _authServiceClient.GetUsersByTenantIdAsync(tenantId);
     }
 }

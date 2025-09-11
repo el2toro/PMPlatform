@@ -1,21 +1,36 @@
-﻿using Tenant.API.Dtos;
+﻿using System.Text.Json;
+using Tenant.API.Dtos;
 
 namespace Tenant.API.Services;
 
 public class AuthServiceClient
 {
     private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
     public AuthServiceClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
     }
 
-    public async Task<List<UserDto>> GetUsersByTenantIdAsync(IEnumerable<Guid> userIds)
+    public async Task<List<UserDto>> GetUsersByTenantIdAsync(Guid tenantId)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/users/tenant", new { userIds });
-        response.EnsureSuccessStatusCode();
+        //TODO: move api route to appsettings
+        try
+        {
+            var response = await _httpClient.GetStringAsync($"/api/users/tenant/{tenantId}");
 
-        return await response.Content.ReadFromJsonAsync<List<UserDto>>()
-               ?? new List<UserDto>();
+            var users = JsonSerializer
+                .Deserialize<List<UserDto>>(response, _jsonSerializerOptions) ?? [];
+
+            return users;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }
