@@ -49,7 +49,7 @@ namespace Project.API.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Project.API.Models.Project", b =>
@@ -93,7 +93,7 @@ namespace Project.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Project");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Project.API.Models.Subtask", b =>
@@ -117,7 +117,7 @@ namespace Project.API.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Subtask");
+                    b.ToTable("Subtasks");
                 });
 
             modelBuilder.Entity("Project.API.Models.TaskItem", b =>
@@ -162,7 +162,7 @@ namespace Project.API.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("TaskItem");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Project.API.Models.Comment", b =>

@@ -12,7 +12,7 @@ namespace Project.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Project",
+                name: "Projects",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -29,11 +29,11 @@ namespace Project.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Project", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TaskItem",
+                name: "Tasks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -50,17 +50,17 @@ namespace Project.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaskItem", x => x.Id);
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaskItem_Project_ProjectId",
+                        name: "FK_Tasks_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "Project",
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -72,17 +72,17 @@ namespace Project.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_TaskItem_TaskId",
+                        name: "FK_Comments_Tasks_TaskId",
                         column: x => x.TaskId,
-                        principalTable: "TaskItem",
+                        principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subtask",
+                name: "Subtasks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -92,28 +92,28 @@ namespace Project.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subtask", x => x.Id);
+                    table.PrimaryKey("PK_Subtasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Subtask_TaskItem_TaskId",
+                        name: "FK_Subtasks_Tasks_TaskId",
                         column: x => x.TaskId,
-                        principalTable: "TaskItem",
+                        principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_TaskId",
-                table: "Comment",
+                name: "IX_Comments_TaskId",
+                table: "Comments",
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subtask_TaskId",
-                table: "Subtask",
+                name: "IX_Subtasks_TaskId",
+                table: "Subtasks",
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskItem_ProjectId",
-                table: "TaskItem",
+                name: "IX_Tasks_ProjectId",
+                table: "Tasks",
                 column: "ProjectId");
         }
 
@@ -121,16 +121,16 @@ namespace Project.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Subtask");
+                name: "Subtasks");
 
             migrationBuilder.DropTable(
-                name: "TaskItem");
+                name: "Tasks");
 
             migrationBuilder.DropTable(
-                name: "Project");
+                name: "Projects");
         }
     }
 }
