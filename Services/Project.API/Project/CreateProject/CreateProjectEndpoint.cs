@@ -14,9 +14,9 @@ public class CreateProjectEndpoint : ICarterModule
             async (CreateProjectRequest request, ISender sender) =>
         {
             var command = request.Adapt<CreateProjectCommand>();
-            await sender.Send(command);
-            //return Results.Created($"/projects/{project.Id}", project);
-            return Results.Created();
+            var response = await sender.Send(command);
+
+            return Results.Created($"/projects/{response.ProjectDto.Id}", response.ProjectDto);
         });
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Project.API.Data;
 using Project.API.Dtos;
 
@@ -12,9 +11,9 @@ public class ProjectRepository : IProjectRepository
     {
         _dbContext = dbContext;
     }
-    public async Task CreateProject(string name, string description, CancellationToken cancellationToken)
+    public async Task<Models.Project> CreateProjectAsync(string name, string description, CancellationToken cancellationToken)
     {
-        _dbContext.Projects.Add(new Models.Project
+        var project = new Models.Project
         {
             Name = name,
             Description = description,
@@ -22,11 +21,16 @@ public class ProjectRepository : IProjectRepository
             //CreatedBy = "system" // Placeholder, replace with actual user info
             TenantId = Guid.Parse("FF2C542E-5948-4726-A28A-4A5FD5CB76DA"), // Placeholder, replace with actual tenant info
             CreatedBy = Guid.Parse("00000000-0000-0000-0000-000000000001") // Placeholder, replace with actual user info           
-        });
+        };
+
+        _dbContext.Projects.Add(project);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return project;
     }
 
-    public async Task<IEnumerable<ProjectDto>> GetProjectsAsync()
+    public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Projects
             .Select(p => new ProjectDto(
@@ -36,6 +40,6 @@ public class ProjectRepository : IProjectRepository
                  p.CreatedAt,
                  p.CreatedBy,
                  p.TenantId
-            )).ToListAsync();
+            )).ToListAsync(cancellationToken);
     }
 }

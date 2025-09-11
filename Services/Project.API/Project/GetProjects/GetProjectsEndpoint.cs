@@ -11,10 +11,11 @@ public class GetProjectsEndpoint : ICarterModule
         {
             var result = await sender.Send(new GetProjectsQuery());
             return Results.Ok(result);
-        }).WithTags("Projects")
-          .WithName("GetProjects")
-          //.Produces<List<ProjectResponse>>(StatusCodes.Status200OK)
-          .Produces(StatusCodes.Status401Unauthorized)
-          .Produces(StatusCodes.Status403Forbidden);
+        })
+        .WithTags("Projects")
+        .WithName("GetProjects")
+        //.Produces<List<ProjectResponse>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     }
 }

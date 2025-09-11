@@ -24,9 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Project\GetProjectById\" />
-    <Folder Include="Project\DeleteProject\" />
-    <Folder Include="Project\UpdateProject\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
