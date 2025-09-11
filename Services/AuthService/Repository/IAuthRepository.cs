@@ -1,5 +1,6 @@
 ﻿using Auth.API.Dtos;
 using AuthService.Dtos;
+using AuthService.Enums;
 
 namespace AuthService.Repository;
 
@@ -10,4 +11,6 @@ public interface IAuthRepository
     Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken);
     Task<UserProfileDto> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken);
     Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken);
+    Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken);
+    Task RemoveUserFromTenant(Guid tenantId, Guid userId, CancellationToken cancellationToken);
 }

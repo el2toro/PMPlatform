@@ -126,6 +126,25 @@ public class AuthRepository : IAuthRepository
         return users;
     }
 
+    public async Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken)
+    {
+        _authContext.UserTenants.Add(new UserTenant
+        {
+            TenantId = tenantId,
+            UserId = userId,
+            Role = role
+        });
+
+        await _authContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveUserFromTenant(Guid tenantId, Guid userId, CancellationToken cancellationToken)
+    {
+        await _authContext.UserTenants
+            .Where(ut => ut.TenantId == tenantId && ut.UserId == userId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
     private User CreateUser(RegisterRequestDto request)
     {
         var user = new User
