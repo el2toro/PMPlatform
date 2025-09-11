@@ -55,7 +55,7 @@ public class AuthServiceClient
     public async Task RemoveUserFromTenant(Guid tenantId, Guid userId)
     {
         var response = await _httpClient
-            .DeleteAsync($"/api/users/{userId}tenants/{tenantId}");
+            .DeleteAsync($"/api/users/{userId}/tenants/{tenantId}");
 
         response.EnsureSuccessStatusCode();
 
