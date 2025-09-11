@@ -1,4 +1,4 @@
-﻿namespace Auth.API.Auth.Users;
+﻿namespace Auth.API.Auth.Users.GetUsersByTenantId;
 
 public class GetUsersByTenantIdEndpoint : ICarterModule
 {
