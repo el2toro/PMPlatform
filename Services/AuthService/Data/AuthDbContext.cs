@@ -1,5 +1,4 @@
-﻿using AuthService.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Data;
 
@@ -11,7 +10,6 @@ public class AuthDbContext : DbContext
 
     // DbSets
     public DbSet<User> Users { get; set; } = default!;
-    public DbSet<Tenant> Tenants { get; set; } = default!;
     public DbSet<UserTenant> UserTenants { get; set; } = default!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
 

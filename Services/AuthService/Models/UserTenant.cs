@@ -1,6 +1,4 @@
-﻿using AuthService.Enums;
-
-namespace AuthService.Models;
+﻿namespace AuthService.Models;
 // -------------------
 // User-Tenant Membership
 // -------------------
@@ -16,5 +14,4 @@ public class UserTenant
 
     // Navigation
     public User User { get; set; } = default!;
-    public Tenant Tenant { get; set; } = default!;
 }

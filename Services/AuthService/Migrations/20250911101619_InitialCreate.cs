@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AuthService.Migrations
+namespace Auth.API.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -12,19 +12,19 @@ namespace AuthService.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Tenants",
+                name: "Tenant",
                 columns: table => new
                 {
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Plan = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tenants", x => x.TenantId);
+                    table.PrimaryKey("PK_Tenant", x => x.TenantId);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,9 +60,9 @@ namespace AuthService.Migrations
                 {
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshTokens_Tenants_TenantId",
+                        name: "FK_RefreshTokens_Tenant_TenantId",
                         column: x => x.TenantId,
-                        principalTable: "Tenants",
+                        principalTable: "Tenant",
                         principalColumn: "TenantId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -86,11 +86,6 @@ namespace AuthService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserTenants", x => x.UserTenantId);
-                    table.ForeignKey(
-                        name: "FK_UserTenants_Tenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "Tenants",
-                        principalColumn: "TenantId");
                     table.ForeignKey(
                         name: "FK_UserTenants_Users_UserId",
                         column: x => x.UserId,
@@ -121,11 +116,6 @@ namespace AuthService.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTenants_TenantId",
-                table: "UserTenants",
-                column: "TenantId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserTenants_UserId_TenantId",
                 table: "UserTenants",
                 columns: new[] { "UserId", "TenantId" },
@@ -142,7 +132,7 @@ namespace AuthService.Migrations
                 name: "UserTenants");
 
             migrationBuilder.DropTable(
-                name: "Tenants");
+                name: "Tenant");
 
             migrationBuilder.DropTable(
                 name: "Users");

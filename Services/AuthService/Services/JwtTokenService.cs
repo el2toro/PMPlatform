@@ -25,7 +25,7 @@ public class JwtTokenService : IJwtTokenService
         {
             Token = Convert.ToBase64String(randomBytes),
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            TenantId = tenantId,
+            //TenantId = tenantId, // TODO: add tenantId to RefreshToken model
             UserId = userId
         };
     }

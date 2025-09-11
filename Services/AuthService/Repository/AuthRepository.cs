@@ -20,7 +20,7 @@ public class AuthRepository : IAuthRepository
     {
         var user = await _authContext.Users
             .Include(u => u.UserTenants)
-            .ThenInclude(ut => ut.Tenant)
+            //.ThenInclude(ut => ut.Tenant)
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
@@ -48,12 +48,12 @@ public class AuthRepository : IAuthRepository
         var user = await _authContext.Users
         .Include(u => u.RefreshTokens)
         .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t =>
-            t.Token == refreshToken && t.TenantId == tenantId), cancellationToken);
+            t.Token == refreshToken), cancellationToken); //TODO: add tenantId condition && t.TenantId == tenantId
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
 
         var token = user.RefreshTokens.Single(t =>
-            t.Token == refreshToken && t.TenantId == tenantId);
+            t.Token == refreshToken); //TODO: add tenantId condition && t.TenantId == tenantId
 
         token.RevokedAt = DateTime.UtcNow;
 
@@ -69,12 +69,12 @@ public class AuthRepository : IAuthRepository
         .Include(u => u.UserTenants)
         //.ThenInclude(ut => ut.Tenant)
         .SingleOrDefaultAsync(u =>
-            u.RefreshTokens.Any(t => t.Token == refreshToken && t.TenantId == tenantId));
+            u.RefreshTokens.Any(t => t.Token == refreshToken)); //TODO: add tenantId condition && t.TenantId == tenantId
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
 
         RefreshToken oldToken = user.RefreshTokens
-            .Single(t => t.Token == refreshToken && t.TenantId == tenantId && t.UserId == user.Id);
+            .Single(t => t.Token == refreshToken); //TODO: add tenantId condition && t.TenantId == tenantId
 
         ArgumentNullException.ThrowIfNull(oldToken);
 

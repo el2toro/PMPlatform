@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AuthService.Migrations
+namespace Auth.API.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20250910061115_InitialCreate")]
+    [Migration("20250911101619_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,22 +71,22 @@ namespace AuthService.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Domain")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Plan")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("TenantId");
 
-                    b.ToTable("Tenants");
+                    b.ToTable("Tenant");
                 });
 
             modelBuilder.Entity("AuthService.Models.User", b =>
@@ -148,8 +148,6 @@ namespace AuthService.Migrations
 
                     b.HasKey("UserTenantId");
 
-                    b.HasIndex("TenantId");
-
                     b.HasIndex("UserId", "TenantId")
                         .IsUnique();
 
@@ -177,26 +175,13 @@ namespace AuthService.Migrations
 
             modelBuilder.Entity("AuthService.Models.UserTenant", b =>
                 {
-                    b.HasOne("AuthService.Models.Tenant", "Tenant")
-                        .WithMany("UserTenants")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("AuthService.Models.User", "User")
                         .WithMany("UserTenants")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Tenant");
-
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AuthService.Models.Tenant", b =>
-                {
-                    b.Navigation("UserTenants");
                 });
 
             modelBuilder.Entity("AuthService.Models.User", b =>
