@@ -7,7 +7,7 @@ public class CreateTenantEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/tenants", async (CreateTenantRequest request, ISender sender) =>
+        app.MapPost("api/projects", async (CreateTenantRequest request, ISender sender) =>
         {
             var command = request.Adapt<CreateTenantCommand>();
             await sender.Send(command);

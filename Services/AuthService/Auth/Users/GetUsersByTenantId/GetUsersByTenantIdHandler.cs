@@ -1,6 +1,4 @@
-﻿using Auth.API.Dtos;
-
-namespace Auth.API.Auth.Users.GetUsersByTenantId;
+﻿namespace Auth.API.Auth.Users.GetUsersByTenantId;
 
 public record GetUsersByTenantIdQuery(Guid TenantId) : IRequest<GetUsersByTenantIdResult>;
 public record GetUsersByTenantIdResult(IEnumerable<UserDto> Users);

@@ -9,6 +9,11 @@ public class ProjectDbContext : DbContext
     {
     }
 
+    public DbSet<Models.Project> Projects { get; set; } = default!;
+    public DbSet<TaskItem> Tasks { get; set; } = default!;
+    public DbSet<Subtask> Subtasks { get; set; } = default!;
+    public DbSet<Comment> Comments { get; set; } = default!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
