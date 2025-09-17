@@ -30,16 +30,60 @@ public class ProjectRepository : IProjectRepository
         return project;
     }
 
+    public async Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken)
+    {
+        var project = await _dbContext.Projects
+            .Include(p => p.Tasks)
+            .AsNoTracking()
+            .Where(p => p.Id == projectId && p.TenantId == tenantId)
+            .Select(p => new ProjectDetailsDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                CreatedAt = p.CreatedAt,
+                CreatedBy = p.CreatedBy,
+                TenantId = p.TenantId,
+                ProjectStatus = p.ProjectStatus,
+                EndDate = p.EndDate,
+                Tasks = p.Tasks.Select(t => new TaskItemDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    TaskStatus = t.TaskStatus,
+                    AssignedTo = t.AssignedTo,
+                    DueDate = t.DueDate,
+                    CreatedAt = t.CreatedAt,
+                    CreatedBy = t.CreatedBy,
+                    ProjectId = t.ProjectId,
+                    Subtasks = t.Subtasks.Select(st =>
+                    new SubtaskDto(
+                        st.Id,
+                        st.Title,
+                        st.IsCompleted
+                    )).ToList()
+                }).ToList()
+            }).FirstOrDefaultAsync(cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(project, nameof(project));
+
+        return project;
+    }
+
     public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Projects
+            .AsNoTracking()
             .Select(p => new ProjectDto(
                  p.Id,
                  p.Name,
                  p.Description,
                  p.CreatedAt,
                  p.CreatedBy,
-                 p.TenantId
+                 p.TenantId,
+                 p.ProjectStatus,
+                 p.EndDate
             )).ToListAsync(cancellationToken);
     }
 }

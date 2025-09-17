@@ -10,7 +10,7 @@ public class GetProjectsEndpoint : ICarterModule
         app.MapGet("api/projects", async (ISender sender) =>
         {
             var result = await sender.Send(new GetProjectsQuery());
-            return Results.Ok(result);
+            return Results.Ok(result.Projects);
         })
         .WithTags("Projects")
         .WithName("GetProjects")

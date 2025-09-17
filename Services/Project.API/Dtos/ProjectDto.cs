@@ -1,4 +1,6 @@
-﻿namespace Project.API.Dtos;
+﻿using Project.API.Enums;
+
+namespace Project.API.Dtos;
 
 public record ProjectDto(
     Guid Id,
@@ -6,5 +8,7 @@ public record ProjectDto(
     string? Description,
     DateTime CreatedAt,
     Guid CreatedBy,
-    Guid TenantId);
+    Guid TenantId,
+    ProjectStatus ProjectStatus,
+    DateTime EndDate);
 

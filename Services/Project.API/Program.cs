@@ -19,13 +19,21 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
 builder.Services.AddCarter();
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PMPolicy",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // Angular app URL
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
 
-app.MapGet("/ping", () => "pong");
+var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-
+app.UseCors("PMPolicy");
 app.UseHttpsRedirection();
 app.MapCarter();
 

@@ -11,7 +11,7 @@ public class GetProjectsHandler(IProjectRepository projectRepository)
 {
     public async Task<ProjectResponse> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
     {
-        var projects = await projectRepository.GetProjectsAsync();
+        var projects = await projectRepository.GetProjectsAsync(cancellationToken);
         return new ProjectResponse(projects);
     }
 }
