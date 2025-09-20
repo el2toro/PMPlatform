@@ -20,18 +20,19 @@ public class UpdateProjectHandler(IProjectRepository projectRepository)
 
     private ProjectDto MapToDto(int progress, IEnumerable<UserDto> team, Models.Project updatedProject)
     {
-        return new ProjectDto(
-            updatedProject.Id,
-            updatedProject.Name,
-            updatedProject.Description,
-            updatedProject.CreatedAt,
-            updatedProject.CreatedBy,
-            updatedProject.TenantId,
-            updatedProject.ProjectStatus,
-            updatedProject.StartDate,
-            updatedProject.EndDate,
-            progress,
-            team
-        );
+        return new ProjectDto
+        {
+            Id = updatedProject.Id,
+            Name = updatedProject.Name,
+            Description = updatedProject.Description,
+            CreatedAt = updatedProject.CreatedAt,
+            CreatedBy = updatedProject.CreatedBy,
+            TenantId = updatedProject.TenantId,
+            ProjectStatus = updatedProject.ProjectStatus,
+            StartDate = updatedProject.StartDate,
+            EndDate = updatedProject.EndDate,
+            Progress = progress,
+            Team = team
+        };
     }
 }

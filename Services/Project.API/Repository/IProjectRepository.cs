@@ -4,7 +4,12 @@ namespace Project.API.Repository;
 
 public interface IProjectRepository
 {
-    Task<Models.Project> CreateProjectAsync(string name, string description, CancellationToken cancellationToken);
+    Task<Models.Project> CreateProjectAsync(
+        string name,
+        string? description,
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken);
     Task<IEnumerable<Models.Project>> GetProjectsAsync(CancellationToken cancellationToken);
     Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken);
     Task<Models.Project> UpdateProjectAsync(ProjectDto projectDto, CancellationToken cancellationToken);

@@ -1,10 +1,11 @@
 ﻿using Carter;
 using Mapster;
 using MediatR;
+using Project.API.Dtos;
 
 namespace Project.API.Project.CreateProject;
 
-public record CreateProjectRequest(string Name, string Description, string StartDate);
+public record CreateProjectRequest(string Name, string? Description, DateTime StartDate, DateTime EndDate);
 
 public class CreateProjectEndpoint : ICarterModule
 {

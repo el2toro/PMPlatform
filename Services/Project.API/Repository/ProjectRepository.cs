@@ -12,16 +12,22 @@ public class ProjectRepository : IProjectRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<Models.Project> CreateProjectAsync(string name, string description, CancellationToken cancellationToken)
+    public async Task<Models.Project>
+        CreateProjectAsync(string name,
+        string? description,
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
     {
         var project = new Models.Project
         {
             Name = name,
             Description = description,
             CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
             ProjectStatus = Enums.ProjectStatus.NotStarted,
-            StartDate = DateTime.UtcNow,
-            //CreatedBy = "system" // Placeholder, replace with actual user info
+            StartDate = startDate,
+            EndDate = endDate,
             TenantId = Guid.Parse("FF2C542E-5948-4726-A28A-4A5FD5CB76DA"), // Placeholder, replace with actual tenant info
             CreatedBy = Guid.Parse("3C484FF2-85DD-4A9B-989E-0C09FB3B8452") // Placeholder, replace with actual user info           
         };

@@ -26,35 +26,24 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
 
         foreach (var project in result)
         {
-            var newProject = new ProjectDto(
-                   project.Id,
-                   project.Name,
-                   project.Description,
-                   project.CreatedAt,
-                   project.CreatedBy,
-                   project.TenantId,
-                   project.ProjectStatus,
-                   project.EndDate,
-                   project.StartDate,
-                   CalculateProgress(project.Tasks),
-                   //TODO: fetch actual team members
-                   await GetTeam(project.TenantId));
+            var newProject = new ProjectDto
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Description = project.Description,
+                CreatedAt = project.CreatedAt,
+                CreatedBy = project.CreatedBy,
+                TenantId = project.TenantId,
+                ProjectStatus = project.ProjectStatus,
+                StartDate = project.StartDate,
+                EndDate = project.EndDate,
+                Progress = CalculateProgress(project.Tasks),
+                //TODO: fetch actual team members
+                Team = await GetTeam(project.TenantId)
+            };
 
             projects.Add(newProject);
         };
-
-        //var projects = result.Select(p => new ProjectDto(
-        //           p.Id,
-        //           p.Name,
-        //           p.Description,
-        //           p.CreatedAt,
-        //           p.CreatedBy,
-        //           p.TenantId,
-        //           p.ProjectStatus,
-        //           p.EndDate,
-        //           CalculateProgress(p.Tasks),
-        //           //TODO: fetch actual team members
-        //           GetTeam(p.TenantId)));
 
         return new ProjectResponse(projects);
     }
