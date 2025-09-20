@@ -35,6 +35,7 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
                    project.TenantId,
                    project.ProjectStatus,
                    project.EndDate,
+                   project.StartDate,
                    CalculateProgress(project.Tasks),
                    //TODO: fetch actual team members
                    await GetTeam(project.TenantId));

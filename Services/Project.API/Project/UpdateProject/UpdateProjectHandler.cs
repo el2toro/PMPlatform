@@ -1,17 +1,37 @@
-﻿using MediatR;
+﻿using Mapster;
+using MediatR;
+using Project.API.Dtos;
 using Project.API.Repository;
 
 namespace Project.API.Project.UpdateProject;
 
-public record UpdateProjectCommand(Guid ProjectId, string Name, string Description) : IRequest<UpdateProjectResult>;
-public record UpdateProjectResult(bool IsSuccefull);
+public record UpdateProjectCommand(ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
+public record UpdateProjectResult(ProjectDto ProjectDto);
 public class UpdateProjectHandler(IProjectRepository projectRepository)
     : IRequestHandler<UpdateProjectCommand, UpdateProjectResult>
 {
     public async Task<UpdateProjectResult> Handle(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
-        //var result = await projectRepository.UpdateProjectAsync(command.ProjectId, command.Name, command.Description, cancellationToken);
+        // var project = command.ProjectDto.Adapt<Models.Project>();
+        var result = await projectRepository.UpdateProjectAsync(command.ProjectDto, cancellationToken);
 
-        throw new NotImplementedException();
+        return new UpdateProjectResult(MapToDto(command.ProjectDto.Progress, command.ProjectDto.Team, result));
+    }
+
+    private ProjectDto MapToDto(int progress, IEnumerable<UserDto> team, Models.Project updatedProject)
+    {
+        return new ProjectDto(
+            updatedProject.Id,
+            updatedProject.Name,
+            updatedProject.Description,
+            updatedProject.CreatedAt,
+            updatedProject.CreatedBy,
+            updatedProject.TenantId,
+            updatedProject.ProjectStatus,
+            updatedProject.StartDate,
+            updatedProject.EndDate,
+            progress,
+            team
+        );
     }
 }

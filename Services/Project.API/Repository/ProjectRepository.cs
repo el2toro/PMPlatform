@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using Project.API.Data;
 using Project.API.Dtos;
 
@@ -79,5 +80,23 @@ public class ProjectRepository : IProjectRepository
             .Include(p => p.Tasks)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Models.Project> UpdateProjectAsync(ProjectDto projectDto, CancellationToken cancellationToken)
+    {
+        var existingProject = await _dbContext.Projects.FindAsync(projectDto.Id, cancellationToken);
+        //TODO : handle not found
+        ArgumentNullException.ThrowIfNull(existingProject, nameof(existingProject));
+
+        projectDto.Adapt(existingProject);
+
+        //TODO: move to handler/business logic
+        existingProject.UpdatedAt = DateTime.UtcNow;
+        existingProject.UpdatedBy = Guid.Parse("3C484FF2-85DD-4A9B-989E-0C09FB3B8452");
+
+        //var updatedProject = _dbContext.Projects.Update(existingProject);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return existingProject;
     }
 }
