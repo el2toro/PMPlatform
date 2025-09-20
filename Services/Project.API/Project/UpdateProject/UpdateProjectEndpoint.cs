@@ -1,6 +1,15 @@
-﻿namespace Project.API.Project.UpdateProject
+﻿using Carter;
+using MediatR;
+
+namespace Project.API.Project.UpdateProject;
+
+public class UpdateProjectEndpoint : ICarterModule
 {
-    public class UpdateProjectEndpoint
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
+        app.MapPut("api/projects", (ISender sender) =>
+        {
+
+        });
     }
 }

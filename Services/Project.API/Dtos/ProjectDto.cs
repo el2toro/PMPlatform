@@ -10,5 +10,7 @@ public record ProjectDto(
     Guid CreatedBy,
     Guid TenantId,
     ProjectStatus ProjectStatus,
-    DateTime EndDate);
+    DateTime EndDate,
+    int Progress,
+    IEnumerable<UserDto> Team);
 

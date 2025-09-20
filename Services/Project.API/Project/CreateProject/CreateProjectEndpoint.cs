@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Project.API.Project.CreateProject;
 
-public record CreateProjectRequest(string Name, string Description);
+public record CreateProjectRequest(string Name, string Description, string StartDate);
 
 public class CreateProjectEndpoint : ICarterModule
 {

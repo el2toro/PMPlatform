@@ -107,9 +107,12 @@ public class AuthRepository : IAuthRepository
 
         var newUser = CreateUser(request);
 
-        var tenant = await _tenantServiceClient.CreateTenant(MapDtoToTenant(request.TenantName));
+        //TODO: check tenant exists if not create new tenant
+        //Assign user to tenant
+        //Get logged in user id to assign as owner
+        // var tenant = await _tenantServiceClient.CreateTenant(MapDtoToTenant(request.TenantName));
 
-        AssignUserToTenant(newUser.Id, tenant.TenantId);
+        // AssignUserToTenant(newUser.Id, tenant.TenantId);
 
         await _authContext.SaveChangesAsync(cancellationToken);
     }

@@ -18,9 +18,11 @@ public class ProjectRepository : IProjectRepository
             Name = name,
             Description = description,
             CreatedAt = DateTime.UtcNow,
+            ProjectStatus = Enums.ProjectStatus.NotStarted,
+            StartDate = DateTime.UtcNow,
             //CreatedBy = "system" // Placeholder, replace with actual user info
             TenantId = Guid.Parse("FF2C542E-5948-4726-A28A-4A5FD5CB76DA"), // Placeholder, replace with actual tenant info
-            CreatedBy = Guid.Parse("00000000-0000-0000-0000-000000000001") // Placeholder, replace with actual user info           
+            CreatedBy = Guid.Parse("3C484FF2-85DD-4A9B-989E-0C09FB3B8452") // Placeholder, replace with actual user info           
         };
 
         _dbContext.Projects.Add(project);
@@ -71,19 +73,11 @@ public class ProjectRepository : IProjectRepository
         return project;
     }
 
-    public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<Models.Project>> GetProjectsAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Projects
+            .Include(p => p.Tasks)
             .AsNoTracking()
-            .Select(p => new ProjectDto(
-                 p.Id,
-                 p.Name,
-                 p.Description,
-                 p.CreatedAt,
-                 p.CreatedBy,
-                 p.TenantId,
-                 p.ProjectStatus,
-                 p.EndDate
-            )).ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
     }
 }

@@ -5,7 +5,7 @@ using Project.API.Repository;
 
 namespace Project.API.Project.CreateProject;
 
-public record CreateProjectCommand(string Name, string Description) : IRequest<CreateProjectResult>;
+public record CreateProjectCommand(string Name, string Description, string StartDate) : IRequest<CreateProjectResult>;
 public record CreateProjectResult(ProjectDto ProjectDto);
 
 public class CreateProjectHandler(IProjectRepository projectRepository)

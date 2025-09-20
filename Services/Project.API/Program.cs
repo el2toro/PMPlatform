@@ -2,6 +2,7 @@ using Carter;
 using Microsoft.EntityFrameworkCore;
 using Project.API.Data;
 using Project.API.Repository;
+using Project.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,11 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddDbContext<ProjectDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectDb"));
+});
+
+builder.Services.AddHttpClient<UserServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7194/"); // replace with your service URL
 });
 
 var assembly = typeof(Program).Assembly;
