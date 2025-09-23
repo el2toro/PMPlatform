@@ -11,6 +11,7 @@ public class GetProjectByIdEndpoint : ICarterModule
         {
             var result = await sender.Send(new GetProjectByIdQuery(projectId, tenantId));
             return Results.Ok(result.Project);
-        });
+        })
+            .RequireAuthorization();
     }
 }

@@ -33,12 +33,12 @@ public class UserServiceClient
         }
     }
 
-    public async Task<List<UserDto>> GetUsersByIdAsync(Guid tenantId, IEnumerable<Guid> userIds)
+    public async Task<List<UserDto>> GetUsersByIdAsync(Guid tenantId, Guid[] userIds)
     {
         //TODO: move api route to appsettings
         try
         {
-            var response = await _httpClient.GetStringAsync($"/api/users/tenant/{tenantId}/{userIds}");
+            var response = await _httpClient.GetStringAsync($"/api/users/tenant/{tenantId}?userIds={string.Join("&userIds=", userIds.Select(id => id.ToString()))}");
 
             var users = JsonSerializer
                 .Deserialize<List<UserDto>>(response, _jsonSerializerOptions) ?? [];

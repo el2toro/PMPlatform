@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Repository;
+
 public class AuthRepository : IAuthRepository
 {
     private readonly AuthDbContext _authContext;
@@ -146,6 +147,14 @@ public class AuthRepository : IAuthRepository
             .ExecuteDeleteAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<UserDto>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken)
+    {
+        return await _authContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .Select(user => new UserDto(user.Id, user.FirstName, user.LastName, user.Email))
+            .ToListAsync(cancellationToken);
+    }
+
     private User CreateUser(RegisterRequestDto request)
     {
         var user = new User
@@ -182,6 +191,8 @@ public class AuthRepository : IAuthRepository
             user.Id,
             tenantId,
             user.Email,
+            user.FirstName,
+            user.LastName,
             token,
             refreshToken,
             roles);

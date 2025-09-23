@@ -1,8 +1,4 @@
-﻿using Auth.API.Dtos;
-using AuthService.Dtos;
-using AuthService.Enums;
-
-namespace AuthService.Repository;
+﻿namespace AuthService.Repository;
 
 public interface IAuthRepository
 {
@@ -13,4 +9,5 @@ public interface IAuthRepository
     Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken);
     Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken);
     Task RemoveUserFromTenant(Guid tenantId, Guid userId, CancellationToken cancellationToken);
+    Task<IEnumerable<UserDto>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken);
 }
