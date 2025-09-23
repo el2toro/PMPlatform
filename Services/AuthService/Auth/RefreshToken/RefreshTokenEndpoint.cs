@@ -1,12 +1,7 @@
 ﻿namespace Auth.API.Auth.RefreshToken;
 
 public record RefreshTokenRequest(string RefreshToken, Guid TenantId);
-public record RefreshTokenResponse(Guid UserId,
-        Guid TenantId,
-        string Email,
-        string Token,
-        string RefreshToken,
-        IEnumerable<string> Roles);
+public record RefreshTokenResponse(string RefreshToken, string AccessToken);
 public class RefreshTokenEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -16,7 +11,7 @@ public class RefreshTokenEndpoint : ICarterModule
             var command = request.Adapt<RefreshTokenCommand>();
             var result = await sender.Send(command);
             var response = result.Adapt<RefreshTokenResponse>();
-            return Results.Ok(result);
+            return Results.Ok(response);
         })
         .WithDisplayName("RefreshToken")
         .WithDescription("Refresh Token")

@@ -1,9 +1,7 @@
-﻿using AuthService.Models;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace AuthService.Services;
 
@@ -25,6 +23,7 @@ public class JwtTokenService : IJwtTokenService
         {
             Token = Convert.ToBase64String(randomBytes),
             ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow,
             //TenantId = tenantId, // TODO: add tenantId to RefreshToken model
             UserId = userId
         };

@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Project.API.Data;
 using Project.API.Repository;
 using Project.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,29 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
+// Configure Authentication
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 
@@ -42,6 +68,9 @@ var app = builder.Build();
 app.UseCors("PMPolicy");
 app.UseHttpsRedirection();
 app.MapCarter();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();
 

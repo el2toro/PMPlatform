@@ -16,6 +16,7 @@ public class GetProjectsEndpoint : ICarterModule
         .WithName("GetProjects")
         //.Produces<List<ProjectResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized)
-        .Produces(StatusCodes.Status403Forbidden);
+        .Produces(StatusCodes.Status403Forbidden)
+        .RequireAuthorization();
     }
 }

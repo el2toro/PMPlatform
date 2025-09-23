@@ -30,6 +30,16 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.AddCarter();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PMPolicy",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // Angular app URL
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
+
 // Configure Authentication
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -43,6 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtIssuer,
             ValidAudience = jwtAudience,
@@ -56,6 +67,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();
+app.UseCors("PMPolicy");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

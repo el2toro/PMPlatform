@@ -60,7 +60,7 @@ public class AuthRepository : IAuthRepository
         await _authContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<UserProfileDto> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
+    public async Task<TokenResponseDto> RefreshTokenAsync(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
     {
         using var transaction = await _authContext.Database.BeginTransactionAsync();
 
@@ -93,7 +93,7 @@ public class AuthRepository : IAuthRepository
         string jwtToken = _jwtTokenService.GenerateToken(user, user.UserTenants.FirstOrDefault()!.Role.ToString(), tenantId);
         List<string> roles = [user.UserTenants.FirstOrDefault()!.Role.ToString()];
 
-        return MapToUserProfile(user, jwtToken, newRefreshToken.Token, tenantId);
+        return new TokenResponseDto(newRefreshToken.Token, jwtToken);
     }
 
     public async Task RegisterUser(RegisterRequestDto request, CancellationToken cancellationToken)
