@@ -4,7 +4,6 @@ namespace Project.API.Dtos;
 
 public record ProjectDto
 {
-    public int MyProperty { get; init; }
     public Guid Id { get; init; }
     public string Name { get; init; } = default!;
     public string? Description { get; init; }

@@ -18,4 +18,5 @@ public record TaskItemDto
 
     public UserDto User { get; set; } = default!;
     public IEnumerable<SubtaskDto> Subtasks { get; set; } = new List<SubtaskDto>();
+    public IEnumerable<CommentDto> Comments { get; set; } = new List<CommentDto>();
 }
