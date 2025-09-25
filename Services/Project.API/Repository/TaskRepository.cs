@@ -1,4 +1,5 @@
-﻿using Project.API.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.API.Data;
 using Project.API.Dtos;
 using Project.API.Models;
 
@@ -28,7 +29,10 @@ public class TaskRepository(ProjectDbContext dbContext) : ITaskRepository
 
     public async Task<TaskItem> UpdateTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        var existingTask = _dbContext.Tasks.Find(task.Id);
+        var existingTask = await _dbContext.Tasks
+            .Include(t => t.Subtasks)
+            .Include(t => t.Comments)
+            .FirstOrDefaultAsync(t => t.Id == task.Id);
 
         ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
 
@@ -39,8 +43,8 @@ public class TaskRepository(ProjectDbContext dbContext) : ITaskRepository
         existingTask.AssignedTo = task.AssignedTo;
         existingTask.UpdatedAt = DateTime.UtcNow;
         existingTask.UpdatedBy = task.UpdatedBy;
-
-        //TODO: Add subtasks and comments mapping
+        existingTask.Subtasks = task.Subtasks;
+        existingTask.Comments = task.Comments;
 
         _dbContext.Tasks.Update(existingTask);
         await _dbContext.SaveChangesAsync();

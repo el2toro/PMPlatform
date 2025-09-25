@@ -69,9 +69,18 @@ public class ProjectRepository : IProjectRepository
                     Subtasks = t.Subtasks.Select(st =>
                     new SubtaskDto(
                         st.Id,
+                        st.TaskId,
                         st.Title,
                         st.IsCompleted
-                    )).ToList()
+                    )).ToList(),
+                    Comments = t.Comments.Select(c =>
+                    new CommentDto
+                    {
+                        Id = c.Id,
+                        Content = c.Content,
+                        TaskId = c.TaskId
+                    }).ToList(),
+
                 }).ToList()
             }).FirstOrDefaultAsync(cancellationToken);
 
