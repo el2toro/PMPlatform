@@ -24,4 +24,9 @@
     <ProjectReference Include="..\..\BuildingBlocks\Core\Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Project\Task\DeleteTask\" />
+    <Folder Include="Project\Task\GetTaskById\" />
+  </ItemGroup>
+
 </Project>
