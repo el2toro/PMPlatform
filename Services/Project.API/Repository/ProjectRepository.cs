@@ -78,7 +78,9 @@ public class ProjectRepository : IProjectRepository
                     {
                         Id = c.Id,
                         Content = c.Content,
-                        TaskId = c.TaskId
+                        TaskId = c.TaskId,
+                        CreatedAt = c.CreatedAt,
+                        CreatedBy = c.UserId
                     }).ToList(),
 
                 }).ToList()

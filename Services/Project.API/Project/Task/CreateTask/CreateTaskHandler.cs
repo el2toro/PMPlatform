@@ -19,6 +19,13 @@ public class CreateTaskHandler(ITaskRepository taskRepository)
         //TODO: Replace with actual logged in user
         taskToCreate.CreatedBy = Guid.Parse("2ED46488-5667-42E6-A3B1-0046AB4BFCA6");
         taskToCreate.UpdatedBy = Guid.Parse("2ED46488-5667-42E6-A3B1-0046AB4BFCA6");
+
+        foreach (var comment in taskToCreate.Comments)
+        {
+            comment.CreatedAt = DateTime.UtcNow;
+            comment.UpdatedAt = DateTime.UtcNow;
+        }
+
         var createdTask = await taskRepository.CreateTaskAsync(taskToCreate, cancellationToken);
         var result = createdTask.Adapt<TaskItemDto>();
 
