@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.API.Data;
+using Project.API.Enums;
 using Project.API.Models;
 
 namespace Project.API.Repository;
@@ -49,5 +50,20 @@ public class TaskRepository(ProjectDbContext dbContext) : ITaskRepository
         await _dbContext.SaveChangesAsync();
 
         return existingTask;
+    }
+
+    public async Task<TaskItem> UpdateTaskStatusAsync(Guid taskId, TaskItemStatus status, CancellationToken cancellationToken)
+    {
+        var task = await _dbContext.Tasks.FindAsync(taskId);
+
+        ArgumentNullException.ThrowIfNull(task, nameof(task));
+
+        task.TaskStatus = status;
+        task.UpdatedAt = DateTime.UtcNow;
+        _dbContext.Tasks.Update(task);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return task;
     }
 }

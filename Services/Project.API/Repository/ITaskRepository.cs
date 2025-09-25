@@ -1,4 +1,5 @@
-﻿using Project.API.Models;
+﻿using Project.API.Enums;
+using Project.API.Models;
 
 namespace Project.API.Repository;
 
@@ -8,4 +9,5 @@ public interface ITaskRepository
     Task<IEnumerable<TaskItem>> GeTasksAsync(Guid projectId, CancellationToken cancellationToken);
     Task<TaskItem> GetTaskByIdAsync(Guid taskId, CancellationToken cancellationToken);
     Task<TaskItem> UpdateTaskAsync(TaskItem taskDto, CancellationToken cancellationToken);
+    Task<TaskItem> UpdateTaskStatusAsync(Guid taskId, TaskItemStatus status, CancellationToken cancellationToken);
 }
