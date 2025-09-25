@@ -67,16 +67,30 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
     // TODO: Refine this logic as per actual requirements
     private int CalculateProgress(IEnumerable<Models.TaskItem> tasks)
     {
-        if (tasks.Count() is 0) return 0;
+        if (tasks.Count() == 0) return 0;
 
         if (tasks.All(t => t.TaskStatus == TaskItemStatus.Done)) return 100;
 
-        // Count tasks that are not in Backlog, ToDo, or Cancelled status
-        // TODO: Consider adding weights to different statuses for a more nuanced calculation
-        int count = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled).Count();
+        tasks = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled);
 
-        return count > 0 ? (100 / count) : 0;
+        int totalTasks = tasks.Count();
+        double sumTaskProgress = 0;
 
-        // return (100 / count); //100% divided by number of incomplete tasks
+        foreach (var task in tasks)
+        {
+            int totalSubtasks = task.Subtasks.Count();
+            int completedSubtasks = task.Subtasks.Count(st => st.IsCompleted);
+
+            double taskProgress = totalSubtasks > 0
+                ? ((double)completedSubtasks / totalSubtasks)
+                : (task.TaskStatus == TaskItemStatus.Done ? 1 : 0);
+
+            sumTaskProgress += taskProgress;
+        }
+
+
+        return totalTasks > 0
+            ? (int)(100 * (sumTaskProgress / totalTasks))
+            : 0;
     }
 }

@@ -95,6 +95,7 @@ public class ProjectRepository : IProjectRepository
     {
         var items = await _dbContext.Projects
             .Include(p => p.Tasks)
+            .ThenInclude(t => t.Subtasks)
             .AsNoTracking()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
