@@ -91,12 +91,18 @@ public class ProjectRepository : IProjectRepository
         return project;
     }
 
-    public async Task<IEnumerable<Models.Project>> GetProjectsAsync(CancellationToken cancellationToken)
+    public async Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        return await _dbContext.Projects
+        var items = await _dbContext.Projects
             .Include(p => p.Tasks)
             .AsNoTracking()
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        var totalCount = await _dbContext.Projects.CountAsync(cancellationToken);
+
+        return (items, totalCount);
     }
 
     public async Task<Models.Project> UpdateProjectAsync(ProjectDto projectDto, CancellationToken cancellationToken)

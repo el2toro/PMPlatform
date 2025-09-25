@@ -6,14 +6,14 @@ using Project.API.Services;
 
 namespace Project.API.Project.GetProjects;
 
-public record GetProjectsQuery : IRequest<ProjectResponse>;
-public record ProjectResponse(IEnumerable<ProjectDto> Projects);
+public record GetProjectsQuery(int PageNumber, int PageSize) : IRequest<GetProjectsResponse>;
+public record GetProjectsResponse(PaginatedResponse PaginatedResponse);
 public class GetProjectsHandler(IProjectRepository projectRepository, UserServiceClient userServiceClient)
-    : IRequestHandler<GetProjectsQuery, ProjectResponse>
+    : IRequestHandler<GetProjectsQuery, GetProjectsResponse>
 {
-    public async Task<ProjectResponse> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+    public async Task<GetProjectsResponse> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
     {
-        var result = await projectRepository.GetProjectsAsync(cancellationToken);
+        var (items, totalCount) = await projectRepository.GetProjectsAsync(query.PageNumber, query.PageSize, cancellationToken);
 
         //Parallel.ForEach(result, project =>
         //{
@@ -24,7 +24,7 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
 
         var projects = new List<ProjectDto>();
 
-        foreach (var project in result)
+        foreach (var project in items)
         {
             var newProject = new ProjectDto
             {
@@ -45,7 +45,15 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
             projects.Add(newProject);
         };
 
-        return new ProjectResponse(projects);
+        var response = new PaginatedResponse
+        {
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
+            TotalItems = totalCount,
+            Items = projects
+        };
+
+        return new GetProjectsResponse(response);
     }
 
     private async Task<IEnumerable<UserDto>> GetTeam(Guid teanantId)
@@ -65,12 +73,9 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
 
         // Count tasks that are not in Backlog, ToDo, or Cancelled status
         // TODO: Consider adding weights to different statuses for a more nuanced calculation
-        int count = tasks.Where(t =>
-        t.TaskStatus != TaskItemStatus.Backlog &&
-        t.TaskStatus != TaskItemStatus.ToDo &&
-        t.TaskStatus != TaskItemStatus.Cancelled).Count();
+        int count = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled).Count();
 
-        return count > 0 ? (100 / count) : 100;
+        return count > 0 ? (100 / count) : 0;
 
         // return (100 / count); //100% divided by number of incomplete tasks
     }

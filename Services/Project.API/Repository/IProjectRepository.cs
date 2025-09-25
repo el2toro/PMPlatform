@@ -10,7 +10,7 @@ public interface IProjectRepository
         DateTime startDate,
         DateTime endDate,
         CancellationToken cancellationToken);
-    Task<IEnumerable<Models.Project>> GetProjectsAsync(CancellationToken cancellationToken);
+    Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken);
     Task<Models.Project> UpdateProjectAsync(ProjectDto projectDto, CancellationToken cancellationToken);
 }
