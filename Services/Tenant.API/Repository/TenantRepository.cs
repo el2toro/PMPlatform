@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Tenant.API.Data;
 using Tenant.API.Services;
 
@@ -6,9 +7,10 @@ namespace Tenant.API.Repository;
 
 public interface ITenantRepository
 {
-    Task CreateTenant(string name, string description, Guid ownerId, CancellationToken cancellationToken);
-    Task<Models.Tenant> GetTenantById(Guid tenantId, CancellationToken cancellationToken);
-    Task DeleteTenant(Guid tenantId, CancellationToken cancellationToken);
+    Task<Models.Tenant> CreateTenantAsync(Models.Tenant tenant, CancellationToken cancellationToken);
+    Task<Models.Tenant> GetTenantByIdAsync(Guid tenantId, CancellationToken cancellationToken);
+    Task DeleteTenantAsync(Guid tenantId, CancellationToken cancellationToken);
+    Task<Models.Tenant?> GetTenantByNameAsync(string tenantName, CancellationToken cancellationToken);
 }
 
 public class TenantRepository : ITenantRepository
@@ -21,19 +23,34 @@ public class TenantRepository : ITenantRepository
         _authServiceClient = authServiceClient;
     }
 
-    public async Task CreateTenant(string name, string description, Guid ownerId, CancellationToken cancellationToken)
+    public async Task<Models.Tenant> CreateTenantAsync(Models.Tenant tenant, CancellationToken cancellationToken)
     {
-        _tenantDbContext.Tenants.Add(new Models.Tenant
-        {
-            Name = name,
-            Description = description,
-            OwnerId = ownerId
-        });
+        var existingTenant = await _tenantDbContext.Tenants
+            .FindAsync(tenant.Id, cancellationToken);
 
+        if (existingTenant != null)
+        {
+            return new();
+        };
+
+        var newTenant = new Models.Tenant
+        {
+            Id = tenant.Id,
+            Name = tenant.Name,
+            Description = tenant.Description,
+            OwnerId = tenant.OwnerId,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+
+        var createdTenant = _tenantDbContext.Tenants.Add(newTenant).Entity;
         await _tenantDbContext.SaveChangesAsync(cancellationToken);
+
+        return createdTenant;
     }
 
-    public async Task DeleteTenant(Guid tenantId, CancellationToken cancellationToken)
+    public async Task DeleteTenantAsync(Guid tenantId, CancellationToken cancellationToken)
     {
         var tenant = _tenantDbContext.Tenants.FirstOrDefault(t => t.Id == tenantId);
 
@@ -43,11 +60,19 @@ public class TenantRepository : ITenantRepository
         await _tenantDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Models.Tenant> GetTenantById(Guid tenantId, CancellationToken cancellationToken)
+    public async Task<Models.Tenant> GetTenantByIdAsync(Guid tenantId, CancellationToken cancellationToken)
     {
         var tenant = await _tenantDbContext.Tenants.FirstOrDefaultAsync(t => t.Id == tenantId);
 
         ArgumentNullException.ThrowIfNull(tenant);
+
+        return tenant;
+    }
+
+    public async Task<Models.Tenant?> GetTenantByNameAsync(string tenantName, CancellationToken cancellationToken)
+    {
+        var tenant = await _tenantDbContext.Tenants
+             .FirstOrDefaultAsync(t => t.Name == tenantName, cancellationToken);
 
         return tenant;
     }

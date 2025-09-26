@@ -9,7 +9,7 @@ public class GetTenantByIdHandler(ITenantRepository repository)
 {
     public async Task<GetTenantByIdResult?> Handle(GetTenantByIdQuery query, CancellationToken cancellationToken)
     {
-        var tenant = await repository.GetTenantById(query.TenantId, cancellationToken);
+        var tenant = await repository.GetTenantByIdAsync(query.TenantId, cancellationToken);
 
         return new GetTenantByIdResult(
             tenant.Id,
