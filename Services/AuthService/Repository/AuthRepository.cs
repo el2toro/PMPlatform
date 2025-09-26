@@ -1,27 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading;
 
 namespace AuthService.Repository;
 
-public class AuthRepository : IAuthRepository
+public class AuthRepository(AuthDbContext authDbContext,
+    IJwtTokenService jwtTokenService,
+    TenantServiceClient tenantServiceClient) : IAuthRepository
 {
-    private readonly AuthDbContext _authContext;
-    private readonly IJwtTokenService _jwtTokenService;
-    private readonly TenantServiceClient _tenantServiceClient;
-    public AuthRepository(AuthDbContext authDbContext,
-        IJwtTokenService jwtTokenService,
-        TenantServiceClient tenantServiceClient)
-    {
-        _authContext = authDbContext;
-        _jwtTokenService = jwtTokenService;
-        _tenantServiceClient = tenantServiceClient;
-    }
+    private readonly AuthDbContext _authContext = authDbContext;
+    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly TenantServiceClient _tenantServiceClient = tenantServiceClient;
 
     public async Task<UserProfileDto> Login(string email, string password, CancellationToken cancellationToken)
     {
         var user = await _authContext.Users
             .Include(u => u.UserTenants)
-            //.ThenInclude(ut => ut.Tenant)
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
@@ -97,25 +91,19 @@ public class AuthRepository : IAuthRepository
         return new TokenResponseDto(newRefreshToken.Token, jwtToken);
     }
 
-    public async Task RegisterUser(RegisterRequestDto request, CancellationToken cancellationToken)
+    public async Task<User> RegisterUser(RegisterRequestDto request, CancellationToken cancellationToken)
     {
-        var user = _authContext.Users.FirstOrDefault(u => u.Email == request.Email);
+        var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
         if (user != null)
         {
             throw new Exception("User with this email already exists.");
         }
 
-        var newUser = CreateUser(request);
-
-        //TODO: check tenant exists if not create new tenant
-        //Assign user to tenant
-        //Get logged in user id to assign as owner
-        // var tenant = await _tenantServiceClient.CreateTenant(MapDtoToTenant(request.TenantName));
-
-        // AssignUserToTenant(newUser.Id, tenant.TenantId);
-
+        var createdUser = CreateUser(request, cancellationToken);
         await _authContext.SaveChangesAsync(cancellationToken);
+
+        return createdUser;
     }
 
     public async Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
@@ -155,7 +143,7 @@ public class AuthRepository : IAuthRepository
             .ToListAsync(cancellationToken);
     }
 
-    private User CreateUser(RegisterRequestDto request)
+    private User CreateUser(RegisterRequestDto request, CancellationToken cancellationToken)
     {
         var user = new User
         {
@@ -167,9 +155,7 @@ public class AuthRepository : IAuthRepository
             UpdatedAt = DateTime.UtcNow
         };
 
-        _authContext.Users.Add(user);
-
-        return user;
+        return _authContext.Users.Add(user).Entity;
     }
 
     private void AssignUserToTenant(Guid userId, Guid tenantId)
@@ -196,16 +182,5 @@ public class AuthRepository : IAuthRepository
             token,
             refreshToken,
             roles);
-    }
-
-    private Tenant MapDtoToTenant(string tenantName)
-    {
-        return new Tenant
-        {
-            Name = tenantName,
-            OwnerId = Guid.NewGuid(),// add logged in user id,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
     }
 }
