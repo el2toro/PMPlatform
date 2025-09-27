@@ -13,6 +13,8 @@ public class ProjectDbContext : DbContext
     public DbSet<TaskItem> Tasks { get; set; } = default!;
     public DbSet<Subtask> Subtasks { get; set; } = default!;
     public DbSet<Comment> Comments { get; set; } = default!;
+    public DbSet<Board> Boards { get; set; } = default!;
+    public DbSet<BoardColumn> BoardColumns { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,6 +60,28 @@ public class ProjectDbContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.Content).IsRequired().HasMaxLength(2000);
+        });
+
+        // Board
+        modelBuilder.Entity<Board>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Name).IsRequired().HasMaxLength(2000);
+
+            entity.HasOne(b => b.Project)
+            .WithMany(p => p.Boards)
+            .HasForeignKey(b => b.ProjectId);
+        });
+
+        // Board Column
+        modelBuilder.Entity<BoardColumn>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Name).IsRequired().HasMaxLength(2000);
+
+            entity.HasOne(b => b.Board)
+            .WithMany(b => b.Columns)
+            .HasForeignKey(b => b.BoardId);
         });
     }
 }
