@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Project\Board\GetBoard\" />
+    <Folder Include="Project\Board\UpdateBoard\" />
     <Folder Include="Project\Task\DeleteTask\" />
     <Folder Include="Project\Task\GetTaskById\" />
   </ItemGroup>

@@ -18,4 +18,5 @@ public class Project
 
     // Navigation
     public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+    public ICollection<Board> Boards { get; set; } = new List<Board>();
 }

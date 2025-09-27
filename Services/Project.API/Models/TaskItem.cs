@@ -17,6 +17,8 @@ public class TaskItem
     public Guid UpdatedBy { get; set; }
 
     // Navigation
+    public Guid ColumnId { get; set; }
+    public BoardColumn Column { get; set; } = default!;
     public Project Project { get; set; } = default!;
     public ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
