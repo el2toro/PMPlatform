@@ -21,67 +21,47 @@ public class ProjectDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Configure entity relationships and constraints here if needed
-        // Project
-        modelBuilder.Entity<Models.Project>(entity =>
-        {
-            entity.HasKey(p => p.Id);
-            entity.Property(p => p.Name).IsRequired().HasMaxLength(200);
-            entity.Property(p => p.Description).HasMaxLength(1000);
-
-            entity.HasMany(p => p.Tasks)
-                  .WithOne(t => t.Project)
-                  .HasForeignKey(t => t.ProjectId);
-        });
-
-        // TaskItem
-        modelBuilder.Entity<TaskItem>(entity =>
-        {
-            entity.HasKey(t => t.Id);
-            entity.Property(t => t.Title).IsRequired().HasMaxLength(200);
-
-            entity.HasMany(t => t.Subtasks)
-                  .WithOne(s => s.Task)
-                  .HasForeignKey(s => s.TaskId);
-
-            entity.HasMany(t => t.Comments)
-                  .WithOne(c => c.Task)
-                  .HasForeignKey(c => c.TaskId);
-        });
-
-        // Subtask
-        modelBuilder.Entity<Subtask>(entity =>
-        {
-            entity.HasKey(s => s.Id);
-            entity.Property(s => s.Title).IsRequired().HasMaxLength(200);
-        });
-
-        // Comment
-        modelBuilder.Entity<Comment>(entity =>
-        {
-            entity.HasKey(c => c.Id);
-            entity.Property(c => c.Content).IsRequired().HasMaxLength(2000);
-        });
-
-        // Board
-        modelBuilder.Entity<Board>(entity =>
-        {
-            entity.HasKey(c => c.Id);
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(2000);
-
-            entity.HasOne(b => b.Project)
+        // Project → Boards
+        modelBuilder.Entity<Board>()
+            .HasOne(b => b.Project)
             .WithMany(p => p.Boards)
             .HasForeignKey(b => b.ProjectId);
-        });
 
-        // Board Column
-        modelBuilder.Entity<BoardColumn>(entity =>
-        {
-            entity.HasKey(c => c.Id);
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(2000);
 
-            entity.HasOne(b => b.Board)
+        // Board → Columns
+        modelBuilder.Entity<BoardColumn>()
+            .HasOne(c => c.Board)
             .WithMany(b => b.Columns)
-            .HasForeignKey(b => b.BoardId);
-        });
+            .HasForeignKey(c => c.BoardId);
+
+
+        // TaskItem → Project
+        modelBuilder.Entity<TaskItem>()
+            .HasOne(t => t.Project)
+            .WithMany(p => p.Tasks)
+            .HasForeignKey(t => t.ProjectId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+        // TaskItem → BoardColumn
+        modelBuilder.Entity<TaskItem>()
+            .HasOne(t => t.Column)
+            .WithMany(c => c.Tasks)
+            .HasForeignKey(t => t.ColumnId);
+
+        // Subtask → TaskItem
+        modelBuilder.Entity<Subtask>()
+            .HasOne(s => s.Task)
+            .WithMany(t => t.Subtasks)
+            .HasForeignKey(s => s.TaskId);
+
+
+        // Comment → TaskItem
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Task)
+            .WithMany(t => t.Comments)
+            .HasForeignKey(c => c.TaskId);
+
+
     }
 }
