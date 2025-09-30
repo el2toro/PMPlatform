@@ -66,4 +66,14 @@ public class TaskRepository(ProjectDbContext dbContext) : ITaskRepository
 
         return task;
     }
+
+    public async Task<IEnumerable<TaskItem>> GeTasksByColumnIdAsync(Guid columnId, CancellationToken cancellationToken)
+    {
+        var tasks = await _dbContext.Tasks
+            .AsNoTracking()
+            .Where(t => t.ColumnId == columnId)
+            .ToListAsync(cancellationToken);
+
+        return tasks;
+    }
 }
