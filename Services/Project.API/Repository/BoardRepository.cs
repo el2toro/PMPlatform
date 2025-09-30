@@ -12,6 +12,7 @@ public class BoardRepository(ProjectDbContext dbContext) : IBoardRepository
     {
         var board = await _dbContext.Boards
             .Include(b => b.Columns)
+            // .ThenInclude(b => b.Tasks)
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.ProjectId == projectId);
 
