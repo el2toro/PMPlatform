@@ -6,5 +6,5 @@ public class BoardColumn
     public string Name { get; set; } = default!;
     public Guid BoardId { get; set; }
     public Board Board { get; set; } = default!;
-    ICollection<TaskItem> TaskItems { get; set; } = [];
+    public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
 }
