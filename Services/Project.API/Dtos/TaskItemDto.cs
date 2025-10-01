@@ -15,6 +15,7 @@ public record TaskItemDto
     public DateTime UpdatedAt { get; set; }
     public Guid CreatedBy { get; set; }
     public Guid UpdatedBy { get; set; }
+    public Guid ColumnId { get; set; }
 
     public UserDto User { get; set; } = default!;
     public IEnumerable<SubtaskDto> Subtasks { get; set; } = new List<SubtaskDto>();
