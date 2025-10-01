@@ -16,17 +16,6 @@ public class GetBoardHandler(IBoardRepository boardRepository)
     {
         var board = await boardRepository.GetBoardAsync(query.ProjectId);
 
-        var dto = new BoardDto()
-        {
-            Id = board.Id,
-            Name = board.Name,
-            Description = board.Description,
-            CreatedAt = board.CreatedAt,
-            CreatedBy = board.CreatedBy,
-            ProjectId = board.ProjectId,
-            Columns = board.Columns.Adapt<IEnumerable<ColumnDto>>()
-        };
-
-        return new GetBoardResult(dto);
+        return new GetBoardResult(board);
     }
 }
