@@ -6,7 +6,7 @@ using Project.API.Repository;
 
 namespace Project.API.Project.Task.UpdateTaskStatus;
 
-public record UpdateTaskStatusCommand(Guid TaskId, TaskItemStatus Status) : IRequest<UpdateTaskStatusResponse>;
+public record UpdateTaskStatusCommand(Guid TaskId, Guid ColumnId, TaskItemStatus Status) : IRequest<UpdateTaskStatusResponse>;
 public record UpdateTaskStatusResponse(TaskItemDto TaskDto);
 
 public class UpdateTaskStatusHandler(ITaskRepository taskRepository)
@@ -14,7 +14,7 @@ public class UpdateTaskStatusHandler(ITaskRepository taskRepository)
 {
     public async Task<UpdateTaskStatusResponse> Handle(UpdateTaskStatusCommand command, CancellationToken cancellationToken)
     {
-        var updatedTask = await taskRepository.UpdateTaskStatusAsync(command.TaskId, command.Status, cancellationToken);
+        var updatedTask = await taskRepository.UpdateTaskStatusAsync(command.TaskId, command.ColumnId, command.Status, cancellationToken);
         var response = updatedTask.Adapt<TaskItemDto>();
         return new UpdateTaskStatusResponse(response);
     }

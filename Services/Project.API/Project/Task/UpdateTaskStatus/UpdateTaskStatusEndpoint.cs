@@ -5,7 +5,7 @@ using Project.API.Enums;
 
 namespace Project.API.Project.Task.UpdateTaskStatus;
 
-public record UpdateTaskStatusRequest(Guid TaskId, TaskItemStatus Status);
+public record UpdateTaskStatusRequest(Guid TaskId, Guid ColumnId, TaskItemStatus Status);
 public class UpdateTaskStatusEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
