@@ -6,7 +6,7 @@ using Project.API.Dtos;
 
 namespace Project.API.Project.Task.CreateTask;
 
-public record CreateTaskRequest(Guid ProjectId, string Title, string Description, DateTime DueDate);
+public record CreateTaskRequest(Guid ProjectId, string Title, string? Description, DateTime DueDate);
 
 public class CreateTaskEndpoint : ICarterModule
 {
