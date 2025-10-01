@@ -52,13 +52,14 @@ public class TaskRepository(ProjectDbContext dbContext) : ITaskRepository
         return existingTask;
     }
 
-    public async Task<TaskItem> UpdateTaskStatusAsync(Guid taskId, TaskItemStatus status, CancellationToken cancellationToken)
+    public async Task<TaskItem> UpdateTaskStatusAsync(Guid taskId, Guid columnId, TaskItemStatus status, CancellationToken cancellationToken)
     {
         var task = await _dbContext.Tasks.FindAsync(taskId);
 
         ArgumentNullException.ThrowIfNull(task, nameof(task));
 
         task.TaskStatus = status;
+        task.ColumnId = columnId;
         task.UpdatedAt = DateTime.UtcNow;
         _dbContext.Tasks.Update(task);
 

@@ -42,9 +42,9 @@ public class ProjectRepository : IProjectRepository
     public async Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken)
     {
         var project = await _dbContext.Projects
-            .Include(p => p.Tasks)
+            //   .Include(p => p.Tasks)
             .AsNoTracking()
-            .Where(p => p.Id == projectId && p.TenantId == tenantId)
+            //   .Where(p => p.Id == projectId && p.TenantId == tenantId)
             .Select(p => new ProjectDetailsDto
             {
                 Id = p.Id,
@@ -55,35 +55,35 @@ public class ProjectRepository : IProjectRepository
                 TenantId = p.TenantId,
                 ProjectStatus = p.ProjectStatus,
                 EndDate = p.EndDate,
-                Tasks = p.Tasks.Select(t => new TaskItemDto
-                {
-                    Id = t.Id,
-                    Title = t.Title,
-                    Description = t.Description,
-                    TaskStatus = t.TaskStatus,
-                    AssignedTo = t.AssignedTo,
-                    DueDate = t.DueDate,
-                    CreatedAt = t.CreatedAt,
-                    CreatedBy = t.CreatedBy,
-                    ProjectId = t.ProjectId,
-                    Subtasks = t.Subtasks.Select(st =>
-                    new SubtaskDto(
-                        st.Id,
-                        st.TaskId,
-                        st.Title,
-                        st.IsCompleted
-                    )).ToList(),
-                    Comments = t.Comments.Select(c =>
-                    new CommentDto
-                    {
-                        Id = c.Id,
-                        Content = c.Content,
-                        TaskId = c.TaskId,
-                        CreatedAt = c.CreatedAt,
-                        CreatedBy = c.UserId
-                    }).ToList(),
+                //Tasks = p.Tasks.Select(t => new TaskItemDto
+                //{
+                //    Id = t.Id,
+                //    Title = t.Title,
+                //    Description = t.Description,
+                //    TaskStatus = t.TaskStatus,
+                //    AssignedTo = t.AssignedTo,
+                //    DueDate = t.DueDate,
+                //    CreatedAt = t.CreatedAt,
+                //    CreatedBy = t.CreatedBy,
+                //    ProjectId = t.ProjectId,
+                //    Subtasks = t.Subtasks.Select(st =>
+                //    new SubtaskDto(
+                //        st.Id,
+                //        st.TaskId,
+                //        st.Title,
+                //        st.IsCompleted
+                //    )).ToList(),
+                //    Comments = t.Comments.Select(c =>
+                //    new CommentDto
+                //    {
+                //        Id = c.Id,
+                //        Content = c.Content,
+                //        TaskId = c.TaskId,
+                //        CreatedAt = c.CreatedAt,
+                //        CreatedBy = c.UserId
+                //    }).ToList(),
 
-                }).ToList()
+                //}).ToList()
             }).FirstOrDefaultAsync(cancellationToken);
 
         ArgumentNullException.ThrowIfNull(project, nameof(project));
@@ -94,8 +94,8 @@ public class ProjectRepository : IProjectRepository
     public async Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var items = await _dbContext.Projects
-            .Include(p => p.Tasks)
-            .ThenInclude(t => t.Subtasks)
+            //.Include(p => p.Tasks)
+            //.ThenInclude(t => t.Subtasks)
             .AsNoTracking()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

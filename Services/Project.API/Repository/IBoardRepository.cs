@@ -1,8 +1,8 @@
-﻿using Project.API.Models;
+﻿using Project.API.Dtos.Board;
 
 namespace Project.API.Repository;
 
 public interface IBoardRepository
 {
-    Task<Board> GetBoardAsync(Guid projectId);
+    Task<BoardDto> GetBoardAsync(Guid projectId, CancellationToken cancellationToken);
 }
