@@ -14,7 +14,7 @@ public class GetBoardHandler(IBoardRepository boardRepository)
 {
     public async Task<GetBoardResult> Handle(GetBoardQuery query, CancellationToken cancellationToken)
     {
-        var board = await boardRepository.GetBoardAsync(query.ProjectId);
+        var board = await boardRepository.GetBoardAsync(query.ProjectId, cancellationToken);
 
         return new GetBoardResult(board);
     }
