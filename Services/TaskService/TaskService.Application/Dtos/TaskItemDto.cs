@@ -1,0 +1,23 @@
+﻿using TaskService.Domain.Entities;
+using TaskService.Domain.Enums;
+
+namespace TaskService.Application.Dtos;
+
+public record TaskItemDto
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = default!;
+    public string? Description { get; set; }
+    public DateTime DueDate { get; set; }
+    public Guid ProjectId { get; set; }
+    public Guid AssignedTo { get; set; }
+    public TaskItemStatus TaskStatus { get; set; } = TaskItemStatus.Backlog;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public Guid CreatedBy { get; set; }
+    public Guid UpdatedBy { get; set; }
+
+    public IEnumerable<SubtaskDto> Subtasks { get; set; } = new List<SubtaskDto>();
+    public IEnumerable<CommentDto> Comments { get; set; } = new List<CommentDto>();
+    public IEnumerable<AttachmentDto> Attachments { get; set; } = new List<AttachmentDto>();
+}
