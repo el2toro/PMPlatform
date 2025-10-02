@@ -24,15 +24,15 @@ public class TaskServiceDbContext : DbContext
 
             entity.HasMany(t => t.Subtasks)
             .WithOne(st => st.Task)
-            .HasForeignKey(st => st.Id);
+            .HasForeignKey(st => st.TaskId);
 
             entity.HasMany(t => t.Comments)
             .WithOne(c => c.Task)
-            .HasForeignKey(c => c.Id);
+            .HasForeignKey(c => c.TaskId);
 
             entity.HasMany(t => t.Attachments)
             .WithOne(a => a.Task)
-            .HasForeignKey(a => a.Id);
+            .HasForeignKey(a => a.TaskId);
         });
 
         modelBuilder.Entity<Subtask>(entity =>
