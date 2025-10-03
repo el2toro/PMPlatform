@@ -1,0 +1,17 @@
+﻿global using Google.Protobuf;
+global using Grpc.Core;
+global using Mapster;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+global using System.Reflection;
+global using TaskService.Application.Dtos;
+global using TaskService.Application.Tasks.Commands.CreateTask;
+global using TaskService.Application.Tasks.Commands.UpdateTask;
+global using TaskService.Application.Tasks.Queries.GetTaskById;
+global using TaskService.Application.Tasks.Queries.GetTasks;
+global using TaskService.Application.Tasks.Commands.DeleteTask;
+global using TaskService.Domain.Enums;
+global using TaskService.Domain.Interfaces;
+global using TaskService.gRPC.Services;
+global using TaskService.Infrastructure.Persistance;
+global using TaskService.Infrastructure.Repositories;
