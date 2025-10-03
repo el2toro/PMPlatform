@@ -11,11 +11,4 @@
     <ProjectReference Include="..\TaskService.Domain\TaskService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tasks\Commands\DeleteTask\" />
-    <Folder Include="Tasks\Commands\UpdateTask\" />
-    <Folder Include="Tasks\Queries\GetTasks\" />
-    <Folder Include="Tasks\Queries\GetTaskById\" />
-  </ItemGroup>
-
 </Project>
