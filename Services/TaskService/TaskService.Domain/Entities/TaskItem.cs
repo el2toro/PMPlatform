@@ -1,6 +1,4 @@
-﻿using TaskService.Domain.Enums;
-
-namespace TaskService.Domain.Entities;
+﻿namespace TaskService.Domain.Entities;
 
 public class TaskItem
 {

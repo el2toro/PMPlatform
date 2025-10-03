@@ -1,20 +1,14 @@
-﻿using Mapster;
-using MediatR;
-using TaskService.Application.Dtos;
-using TaskService.Domain.Entities;
-using TaskService.Domain.Interfaces;
+﻿namespace TaskService.Application.Tasks.Commands.CreateTask;
 
-namespace TaskService.Application.Tasks.Commands.CreateTask;
-
-public record CreateTaskCommand(TaskItemDto TaskItem) : IRequest<CreateTaskResult>;
-public record CreateTaskResult(TaskItemDto TaskItem);
+public record CreateTaskCommand(TaskItemDto Task) : IRequest<CreateTaskResult>;
+public record CreateTaskResult(TaskItemDto Task);
 
 public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository)
     : IRequestHandler<CreateTaskCommand, CreateTaskResult>
 {
     public async Task<CreateTaskResult> Handle(CreateTaskCommand command, CancellationToken cancellationToken)
     {
-        var taskItem = command.TaskItem.Adapt<TaskItem>();
+        var taskItem = command.Task.Adapt<TaskItem>();
 
         foreach (var comment in taskItem.Comments)
         {
