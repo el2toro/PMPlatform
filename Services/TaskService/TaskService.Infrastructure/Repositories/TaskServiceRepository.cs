@@ -1,31 +1,41 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TaskService.Domain.Entities;
-using TaskService.Domain.Enums;
-using TaskService.Domain.Interfaces;
-using TaskService.Infrastructure.Persistance;
-
-namespace TaskService.Infrastructure.Repositories;
+﻿namespace TaskService.Infrastructure.Repositories;
 
 public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServiceRepository
 {
     private readonly TaskServiceDbContext _dbContext = dbContext;
     public async Task<TaskItem> CreateTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        var createdTask = _dbContext.Tasks.Add(task).Entity;
+        //TODO: task cannot be created with subtasks, comment, attachement it throws an error
 
+        var createdTask = _dbContext.Tasks.Add(task).Entity;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return createdTask;
     }
 
-    public Task<IEnumerable<TaskItem>> GeTasksAsync(Guid projectId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TaskItem>> GetTasksAsync(Guid projectId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Tasks
+            .Include(t => t.Subtasks)
+            .Include(t => t.Comments)
+            .Include(t => t.Attachments)
+            .AsNoTracking()
+            .Where(t => t.ProjectId == projectId)
+            .ToListAsync();
     }
 
-    public Task<TaskItem> GetTaskByIdAsync(Guid taskId, CancellationToken cancellationToken)
+    public async Task<TaskItem> GetTaskByIdAsync(Guid taskId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var task = await _dbContext.Tasks
+           .Include(t => t.Subtasks)
+           .Include(t => t.Comments)
+           .Include(t => t.Attachments)
+           .AsNoTracking()
+           .FirstOrDefaultAsync(t => t.Id == taskId);
+
+        ArgumentNullException.ThrowIfNull(nameof(task));
+
+        return task;
     }
 
     public async Task<TaskItem> UpdateTaskAsync(TaskItem task, CancellationToken cancellationToken)
@@ -33,6 +43,7 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
         var existingTask = await _dbContext.Tasks
             .Include(t => t.Subtasks)
             .Include(t => t.Comments)
+            .Include(t => t.Attachments)
             .FirstOrDefaultAsync(t => t.Id == task.Id);
 
         ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
@@ -66,5 +77,19 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return task;
+    }
+
+    public async Task DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken)
+    {
+        var task = await _dbContext.Tasks
+           .Include(t => t.Subtasks)
+           .Include(t => t.Comments)
+           .Include(t => t.Attachments)
+           .FirstOrDefaultAsync(t => t.Id == taskId);
+
+        ArgumentNullException.ThrowIfNull(nameof(taskId));
+
+        _dbContext.Tasks.Remove(task);
+        await _dbContext.SaveChangesAsync();
     }
 }
