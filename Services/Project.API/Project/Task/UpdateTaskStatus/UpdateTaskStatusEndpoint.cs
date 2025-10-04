@@ -10,7 +10,7 @@ public class UpdateTaskStatusEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPatch("api/tasks/status", async (UpdateTaskStatusRequest request, ISender sender) =>
+        app.MapPatch("tasks/status", async (UpdateTaskStatusRequest request, ISender sender) =>
         {
             var command = request.Adapt<UpdateTaskStatusCommand>();
             var response = await sender.Send(command);

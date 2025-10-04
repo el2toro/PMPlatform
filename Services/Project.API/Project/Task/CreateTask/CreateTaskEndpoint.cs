@@ -12,7 +12,7 @@ public class CreateTaskEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/tasks", async ([FromBody] TaskItemDto request, ISender sender) =>
+        app.MapPost("tasks", async ([FromBody] TaskItemDto request, ISender sender) =>
         {
             // var command = request.Adapt<CreateTaskCommand>();
             var response = await sender.Send(new CreateTaskCommand(request));

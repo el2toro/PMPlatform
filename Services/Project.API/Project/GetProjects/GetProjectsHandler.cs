@@ -39,7 +39,7 @@ public class GetProjectsHandler(IProjectRepository projectRepository, UserServic
                 EndDate = project.EndDate,
                 // Progress = CalculateProgress(project.Tasks),
                 //TODO: fetch actual team members
-                Team = await GetTeam(project.TenantId)
+                // Team = await GetTeam(project.TenantId)
             };
 
             projects.Add(newProject);

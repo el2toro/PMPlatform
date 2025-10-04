@@ -24,7 +24,9 @@ public class UserRepository(AuthDbContext authDbContext) : IUserRepository
 
     public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken)
     {
-        return await authDbContext.Users.ToListAsync(cancellationToken);
+        return await authDbContext.Users
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<User> UpdateUsersAsync(User user, CancellationToken cancellationToken)

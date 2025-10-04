@@ -7,7 +7,7 @@ public class GetBoardEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/projects/{projectId:guid}/board", async (Guid projectId, ISender sender) =>
+        app.MapGet("projects/{projectId:guid}/board", async (Guid projectId, ISender sender) =>
         {
             var result = await sender.Send(new GetBoardQuery(projectId));
 

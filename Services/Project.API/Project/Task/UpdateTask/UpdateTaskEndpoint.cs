@@ -11,7 +11,7 @@ public class UpdateTaskEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("api/tasks", async (TaskItemDto request, ISender sender) =>
+        app.MapPut("tasks", async (TaskItemDto request, ISender sender) =>
         {
             //var command = request.Adapt<UpdateTaskCommand>();
             var response = await sender.Send(new UpdateTaskCommand(request));
