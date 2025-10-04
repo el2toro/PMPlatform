@@ -16,22 +16,22 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
     public async Task<IEnumerable<TaskItem>> GetTasksAsync(Guid projectId, CancellationToken cancellationToken)
     {
         return await _dbContext.Tasks
-            .Include(t => t.Subtasks)
-            .Include(t => t.Comments)
-            .Include(t => t.Attachments)
+            //.Include(t => t.Subtasks)
+            //.Include(t => t.Comments)
+            //.Include(t => t.Attachments)
             .AsNoTracking()
             .Where(t => t.ProjectId == projectId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<TaskItem> GetTaskByIdAsync(Guid taskId, CancellationToken cancellationToken)
+    public async Task<TaskItem> GetTaskByIdAsync(Guid projectId, Guid taskId, CancellationToken cancellationToken)
     {
         var task = await _dbContext.Tasks
            .Include(t => t.Subtasks)
            .Include(t => t.Comments)
            .Include(t => t.Attachments)
            .AsNoTracking()
-           .FirstOrDefaultAsync(t => t.Id == taskId);
+           .FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Id == taskId, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(nameof(task));
 
@@ -44,7 +44,7 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
             .Include(t => t.Subtasks)
             .Include(t => t.Comments)
             .Include(t => t.Attachments)
-            .FirstOrDefaultAsync(t => t.Id == task.Id);
+            .FirstOrDefaultAsync(t => t.Id == task.Id, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
 
@@ -59,7 +59,7 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
         existingTask.Comments = task.Comments;
 
         _dbContext.Tasks.Update(existingTask);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return existingTask;
     }
@@ -85,11 +85,11 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
            .Include(t => t.Subtasks)
            .Include(t => t.Comments)
            .Include(t => t.Attachments)
-           .FirstOrDefaultAsync(t => t.Id == taskId);
+           .FirstOrDefaultAsync(t => t.Id == taskId, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(nameof(taskId));
 
         _dbContext.Tasks.Remove(task);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
