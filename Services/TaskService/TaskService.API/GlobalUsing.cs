@@ -1,0 +1,11 @@
+﻿global using Carter;
+global using MediatR;
+global using TaskService.API.Routes;
+global using TaskService.Application.Dtos;
+global using TaskService.Application.Tasks.Commands.CreateTask;
+global using TaskService.Application.Tasks.Commands.DeleteTask;
+global using TaskService.Application.Tasks.Commands.UpdateTask;
+global using TaskService.Application.Tasks.Queries.GetTaskById;
+global using TaskService.Application.Tasks.Queries.GetTasks;
+global using TaskService.Domain.Interfaces;
+global using TaskService.Infrastructure.Repositories;
