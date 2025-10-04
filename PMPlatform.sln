@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YarpApiGateway", "ApiGatewa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.API", "Services\TaskService\TaskService.API\TaskService.API.csproj", "{681464FF-467A-4828-183B-BC425646B83F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.API", "Services\Board.API\Board.API.csproj", "{35136FB7-EB78-449F-AF98-6E67933BFFC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{681464FF-467A-4828-183B-BC425646B83F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{681464FF-467A-4828-183B-BC425646B83F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{681464FF-467A-4828-183B-BC425646B83F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35136FB7-EB78-449F-AF98-6E67933BFFC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35136FB7-EB78-449F-AF98-6E67933BFFC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35136FB7-EB78-449F-AF98-6E67933BFFC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35136FB7-EB78-449F-AF98-6E67933BFFC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{F707379C-165F-71DC-0B73-777129AC363F} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
 		{1FDA3660-D667-4A14-BC28-8B6EACCF2017} = {984BF99C-995B-406D-9288-6153CE00C779}
 		{681464FF-467A-4828-183B-BC425646B83F} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
+		{35136FB7-EB78-449F-AF98-6E67933BFFC2} = {00D6311A-C386-44CD-A6E4-3E9DC621DEA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}
