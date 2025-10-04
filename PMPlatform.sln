@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.gRPC", "Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Infrastructure", "Services\TaskService\TaskService.Infrastructure\TaskService.Infrastructure.csproj", "{F707379C-165F-71DC-0B73-777129AC363F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{984BF99C-995B-406D-9288-6153CE00C779}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YarpApiGateway", "ApiGateway\YarpApiGateway\YarpApiGateway.csproj", "{1FDA3660-D667-4A14-BC28-8B6EACCF2017}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,10 @@ Global
 		{F707379C-165F-71DC-0B73-777129AC363F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F707379C-165F-71DC-0B73-777129AC363F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F707379C-165F-71DC-0B73-777129AC363F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FDA3660-D667-4A14-BC28-8B6EACCF2017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FDA3660-D667-4A14-BC28-8B6EACCF2017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FDA3660-D667-4A14-BC28-8B6EACCF2017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FDA3660-D667-4A14-BC28-8B6EACCF2017}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +92,7 @@ Global
 		{5EB4C43A-431B-97E8-5A13-7C99B99FDA4E} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
 		{15507F6D-EDF1-14B1-18F3-E661096C0FA9} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
 		{F707379C-165F-71DC-0B73-777129AC363F} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
+		{1FDA3660-D667-4A14-BC28-8B6EACCF2017} = {984BF99C-995B-406D-9288-6153CE00C779}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}

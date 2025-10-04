@@ -1,7 +1,10 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc()
+    .AddJsonTranscoding(); // Enables REST/HTTP calls
+
+builder.Services.AddGrpcReflection(); // optional: for dev/testing
 
 builder.Services.AddScoped<ITaskServiceRepository, TaskServiceRepository>();
 
@@ -19,7 +22,11 @@ builder.Services.AddMediatR(config =>
 
 var app = builder.Build();
 
+// Enable gRPC-Web
+app.UseGrpcWeb(); // Must be called before MapGrpcService
+
 // Configure the HTTP request pipeline.
-app.MapGrpcService<TaskServiceImpl>();
+app.MapGrpcService<TaskServiceImpl>().EnableGrpcWeb();
+app.MapGrpcReflectionService().EnableGrpcWeb();
 
 app.Run();

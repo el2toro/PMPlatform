@@ -4,11 +4,18 @@ option csharp_namespace = "TaskService.gRPC";
 
 package task;
 
+import "google/api/annotations.proto";
+import "google/api/http.proto";
+
 service TaskService {
   rpc CreateTask (CreateTaskRequest) returns (TaskResponse);
   rpc UpdateTask (UpdateTaskRequest) returns (TaskResponse);
   rpc GetTasks (GetTasksRequest) returns (GetTasksResponse);
-  rpc GetTaskById (GetTaskByIdRequest) returns (TaskResponse);
+  rpc GetTaskById (GetTaskByIdRequest) returns (TaskResponse){
+      option (google.api.http) = {
+      get: "/tasks/{id}"
+    };
+  };
   rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse);
 }
 
