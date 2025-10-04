@@ -1,4 +1,5 @@
 ﻿namespace Auth.API.Auth.Login;
+
 public record LoginRequest(string Email, string Password);
 public record LoginResponse(
         Guid UserId,
@@ -14,7 +15,7 @@ public class LoginEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/auth/login", async (LoginRequest request, ISender sender) =>
+        app.MapPost("login", async (LoginRequest request, ISender sender) =>
         {
             var command = request.Adapt<LoginCommand>();
             var result = await sender.Send(command);

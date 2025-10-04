@@ -6,7 +6,7 @@ public class RefreshTokenEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/auth/refreshtoken", async (RefreshTokenRequest request, ISender sender) =>
+        app.MapPost("refreshtoken", async (RefreshTokenRequest request, ISender sender) =>
         {
             var command = request.Adapt<RefreshTokenCommand>();
             var result = await sender.Send(command);

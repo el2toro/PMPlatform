@@ -7,7 +7,7 @@ public class LogoutEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/auth/logout", async (LogoutRequest request, ISender sender) =>
+        app.MapPost("logout", async (LogoutRequest request, ISender sender) =>
         {
             var command = request.Adapt<LogoutCommand>();
             var result = await sender.Send(command);
