@@ -14,7 +14,7 @@ public class TaskServiceEndpoints : ICarterModule
 
         app.MapGet("project/{projectId}/tasks", async (Guid projectId, ISender sender) =>
         {
-            var result = await sender.Send(new GetTasksByProjectIdQuery(projectId));
+            var result = await sender.Send(new GetTasksQuery(projectId));
             return Results.Ok(result.Tasks);
         });
 
