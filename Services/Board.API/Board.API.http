@@ -1,6 +1,0 @@
-@Board.API_HostAddress = http://localhost:5011
-
-GET {{Board.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
