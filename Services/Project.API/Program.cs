@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 
 builder.Services.AddHttpClient<UserServiceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7194/"); // replace with your service URL
+    client.BaseAddress = new Uri("https://localhost:5056/"); // replace with your service URL
 });
 
 var assembly = typeof(Program).Assembly;
