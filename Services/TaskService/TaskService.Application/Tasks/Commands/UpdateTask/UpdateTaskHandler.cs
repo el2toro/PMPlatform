@@ -1,10 +1,4 @@
-﻿using Mapster;
-using MediatR;
-using TaskService.Application.Dtos;
-using TaskService.Domain.Entities;
-using TaskService.Domain.Interfaces;
-
-namespace TaskService.Application.Tasks.Commands.UpdateTask;
+﻿namespace TaskService.Application.Tasks.Commands.UpdateTask;
 
 public record UpdateTaskCommand(TaskItemDto Task) : IRequest<UpdateTaskResult>;
 public record UpdateTaskResult(TaskItemDto Task);

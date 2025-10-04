@@ -1,6 +1,5 @@
 ﻿global using Carter;
 global using MediatR;
-global using TaskService.API.Routes;
 global using TaskService.Application.Dtos;
 global using TaskService.Application.Tasks.Commands.CreateTask;
 global using TaskService.Application.Tasks.Commands.DeleteTask;
