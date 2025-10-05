@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="BoardHandlers\Commands\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Core\Core.csproj" />
+    <ProjectReference Include="..\Board.Domain\Board.Domain.csproj" />
   </ItemGroup>
 
 </Project>
