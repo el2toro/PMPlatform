@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskService.Application.Tasks.Commands.UpdateTaskStatus;
+using TaskService.Domain.Enums;
 
 namespace TaskService.API.Endpoints;
 
 public class TaskServiceEndpoints : ICarterModule
 {
+    public record UpdateTaskStatusRequest(Guid ProjectId, Guid TaskId, TaskItemStatus Status);
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("project/{projectId}/tasks/{taskId}", async (Guid projectId, Guid taskId, ISender sender) =>
@@ -34,6 +37,12 @@ public class TaskServiceEndpoints : ICarterModule
         {
             var result = await sender.Send(new DeleteTaskCommand(projectId, taskId));
             return Results.Ok(result);
+        });
+
+        app.MapPatch("project/{projectId}/tasks/{taskId}/status", async (UpdateTaskStatusRequest request, ISender sender) =>
+        {
+            var result = await sender.Send(new UpdateTaskStatusCommand(request.ProjectId, request.TaskId, request.Status));
+            return Results.Ok(result.Task);
         });
     }
 }
