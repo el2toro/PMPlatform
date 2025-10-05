@@ -21,14 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BuildingBlocks\Core\Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Project\Board\UpdateBoard\" />
     <Folder Include="Project\Task\DeleteTask\" />
     <Folder Include="Project\Task\GetTaskById\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Core\Core.csproj" />
   </ItemGroup>
 
 </Project>
