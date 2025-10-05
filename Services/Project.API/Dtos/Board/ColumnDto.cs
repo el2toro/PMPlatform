@@ -1,6 +1,4 @@
-﻿using Project.API.Models;
-
-namespace Project.API.Dtos.Board;
+﻿namespace Project.API.Dtos.Board;
 
 public class ColumnDto
 {
