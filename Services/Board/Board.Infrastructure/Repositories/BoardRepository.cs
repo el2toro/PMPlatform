@@ -32,6 +32,7 @@ public class BoardRepository(BoardDbContext dbContext)
         GetBoardByIdAsync(Guid projectId, Guid boardId, CancellationToken cancellationToken)
     {
         return await dbContext.Boards
+            .Include(b => b.Columns)
             .FirstOrDefaultAsync(b => b.Id == boardId && b.ProjectId == projectId, cancellationToken)
             ?? new Domain.Entities.Board();
     }
