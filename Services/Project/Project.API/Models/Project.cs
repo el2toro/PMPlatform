@@ -15,8 +15,4 @@ public class Project
     public Guid CreatedBy { get; set; }
     public Guid UpdatedBy { get; set; }
     public ProjectStatus ProjectStatus { get; set; } = ProjectStatus.NotStarted;
-
-    // Navigation
-    public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
-    public ICollection<Board> Boards { get; set; } = new List<Board>();
 }
