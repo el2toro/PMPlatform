@@ -2,6 +2,8 @@
 
 public class ProjectCreatedEvent
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Name { get; set; } = "This is ProjecCreatedEvent";
+    public Guid Id { get; set; }
+    public string Name { get; set; } = default!;
+    public string Description { get; set; } = default!;
+
 }

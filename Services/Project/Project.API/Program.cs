@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Core.Messaging.MassTransit;
 using System.Reflection;
+using Project.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<IProjectHub, ProjectHub>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
 {
@@ -66,6 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
 builder.Services.AddAuthorization();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -77,6 +80,8 @@ app.MapCarter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<ProjectHub>("/hub/project");
 
 app.Run();
 

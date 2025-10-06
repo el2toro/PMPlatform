@@ -1,14 +1,19 @@
 ﻿using Core.Messaging.Events;
+using Mapster;
 using MassTransit;
+using Project.API.Dtos;
+using Project.API.Hubs;
 
 namespace Project.API.EventHandlers;
 
-public class ProjectCreatedEventHandler(ILogger<ProjectCreatedEventHandler> logger) : IConsumer<ProjectCreatedEvent>
+public class ProjectCreatedEventHandler(ILogger<ProjectCreatedEventHandler> logger, IProjectHub projectHub)
+    : IConsumer<ProjectCreatedEvent>
 {
-    public Task Consume(ConsumeContext<ProjectCreatedEvent> context)
+    public async Task Consume(ConsumeContext<ProjectCreatedEvent> context)
     {
         logger.LogInformation("Project Event Handler: {ProjectCreatedEvent}", context.Message.GetType().Name);
-        var data = context.Message;
-        throw new NotImplementedException();
+        var projectDto = context.Message.Adapt<ProjectDto>();
+
+        await projectHub.SendMessage(projectDto);
     }
 }
