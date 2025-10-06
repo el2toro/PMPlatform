@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Events\" />
     <Folder Include="Migrations\" />
     <Folder Include="Project\Board\UpdateBoard\" />
     <Folder Include="Project\Task\DeleteTask\" />
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Core.Messaging\Core.Messaging.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Core\Core.csproj" />
   </ItemGroup>
 
