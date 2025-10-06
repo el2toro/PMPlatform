@@ -1,6 +1,6 @@
 ﻿namespace Core.Messaging.Events;
 
-public class ProjectCreatedEvent
+public record ProjectUpdatedEvent
 {
     public Guid Id { get; init; }
     public string Name { get; init; } = default!;
@@ -12,5 +12,4 @@ public class ProjectCreatedEvent
     public DateTime StartDate { get; init; }
     public DateTime EndDate { get; init; }
     public int Progress { get; init; }
-    // public IEnumerable<UserDto> Team { get; init; } = Enumerable.Empty<UserDto>();
 }
