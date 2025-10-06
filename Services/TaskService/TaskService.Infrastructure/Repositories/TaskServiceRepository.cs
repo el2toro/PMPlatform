@@ -1,4 +1,6 @@
-﻿namespace TaskService.Infrastructure.Repositories;
+﻿using Mapster;
+
+namespace TaskService.Infrastructure.Repositories;
 
 public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServiceRepository
 {
@@ -8,7 +10,7 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
         //TODO: task cannot be created with subtasks, comment, attachement it throws an error
 
         var createdTask = _dbContext.Tasks.Add(task).Entity;
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync();
 
         return createdTask;
     }
@@ -16,9 +18,9 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
     public async Task<IEnumerable<TaskItem>> GetTasksAsync(Guid projectId, CancellationToken cancellationToken)
     {
         return await _dbContext.Tasks
-            //.Include(t => t.Subtasks)
-            //.Include(t => t.Comments)
-            //.Include(t => t.Attachments)
+            .Include(t => t.Subtasks)
+            .Include(t => t.Comments)
+            .Include(t => t.Attachments)
             .AsNoTracking()
             .Where(t => t.ProjectId == projectId)
             .ToListAsync(cancellationToken);
@@ -48,25 +50,27 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
 
         ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
 
-        existingTask.Title = task.Title;
-        existingTask.Description = task.Description;
-        existingTask.DueDate = task.DueDate;
-        existingTask.TaskStatus = task.TaskStatus;
-        existingTask.AssignedTo = task.AssignedTo;
-        existingTask.UpdatedAt = DateTime.UtcNow;
-        existingTask.UpdatedBy = task.UpdatedBy;
-        existingTask.Subtasks = task.Subtasks;
-        existingTask.Comments = task.Comments;
+        //existingTask.Title = task.Title;
+        //existingTask.Description = task.Description;
+        //existingTask.DueDate = task.DueDate;
+        //existingTask.TaskStatus = task.TaskStatus;
+        //existingTask.AssignedTo = task.AssignedTo;
+        //existingTask.UpdatedAt = DateTime.UtcNow;
+        //existingTask.UpdatedBy = task.UpdatedBy;
+        //existingTask.Subtasks = task.Subtasks;
+        //existingTask.Comments = task.Comments;
 
-        _dbContext.Tasks.Update(existingTask);
+        existingTask = task.Adapt<TaskItem>();
+
+        //_dbContext.Tasks.Update(existingTask);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return existingTask;
     }
 
-    public async Task<TaskItem> UpdateTaskStatusAsync(Guid taskId, Guid columnId, TaskItemStatus status, CancellationToken cancellationToken)
+    public async Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, TaskItemStatus status, CancellationToken cancellationToken)
     {
-        var task = await _dbContext.Tasks.FindAsync(taskId);
+        var task = await _dbContext.Tasks.FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Id == taskId);
 
         ArgumentNullException.ThrowIfNull(task, nameof(task));
 
