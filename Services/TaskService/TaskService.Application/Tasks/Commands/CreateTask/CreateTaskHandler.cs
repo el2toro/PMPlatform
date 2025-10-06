@@ -10,11 +10,8 @@ public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository)
     {
         var taskItem = command.Task.Adapt<TaskItem>();
 
-        foreach (var comment in taskItem.Comments)
-        {
-            comment.CreatedAt = DateTime.UtcNow;
-            comment.UpdatedAt = DateTime.UtcNow;
-        }
+        taskItem.CreatedAt = DateTime.UtcNow;
+        taskItem.UpdatedAt = DateTime.UtcNow;
 
         var createdTask = await taskServiceRepository.CreateTaskAsync(taskItem, cancellationToken);
         var result = createdTask.Adapt<TaskItemDto>();

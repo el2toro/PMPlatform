@@ -9,6 +9,13 @@ public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository)
     public async Task<UpdateTaskResult> Handle(UpdateTaskCommand command, CancellationToken cancellationToken)
     {
         var taskItem = command.Task.Adapt<TaskItem>();
+
+        foreach (var comment in taskItem.Comments)
+        {
+            comment.CreatedAt = DateTime.UtcNow;
+            comment.UpdatedAt = DateTime.UtcNow;
+        }
+
         var updatedTask = await taskServiceRepository.UpdateTaskAsync(taskItem, cancellationToken);
         var result = updatedTask.Adapt<TaskItemDto>();
 
