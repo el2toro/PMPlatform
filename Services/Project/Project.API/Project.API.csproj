@@ -24,8 +24,6 @@
 	<ItemGroup>
 		<Folder Include="Events\" />
 		<Folder Include="Migrations\" />
-		<Folder Include="Project\Task\DeleteTask\" />
-		<Folder Include="Project\Task\GetTaskById\" />
 	</ItemGroup>
 
 	<ItemGroup>
