@@ -10,6 +10,5 @@ public record ProjectDetailsDto
     public Guid TenantId { get; set; }
     public ProjectStatus ProjectStatus { get; set; }
     public DateTime EndDate { get; set; }
-    public IEnumerable<TaskItemDto> Tasks { get; set; } = new List<TaskItemDto>();
 }
 
