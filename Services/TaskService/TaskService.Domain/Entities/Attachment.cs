@@ -7,6 +7,8 @@ public class Attachment
     public string ContentType { get; set; } = default!;
     public byte[] FileData { get; set; } = Array.Empty<byte>();
     //public string FilePath { get; set; } = default!;
+
+    //Navigation
     public Guid TaskId { get; set; }
     public TaskItem Task { get; set; } = default!;
 }

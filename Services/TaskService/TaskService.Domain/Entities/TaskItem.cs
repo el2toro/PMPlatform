@@ -7,7 +7,7 @@ public class TaskItem
     public string? Description { get; set; }
     public DateTime DueDate { get; set; }
     public Guid ProjectId { get; set; }
-    public Guid AssignedTo { get; set; }
+    public Guid? AssignedTo { get; set; }
     public TaskItemStatus TaskStatus { get; set; } = TaskItemStatus.Backlog;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -15,7 +15,7 @@ public class TaskItem
     public Guid UpdatedBy { get; set; }
 
     // Navigation
-    public ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+    public List<Subtask> Subtasks { get; set; } = default!;
+    public List<Comment> Comments { get; set; } = default!;
+    public List<Attachment> Attachments { get; set; } = default!;
 }
