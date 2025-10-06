@@ -1,10 +1,4 @@
-﻿using Core.Messaging.Events;
-using Mapster;
-using MassTransit;
-using Project.API.Dtos;
-using Project.API.Hubs;
-
-namespace Project.API.EventHandlers;
+﻿namespace Project.API.EventHandlers;
 
 public class ProjectCreatedEventHandler
     (ILogger<ProjectCreatedEventHandler> logger,

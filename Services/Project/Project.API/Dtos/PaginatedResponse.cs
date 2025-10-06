@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-
-namespace Project.API.Dtos;
+﻿namespace Project.API.Dtos;
 
 public record PaginatedResponse
 {

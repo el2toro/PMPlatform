@@ -1,9 +1,4 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
-using Project.API.Data;
-using Project.API.Dtos;
-
-namespace Project.API.Repository;
+﻿namespace Project.API.Repository;
 
 public class ProjectRepository : IProjectRepository
 {

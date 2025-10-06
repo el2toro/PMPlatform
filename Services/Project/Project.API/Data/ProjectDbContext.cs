@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Project.API.Models;
-
-namespace Project.API.Data;
+﻿namespace Project.API.Data;
 
 public class ProjectDbContext : DbContext
 {

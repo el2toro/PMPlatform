@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Project.API.Dtos;
 namespace Project.API.Hubs;
 
 public interface IProjectHub

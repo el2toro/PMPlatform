@@ -1,10 +1,4 @@
-﻿using MediatR;
-using Project.API.Dtos;
-using Project.API.Enums;
-using Project.API.Repository;
-using Project.API.Services;
-
-namespace Project.API.Project.GetProjects;
+﻿namespace Project.API.Project.GetProjects;
 
 public record GetProjectsQuery(int PageNumber, int PageSize) : IRequest<GetProjectsResponse>;
 public record GetProjectsResponse(PaginatedResponse PaginatedResponse);

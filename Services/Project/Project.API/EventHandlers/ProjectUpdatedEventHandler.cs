@@ -1,8 +1,4 @@
-﻿using Mapster;
-using MassTransit;
-using Project.API.Dtos;
-using Project.API.Hubs;
-using Project.API.Project.UpdateProject;
+﻿using Project.API.Project.UpdateProject;
 
 namespace Project.API.EventHandlers;
 

@@ -1,0 +1,13 @@
+﻿global using Carter;
+global using Mapster;
+global using MediatR;
+global using Core.Messaging.Events;
+global using MassTransit;
+global using Project.API.Dtos;
+global using Project.API.Repository;
+global using Project.API.Services;
+global using Microsoft.EntityFrameworkCore;
+global using Project.API.Data;
+global using Project.API.Hubs;
+global using System.Text;
+global using Project.API.Enums;

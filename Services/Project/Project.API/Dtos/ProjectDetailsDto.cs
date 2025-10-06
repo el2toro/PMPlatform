@@ -1,6 +1,4 @@
-﻿using Project.API.Enums;
-
-namespace Project.API.Dtos;
+﻿namespace Project.API.Dtos;
 
 public record ProjectDetailsDto
 {

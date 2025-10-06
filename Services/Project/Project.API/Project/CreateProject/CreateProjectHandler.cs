@@ -1,11 +1,4 @@
-﻿using Core.Messaging.Events;
-using Mapster;
-using MassTransit;
-using MediatR;
-using Project.API.Dtos;
-using Project.API.Repository;
-
-namespace Project.API.Project.CreateProject;
+﻿namespace Project.API.Project.CreateProject;
 
 public record CreateProjectCommand(string Name, string? Description, DateTime StartDate, DateTime EndDate) : IRequest<CreateProjectResult>;
 public record CreateProjectResult(ProjectDto ProjectDto);

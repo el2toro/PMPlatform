@@ -1,6 +1,4 @@
-﻿using Project.API.Dtos;
-
-namespace Project.API.Repository;
+﻿namespace Project.API.Repository;
 
 public interface IProjectRepository
 {

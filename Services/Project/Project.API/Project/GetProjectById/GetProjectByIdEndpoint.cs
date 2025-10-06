@@ -1,7 +1,4 @@
-﻿using Carter;
-using MediatR;
-
-namespace Project.API.Project.GetProjectById;
+﻿namespace Project.API.Project.GetProjectById;
 
 public class GetProjectByIdEndpoint : ICarterModule
 {

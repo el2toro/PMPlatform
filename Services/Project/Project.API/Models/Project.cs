@@ -1,6 +1,4 @@
-﻿using Project.API.Enums;
-
-namespace Project.API.Models;
+﻿namespace Project.API.Models;
 
 public class Project
 {

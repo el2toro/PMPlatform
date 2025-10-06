@@ -1,8 +1,4 @@
-﻿using Carter;
-using MediatR;
-using Project.API.Dtos;
-
-namespace Project.API.Project.GetProjects;
+﻿namespace Project.API.Project.GetProjects;
 
 public class GetProjectsEndpoint : ICarterModule
 {

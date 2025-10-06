@@ -1,14 +1,7 @@
-using Carter;
-using Microsoft.EntityFrameworkCore;
-using Project.API.Data;
-using Project.API.Repository;
-using Project.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Core.Messaging.MassTransit;
 using System.Reflection;
-using Project.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

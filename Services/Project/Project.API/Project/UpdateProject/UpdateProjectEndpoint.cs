@@ -1,8 +1,4 @@
-﻿using Carter;
-using MediatR;
-using Project.API.Dtos;
-
-namespace Project.API.Project.UpdateProject;
+﻿namespace Project.API.Project.UpdateProject;
 
 public class UpdateProjectEndpoint : ICarterModule
 {
