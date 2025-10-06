@@ -1,4 +1,6 @@
-﻿using Mapster;
+﻿using Core.Messaging.Events;
+using Mapster;
+using MassTransit;
 using MediatR;
 using Project.API.Dtos;
 using Project.API.Repository;
@@ -7,15 +9,18 @@ namespace Project.API.Project.UpdateProject;
 
 public record UpdateProjectCommand(ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
 public record UpdateProjectResult(ProjectDto ProjectDto);
-public class UpdateProjectHandler(IProjectRepository projectRepository)
+public class UpdateProjectHandler(IProjectRepository projectRepository, IPublishEndpoint publishEndpoint)
     : IRequestHandler<UpdateProjectCommand, UpdateProjectResult>
 {
     public async Task<UpdateProjectResult> Handle(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
         // var project = command.ProjectDto.Adapt<Models.Project>();
-        var result = await projectRepository.UpdateProjectAsync(command.ProjectDto, cancellationToken);
+        var project = await projectRepository.UpdateProjectAsync(command.ProjectDto, cancellationToken);
+        var result = MapToDto(command.ProjectDto.Progress, command.ProjectDto.Team, project);
 
-        return new UpdateProjectResult(MapToDto(command.ProjectDto.Progress, command.ProjectDto.Team, result));
+        await publishEndpoint.Publish<ProjectUpdatedEvent>(result);
+
+        return new UpdateProjectResult(result);
     }
 
     private ProjectDto MapToDto(int progress, IEnumerable<UserDto> team, Models.Project updatedProject)

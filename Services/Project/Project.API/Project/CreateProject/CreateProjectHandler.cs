@@ -26,6 +26,6 @@ public class CreateProjectHandler(IProjectRepository projectRepository, IPublish
 
         await publishEndpoint.Publish<ProjectCreatedEvent>(result);
 
-        return new CreateProjectResult(project.Adapt<ProjectDto>());
+        return new CreateProjectResult(result);
     }
 }
