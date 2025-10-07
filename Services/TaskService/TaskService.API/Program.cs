@@ -1,10 +1,17 @@
+using Core.Messaging.MassTransit;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using TaskService.Application.Interfaces;
+using TaskService.Application.Tasks.EventHandlers;
+using TaskService.Infrastructure.Hubs;
 using TaskService.Infrastructure.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ITaskServiceRepository, TaskServiceRepository>();
+builder.Services.AddScoped<ITaskServiceHub, TaskServiceHub>();
 
 builder.Services.AddCarter();
 //var assembly = typeof(Program).Assembly;
@@ -23,11 +30,17 @@ builder.Services.AddDbContext<TaskServiceDbContext>(config =>
     config.UseSqlServer(builder.Configuration.GetConnectionString("TaskDb"));
 });
 
+builder.Services.AddMessageBroker(builder.Configuration, typeof(TaskCreatedEventHandler).Assembly);
+
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 app.MapCarter();
+
+app.MapHub<TaskServiceHub>("/hub/notifications");
 
 app.Run();
