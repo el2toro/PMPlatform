@@ -23,6 +23,7 @@ public class TaskServiceEndpoints : ICarterModule
 
         app.MapPost("project/{projectId}/tasks", async ([FromBody] TaskItemDto request, ISender sender) =>
         {
+            //TODO: check if route projectId == request.ProjectId
             var result = await sender.Send(new CreateTaskCommand(request));
             return Results.Ok(result.Task);
         });
