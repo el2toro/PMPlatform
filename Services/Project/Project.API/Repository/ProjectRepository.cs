@@ -1,37 +1,16 @@
 ﻿namespace Project.API.Repository;
 
-public class ProjectRepository : IProjectRepository
+public class ProjectRepository(ProjectDbContext dbContext) : IProjectRepository
 {
-    private readonly ProjectDbContext _dbContext;
-    public ProjectRepository(ProjectDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-    public async Task<Models.Project>
-        CreateProjectAsync(string name,
-        string? description,
-        DateTime startDate,
-        DateTime endDate,
-        CancellationToken cancellationToken)
-    {
-        var project = new Models.Project
-        {
-            Name = name,
-            Description = description,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            ProjectStatus = Enums.ProjectStatus.NotStarted,
-            StartDate = startDate,
-            EndDate = endDate,
-            TenantId = Guid.Parse("FF2C542E-5948-4726-A28A-4A5FD5CB76DA"), // Placeholder, replace with actual tenant info
-            CreatedBy = Guid.Parse("3C484FF2-85DD-4A9B-989E-0C09FB3B8452") // Placeholder, replace with actual user info           
-        };
+    private readonly ProjectDbContext _dbContext = dbContext;
 
-        _dbContext.Projects.Add(project);
+    public async Task<Models.Project> CreateProjectAsync(Models.Project project, CancellationToken cancellationToken)
+    {
+        var createdProject = _dbContext.Projects.Add(project).Entity;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return project;
+        return createdProject;
     }
 
     public async Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken)
@@ -86,17 +65,18 @@ public class ProjectRepository : IProjectRepository
         return project;
     }
 
-    public async Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(Guid tenantId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var items = await _dbContext.Projects
-            //.Include(p => p.Tasks)
-            //.ThenInclude(t => t.Subtasks)
             .AsNoTracking()
+            .Where(p => p.TenantId == tenantId)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var totalCount = await _dbContext.Projects.CountAsync(cancellationToken);
+        var totalCount = await _dbContext.Projects
+            .Where(p => p.TenantId == tenantId)
+            .CountAsync(cancellationToken);
 
         return (items, totalCount);
     }
