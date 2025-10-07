@@ -3,7 +3,7 @@
 public record CreateTaskCommand(TaskItemDto Task) : IRequest<CreateTaskResult>;
 public record CreateTaskResult(TaskItemDto Task);
 
-public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository)
+public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository, IPublishEndpoint publishEndpoint)
     : IRequestHandler<CreateTaskCommand, CreateTaskResult>
 {
     public async Task<CreateTaskResult> Handle(CreateTaskCommand command, CancellationToken cancellationToken)
@@ -15,6 +15,8 @@ public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository)
 
         var createdTask = await taskServiceRepository.CreateTaskAsync(taskItem, cancellationToken);
         var result = createdTask.Adapt<TaskItemDto>();
+
+        await publishEndpoint.Publish<TaskCreatedEvent>(result);
 
         return new CreateTaskResult(result);
     }

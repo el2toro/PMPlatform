@@ -50,19 +50,8 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
 
         ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
 
-        //existingTask.Title = task.Title;
-        //existingTask.Description = task.Description;
-        //existingTask.DueDate = task.DueDate;
-        //existingTask.TaskStatus = task.TaskStatus;
-        //existingTask.AssignedTo = task.AssignedTo;
-        //existingTask.UpdatedAt = DateTime.UtcNow;
-        //existingTask.UpdatedBy = task.UpdatedBy;
-        //existingTask.Subtasks = task.Subtasks;
-        //existingTask.Comments = task.Comments;
-
         existingTask = task.Adapt<TaskItem>();
 
-        //_dbContext.Tasks.Update(existingTask);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return existingTask;

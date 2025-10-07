@@ -3,7 +3,7 @@
 public record UpdateTaskCommand(TaskItemDto Task) : IRequest<UpdateTaskResult>;
 public record UpdateTaskResult(TaskItemDto Task);
 
-public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository)
+public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository, IPublishEndpoint publishEndpoint)
     : IRequestHandler<UpdateTaskCommand, UpdateTaskResult>
 {
     public async Task<UpdateTaskResult> Handle(UpdateTaskCommand command, CancellationToken cancellationToken)
@@ -18,6 +18,8 @@ public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository)
 
         var updatedTask = await taskServiceRepository.UpdateTaskAsync(taskItem, cancellationToken);
         var result = updatedTask.Adapt<TaskItemDto>();
+
+        await publishEndpoint.Publish<TaskUpdatedEvent>(result);
 
         return new UpdateTaskResult(result);
     }
