@@ -1,8 +1,9 @@
 ﻿namespace Project.API.Project.UpdateProject;
 
-public record UpdateProjectCommand(ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
+public record UpdateProjectCommand(Guid TenantId, ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
 public record UpdateProjectResult(ProjectDto ProjectDto);
 
+//TODO: Add request validation behavior, check ir url tenantId == request tenantId
 public class UpdateProjectHandler(IProjectRepository projectRepository, IPublishEndpoint publishEndpoint)
     : IRequestHandler<UpdateProjectCommand, UpdateProjectResult>
 {

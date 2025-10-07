@@ -4,10 +4,9 @@ public class UpdateProjectEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("projects", async (ProjectDto request, ISender sender) =>
+        app.MapPut("tenants/{tenantdId}/projects", async (Guid tenantId, ProjectDto request, ISender sender) =>
         {
-            ///var command = request.Adapt<UpdateProjectCommand>();
-            var response = await sender.Send(new UpdateProjectCommand(request));
+            var response = await sender.Send(new UpdateProjectCommand(tenantId, request));
 
             return Results.Ok(response.ProjectDto);
         });

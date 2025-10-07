@@ -1,13 +1,16 @@
-﻿namespace Project.API.Project.GetProjects;
+﻿using Project.API.TenantContext;
 
-public record GetProjectsQuery(int PageNumber, int PageSize) : IRequest<GetProjectsResponse>;
+namespace Project.API.Project.GetProjects;
+
+public record GetProjectsQuery(Guid TenantId, int PageNumber, int PageSize) : IRequest<GetProjectsResponse>;
 public record GetProjectsResponse(PaginatedResponse PaginatedResponse);
-public class GetProjectsHandler(IProjectRepository projectRepository, UserServiceClient userServiceClient)
+public class GetProjectsHandler(IProjectRepository projectRepository,
+    UserServiceClient userServiceClient)
     : IRequestHandler<GetProjectsQuery, GetProjectsResponse>
 {
     public async Task<GetProjectsResponse> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
     {
-        var (items, totalCount) = await projectRepository.GetProjectsAsync(query.PageNumber, query.PageSize, cancellationToken);
+        var (items, totalCount) = await projectRepository.GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
         //Parallel.ForEach(result, project =>
         //{

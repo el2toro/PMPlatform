@@ -4,11 +4,10 @@ public class GetProjectByIdEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("project/{projectId}/{tenantId}", async (Guid projectId, Guid tenantId, ISender sender) =>
+        app.MapGet("tenants/{tenantId}/projects/{projectId}", async (Guid tenantId, Guid projectId, ISender sender) =>
         {
             var result = await sender.Send(new GetProjectByIdQuery(projectId, tenantId));
             return Results.Ok(result.Project);
         });
-        // .RequireAuthorization();
     }
 }
