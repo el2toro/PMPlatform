@@ -18,7 +18,6 @@ public static class Extensions
             {
                 config.AddConsumers(assembly);
             }
-            ;
 
             config.UsingRabbitMq((context, configurator) =>
             {
