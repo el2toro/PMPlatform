@@ -8,5 +8,6 @@ builder.Services.AddHostedService<Worker>();
 
 builder.Services.AddScoped<IReportService, ReportService>();
 
+
 var host = builder.Build();
 host.Run();
