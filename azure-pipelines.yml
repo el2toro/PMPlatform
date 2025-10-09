@@ -18,7 +18,7 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      Self-Hosted: Azure-CI-CD-Agent
+      name: 'Self-Hosted'
     steps:
     - task: Docker@2
       displayName: Build an image
