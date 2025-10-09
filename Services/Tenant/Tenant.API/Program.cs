@@ -1,3 +1,5 @@
+using Core.Behaviors;
+using Core.Exceptions.Handler;
 using Microsoft.EntityFrameworkCore;
 using Tenant.API.Data;
 using Tenant.API.Repository;
@@ -25,11 +27,12 @@ builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(assembly);
 
     //Congigure Mediator pre behavior (execute before reach the handle method)
-    //config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
 builder.Services.AddCarter();
+builder.Services.AddExceptionHandler<CustomExceptioHandler>();
 
 var app = builder.Build();
 
@@ -37,6 +40,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.MapCarter();
+app.UseExceptionHandler(option => { });
 
 app.Run();
 

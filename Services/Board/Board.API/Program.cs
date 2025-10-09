@@ -3,6 +3,7 @@ using Board.Application.Interfaces;
 using Board.Infrastructure.Persistance;
 using Board.Infrastructure.Repositories;
 using Carter;
+using Core.Behaviors;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,8 @@ builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(typeof(GetBoardByIdHandler).Assembly);
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
 builder.Services.AddDbContext<BoardDbContext>(config =>
@@ -27,6 +30,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.MapCarter();
+app.UseExceptionHandler(option => { });
 
 app.Run();
 

@@ -1,7 +1,7 @@
+using Core.Behaviors;
+using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using TaskService.Application.Interfaces;
 using TaskService.Application.Tasks.EventHandlers;
 using TaskService.Infrastructure.Hubs;
@@ -21,8 +21,8 @@ builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(typeof(GetTaskByIdHandler).Assembly);
 
     //Congigure Mediator pre behavior (execute before reach the handle method)
-    //config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
 builder.Services.AddDbContext<TaskServiceDbContext>(config =>
@@ -33,6 +33,7 @@ builder.Services.AddDbContext<TaskServiceDbContext>(config =>
 builder.Services.AddMessageBroker(builder.Configuration, typeof(TaskCreatedEventHandler).Assembly);
 
 builder.Services.AddSignalR();
+builder.Services.AddExceptionHandler<CustomExceptioHandler>();
 
 var app = builder.Build();
 
@@ -42,5 +43,6 @@ app.UseHttpsRedirection();
 app.MapCarter();
 
 app.MapHub<TaskServiceHub>("/hub/notifications");
+app.UseExceptionHandler(option => { });
 
 app.Run();

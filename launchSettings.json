@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "yarpapigateway": "StartDebugging",
+        "auth.api": "StartDebugging",
+        "taskservice.api": "StartDebugging",
+        "project.api": "StartDebugging"
+      }
+    }
+  }
+}

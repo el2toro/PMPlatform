@@ -1,3 +1,5 @@
+using Core.Behaviors;
+using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
 using Project.API.TenantContext;
 using System.Reflection;
@@ -23,13 +25,25 @@ builder.Services.AddHttpClient<UserServiceClient>(client =>
 
 var assembly = typeof(Program).Assembly;
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    cfg.RegisterServicesFromAssembly(assembly);
+});
 
 builder.Services.AddCarter();
 
 builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
 
 builder.Services.AddSignalR();
+builder.Services.AddExceptionHandler<CustomExceptioHandler>();
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "ProjectMicroservice";
+});
 
 var app = builder.Build();
 
@@ -38,6 +52,7 @@ app.UseHttpsRedirection(); //do u need that?
 app.MapCarter();
 
 app.MapHub<ProjectHub>("/hub/project");
+app.UseExceptionHandler(option => { });
 
 app.Run();
 

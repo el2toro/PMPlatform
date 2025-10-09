@@ -1,4 +1,5 @@
 using Carter;
+using Core.Behaviors;
 using Hangfire;
 using Report.API.BackgroundJobs;
 using Report.API.DataAccess;
@@ -30,6 +31,8 @@ builder.Services.AddHangfireServer(); // Starts background job server
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
 var app = builder.Build();
@@ -42,6 +45,7 @@ app.MapHangfireDashboard(); // Optional in some setups
 
 app.UseHttpsRedirection();
 //app.MapHub<ReportServiceHub>("/hub/report");
+app.UseExceptionHandler(option => { });
 
 // Schedule the job to call the API endpoint
 RecurringJob.AddOrUpdate(() => AnalyticsService.RunAnalytics(), Cron.Minutely); // Adjust the schedule as needed
