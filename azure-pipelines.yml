@@ -23,7 +23,7 @@ stages:
       displayName: Build and Push to Docker Hub
       inputs:
         command: buildAndPush
-        repository: 'el2toro/pmplatform'
+        repository: 'el2toro/yarpapigateway'
         dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
         tags: |
           $(Build.BuildId)
@@ -50,7 +50,7 @@ stages:
             displayName: Deploy YARP Gateway to ACI
             inputs:
               azureSubscription: 'resourceManagerServiceConnection'   # Azure DevOps service connection
-              scriptType: 'bash'
+              scriptType: 'ps'
               scriptLocation: 'inlineScript'
               inlineScript: |
                 # Variables
