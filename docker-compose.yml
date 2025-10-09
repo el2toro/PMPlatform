@@ -1,0 +1,27 @@
+services:
+  yarpapigateway:
+    image: ${DOCKER_REGISTRY-}yarpapigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/YarpApiGateway/Dockerfile
+
+  auth.api:
+    image: ${DOCKER_REGISTRY-}authapi
+    build:
+      context: Services
+      dockerfile: Authentication/Auth.API/Dockerfile
+
+
+  taskservice.api:
+    image: ${DOCKER_REGISTRY-}taskserviceapi
+    build:
+      context: .
+      dockerfile: Services/TaskService/TaskService.API/Dockerfile
+
+
+  project.api:
+    image: ${DOCKER_REGISTRY-}projectapi
+    build:
+      context: Services
+      dockerfile: Project/Project.API/Dockerfile
+
