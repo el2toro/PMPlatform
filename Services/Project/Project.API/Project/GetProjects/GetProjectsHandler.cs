@@ -1,46 +1,40 @@
-﻿using Project.API.TenantContext;
+﻿using Core.CQRS;
+using FluentValidation;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Data;
+using System.Text.Json;
 
 namespace Project.API.Project.GetProjects;
 
-public record GetProjectsQuery(Guid TenantId, int PageNumber, int PageSize) : IRequest<GetProjectsResponse>;
+public record GetProjectsQuery(Guid TenantId, int PageNumber, int PageSize) : IQuery<GetProjectsResponse>;
 public record GetProjectsResponse(PaginatedResponse PaginatedResponse);
+
+public class GetProjectsQueryValidator : AbstractValidator<GetProjectsQuery>
+{
+    public GetProjectsQueryValidator()
+    {
+        RuleFor(r => r.TenantId).NotEmpty().WithMessage("TenantId cannot be empty");
+        RuleFor(r => r.TenantId).NotEqual(Guid.NewGuid()).WithMessage("Wrong TenantId");
+    }
+}
+
 public class GetProjectsHandler(IProjectRepository projectRepository,
+   IDistributedCache distributedCache,
     UserServiceClient userServiceClient)
-    : IRequestHandler<GetProjectsQuery, GetProjectsResponse>
+    : IQueryHandler<GetProjectsQuery, GetProjectsResponse>
 {
     public async Task<GetProjectsResponse> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
     {
+        var dataString = await distributedCache.GetStringAsync("projects");
+        if (!string.IsNullOrEmpty(dataString))
+        {
+            var responseData = JsonSerializer.Deserialize<PaginatedResponse>(dataString);
+            return new GetProjectsResponse(responseData);
+        }
+
         var (items, totalCount) = await projectRepository.GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
-        //Parallel.ForEach(result, project =>
-        //{
-        //    // This is just to simulate some processing per project
-        //    // In a real-world scenario, you might perform more complex operations here
-        //    var progress = CalculateProgress(project.Tasks);
-        //});
-
-        var projects = new List<ProjectDto>();
-
-        foreach (var project in items)
-        {
-            var newProject = new ProjectDto
-            {
-                Id = project.Id,
-                Name = project.Name,
-                Description = project.Description,
-                CreatedAt = project.CreatedAt,
-                CreatedBy = project.CreatedBy,
-                TenantId = project.TenantId,
-                ProjectStatus = project.ProjectStatus,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
-                //TODO: fetch actual team members
-                Team = await GetTeam(project.TenantId)
-            };
-
-            projects.Add(newProject);
-        }
-        ;
+        var projects = await MapToDto(items);
 
         var response = new PaginatedResponse
         {
@@ -50,6 +44,10 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
             Items = projects
         };
 
+        var data = JsonSerializer.Serialize(response);
+
+        await distributedCache.SetStringAsync("projects", data);
+
         return new GetProjectsResponse(response);
     }
 
@@ -58,6 +56,32 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
         var data = await userServiceClient.GetUsersByTenantIdAsync(teanantId);
 
         return data.Take(1);
+    }
+
+    private async Task<IEnumerable<ProjectDto>> MapToDto(IEnumerable<Models.Project> projects)
+    {
+
+        IEnumerable<ProjectDto> result = await Task.WhenAll(projects.Select(async project =>
+            {
+                var team = await GetTeam(project.TenantId);
+                var newProject = new ProjectDto
+                {
+                    Id = project.Id,
+                    Name = project.Name,
+                    Description = project.Description,
+                    CreatedAt = project.CreatedAt,
+                    CreatedBy = project.CreatedBy,
+                    TenantId = project.TenantId,
+                    ProjectStatus = project.ProjectStatus,
+                    StartDate = project.StartDate,
+                    EndDate = project.EndDate,
+                    //TODO: fetch actual team members
+                    Team = team
+                };
+                return newProject;
+            }));
+
+        return result;
     }
 
     // Simple progress calculation based on task statuses
