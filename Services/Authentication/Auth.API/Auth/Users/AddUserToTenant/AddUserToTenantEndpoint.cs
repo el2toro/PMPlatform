@@ -1,6 +1,4 @@
-﻿using AuthService.Enums;
-
-namespace Auth.API.Auth.Users.AddUserToTenant;
+﻿namespace Auth.API.Auth.Users.AddUserToTenant;
 
 public record AddUserToTenantRequest(Guid TenantId, Guid UserId, TenantRole Role);
 

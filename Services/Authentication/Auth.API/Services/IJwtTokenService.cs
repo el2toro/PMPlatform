@@ -1,6 +1,4 @@
-﻿using AuthService.Models;
-
-namespace AuthService.Services;
+﻿namespace AuthService.Services;
 
 public interface IJwtTokenService
 {
