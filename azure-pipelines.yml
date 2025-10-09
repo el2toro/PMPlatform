@@ -24,7 +24,7 @@ stages:
       displayName: Build and Push to Docker Hub
       inputs:
         command: buildAndPush
-        repository: 'hub.docker.com/repositories/el2toro/yarpapigateway'
+        repository: 'el2toro/pmplatform'
         dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
         tags: |
           $(Build.BuildId)
