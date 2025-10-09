@@ -21,10 +21,12 @@ stages:
       name: 'Self-Hosted'
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build and Push to Docker Hub
       inputs:
-        command: build
+        command: buildAndPush
+        repository: 'hub.docker.com/repositories/el2toro/yarpapigateway'
         dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)'
         tags: |
-          $(tag)
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'  
