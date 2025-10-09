@@ -56,7 +56,7 @@ stages:
                 $RESOURCE_GROUP = "pmplatform-rg"
                 $CONTAINER_NAME = "yarp-gateway"
                 $IMAGE = "el2toro/yarpapigateway:$(Build.BuildId)"
-                $LOCATION = "eastus"
+                $LOCATION = "germanywestcentral"
 
                 Write-Host "Creating resource group if not exists..."
                 az group create --name $RESOURCE_GROUP --location $LOCATION
