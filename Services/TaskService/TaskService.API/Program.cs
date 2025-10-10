@@ -39,7 +39,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.MapCarter();
 
 app.MapHub<TaskServiceHub>("/hub/notifications");

@@ -48,7 +48,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseHttpsRedirection(); //do u need that?
+//app.UseHttpsRedirection(); //do u need that?
 app.MapCarter();
 
 app.MapHub<ProjectHub>("/hub/project");

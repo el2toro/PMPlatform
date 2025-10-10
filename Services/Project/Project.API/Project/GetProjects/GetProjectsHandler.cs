@@ -1,6 +1,7 @@
 ﻿using Core.CQRS;
 using FluentValidation;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Text.Json;
 
@@ -34,14 +35,27 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
 
         var (items, totalCount) = await projectRepository.GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
-        var projects = await MapToDto(items);
+        var safeDtosCollection = new ConcurrentBag<ProjectDto>();
+
+        var tasks = items.Select(project =>
+        // GetTeam runs in parallel
+        GetTeam(project.TenantId)
+        .ContinueWith(taskTeam =>
+        {
+            var team = taskTeam.Result;
+            var projectDtos = MapToDto(project, team);
+
+            safeDtosCollection.Add(projectDtos);
+        }));
+
+        await Task.WhenAll(tasks);
 
         var response = new PaginatedResponse
         {
             PageNumber = query.PageNumber,
             PageSize = query.PageSize,
             TotalItems = totalCount,
-            Items = projects
+            Items = safeDtosCollection
         };
 
         var data = JsonSerializer.Serialize(response);
@@ -58,30 +72,21 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
         return data.Take(1);
     }
 
-    private async Task<IEnumerable<ProjectDto>> MapToDto(IEnumerable<Models.Project> projects)
+    private ProjectDto MapToDto(Models.Project project, IEnumerable<UserDto> team)
     {
-
-        IEnumerable<ProjectDto> result = await Task.WhenAll(projects.Select(async project =>
-            {
-                var team = await GetTeam(project.TenantId);
-                var newProject = new ProjectDto
-                {
-                    Id = project.Id,
-                    Name = project.Name,
-                    Description = project.Description,
-                    CreatedAt = project.CreatedAt,
-                    CreatedBy = project.CreatedBy,
-                    TenantId = project.TenantId,
-                    ProjectStatus = project.ProjectStatus,
-                    StartDate = project.StartDate,
-                    EndDate = project.EndDate,
-                    //TODO: fetch actual team members
-                    Team = team
-                };
-                return newProject;
-            }));
-
-        return result;
+        return new ProjectDto
+        {
+            Id = project.Id,
+            Name = project.Name,
+            Description = project.Description,
+            CreatedAt = project.CreatedAt,
+            CreatedBy = project.CreatedBy,
+            TenantId = project.TenantId,
+            ProjectStatus = project.ProjectStatus,
+            StartDate = project.StartDate,
+            EndDate = project.EndDate,
+            Team = team
+        };
     }
 
     // Simple progress calculation based on task statuses

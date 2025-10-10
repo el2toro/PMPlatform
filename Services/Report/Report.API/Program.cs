@@ -43,7 +43,7 @@ app.MapCarter();
 app.UseHangfireDashboard("/hangfire"); // Accessible at /hangfire
 app.MapHangfireDashboard(); // Optional in some setups
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 //app.MapHub<ReportServiceHub>("/hub/report");
 app.UseExceptionHandler(option => { });
 

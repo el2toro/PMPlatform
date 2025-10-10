@@ -38,7 +38,12 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();
-app.UseHttpsRedirection();
+
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseHttpsRedirection();
+//}
+
 app.UseExceptionHandler(option => { });
 
 app.Run();
