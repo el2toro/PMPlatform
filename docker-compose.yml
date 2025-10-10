@@ -1,4 +1,25 @@
 services:
+  messagebroker: 
+    image: rabbitmq:management 
+
+  distributedcache:
+    image: redis
+
+  authdb: 
+    image: mcr.microsoft.com/mssql/server
+
+  taskdb: 
+    image: mcr.microsoft.com/mssql/server
+  
+  tenantdb: 
+    image: mcr.microsoft.com/mssql/server
+  
+  projectdb: 
+    image: mcr.microsoft.com/mssql/server
+
+  boarddb: 
+    image: mcr.microsoft.com/mssql/server
+
   yarpapigateway:
     image: ${DOCKER_REGISTRY-}yarpapigateway
     build:
@@ -24,4 +45,11 @@ services:
     build:
       context: Services
       dockerfile: Project/Project.API/Dockerfile
+
+
+  tenant.api:
+    image: ${DOCKER_REGISTRY-}tenantapi
+    build:
+      context: Services
+      dockerfile: Tenant/Tenant.API/Dockerfile
 

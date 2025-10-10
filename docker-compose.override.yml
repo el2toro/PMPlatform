@@ -1,39 +1,96 @@
 services:
+  distributedcache: 
+     container_name: distributedcache
+     restart: always
+     ports:
+       - "6379:6379"
+
+  messagebroker:
+    container_name: messagebroker
+    hostname: pmplatform-mq
+    environment: 
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAUL_PASS=guest 
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  authdb:
+    container_name: authdb
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SwN12345678 
+    restart: always
+    ports:
+      - "1433:1433"
+
+  tenantdb:
+    container_name: tenantdb
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SwN12345678 
+    restart: always
+    ports:
+      - "1434:1433"
+
+  projectdb:
+    container_name: projectdb
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SwN12345678 
+    restart: always
+    ports:
+      - "1435:1433"
+
+  taskdb:
+    container_name: taskdb
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SwN12345678 
+    restart: always
+    ports:
+      - "1436:1433"
+ 
+  boarddb:
+    container_name: boarddb
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SwN12345678 
+    restart: always
+    ports:
+      - "1437:1433"
+
   yarpapigateway:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+    depends_on:
+      - auth.api
+      - tenant.api
+      - project.api
+      - taskservice.api
     ports:
-      - "8080"
-      - "8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-  auth.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-    ports:
-      - "8080"
-      - "8081"
+      - "6064:8080"
+      - "6004:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
-  taskservice.api:
+  auth.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=authdb;Database=AuthenticationDb;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True 
     ports:
-      - "8080"
-      - "8081"
+      - "6066:8080"
+      - "6006:8081"
+    depends_on:
+      - authdb
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -45,9 +102,30 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=projectdb;Database=ProjectDb;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True
     ports:
-      - "8080"
-      - "8081"
+      - "6063:8080"
+      - "6003:8081"
+    depends_on:
+      - projectdb
+      - distributedcache
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  tenant.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=taskdb;Database=TaskDb;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True
+    depends_on:
+      - taskdb
+    ports:
+      - "6067:8080"
+      - "6007:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
