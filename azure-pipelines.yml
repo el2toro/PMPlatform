@@ -1,7 +1,3 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - master
 
@@ -12,6 +8,9 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
+# -----------------------------
+# Stage 1: Build & Push Docker
+# -----------------------------
 - stage: Build
   displayName: Build image
   jobs:
@@ -24,9 +23,43 @@ stages:
       displayName: Build and Push to Docker Hub
       inputs:
         command: buildAndPush
-        repository: 'hub.docker.com/repositories/el2toro/yarpapigateway'
+        repository: 'el2toro/yarpapigateway'
         dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
         tags: |
           $(Build.BuildId)
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'  
+
+# -----------------------------
+# Stage 2: Deploy to Azure
+# -----------------------------
+- stage: Deploy
+  displayName: Deploy to Azure
+  dependsOn: Build
+  jobs:
+  - deployment: DeployToACI
+    displayName: Deploy to Azure Container Instances
+    pool:
+      name: 'Self-Hosted'
+    environment: 'dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: Deploy YARP Gateway to ACI
+            inputs:
+              azureSubscription: 'resourceManagerServiceConnection'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                $RESOURCE_GROUP = "pmplatform-rg"
+                $CONTAINER_NAME = "yarp-gateway"
+                $IMAGE = "el2toro/yarpapigateway:$(Build.BuildId)"
+                $LOCATION = "germanywestcentral"
+
+                Write-Host "Creating resource group if not exists..."
+                az group create --name $RESOURCE_GROUP --location $LOCATION
+
+                Write-Host "Deploying container instance..."
+                az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
