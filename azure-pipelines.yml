@@ -20,7 +20,7 @@ stages:
       name: 'Self-Hosted'
     steps:
     - task: Docker@2
-      displayName: Build and Push to Docker Hub
+      displayName: Build and Push ApiGateway to Docker Hub
       inputs:
         command: buildAndPush
         repository: 'el2toro/yarpapigateway'
@@ -30,6 +30,60 @@ stages:
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'  
 
+    - task: Docker@2
+      displayName: Build and Push Auth.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/authapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'   
+
+    - task: Docker@2
+      displayName: Build and Push Tenant.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/tenantapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Tenant/Tenant.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
+
+    - task: Docker@2
+      displayName: Build and Push Project.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/projectapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Project/Project.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection' 
+
+    - task: Docker@2
+      displayName: Build and Push TaskService.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/tenantapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/TaskService/TaskService.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'  
+
+    - task: Docker@2
+      displayName: Build and Push Board.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/boardapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Board/Board.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'        
 # -----------------------------
 # Stage 2: Deploy to Azure
 # -----------------------------
@@ -63,3 +117,22 @@ stages:
 
                 Write-Host "Deploying container instance..."
                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
+
+          - task: AzureCLI@2
+            displayName: Deploy Auth.API to ACI
+            inputs:
+              azureSubscription: 'resourceManagerServiceConnection'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                $RESOURCE_GROUP = "pmplatform-rg"
+                $CONTAINER_NAME = "auth-api"
+                $IMAGE = "el2toro/authapi:$(Build.BuildId)"
+                $LOCATION = "germanywestcentral"
+
+                Write-Host "Creating resource group if not exists..."
+                az group create --name $RESOURCE_GROUP --location $LOCATION
+
+                Write-Host "Deploying container instance..."
+                az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
+    
