@@ -1,6 +1,11 @@
-﻿namespace Notification.API.Notifications.SendEmail
+﻿using Carter;
+
+namespace Notification.API.Notifications.SendEmail;
+
+public class SendEmailEndpoint : ICarterModule
 {
-    public class SendEmailEndpoint
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
+        throw new NotImplementedException();
     }
 }
