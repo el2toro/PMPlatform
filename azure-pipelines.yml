@@ -30,16 +30,16 @@ stages:
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'  
 
-    - task: Docker@2
-      displayName: Build and Push Auth.API to Docker Hub
-      inputs:
-        command: buildAndPush
-        repository: 'el2toro/authapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'   
+    # - task: Docker@2
+    #   displayName: Build and Push Auth.API to Docker Hub
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: 'el2toro/authapi'
+    #     dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
+    #     tags: |
+    #       $(Build.BuildId)
+    #     buildContext: '$(Build.SourcesDirectory)'
+    #     containerRegistry: 'dockerHubServiceConnection'   
 
     - task: Docker@2
       displayName: Build and Push Tenant.API to Docker Hub
@@ -84,55 +84,77 @@ stages:
           $(Build.BuildId)
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'        
+
+    - task: Docker@2
+      displayName: Build and Push Report.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/reportapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Report/Report.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
+
+    - task: Docker@2
+      displayName: Build and Push Notification.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/notificationapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Notification/Notification.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
 # -----------------------------
 # Stage 2: Deploy to Azure
 # -----------------------------
-- stage: Deploy
-  displayName: Deploy to Azure
-  dependsOn: Build
-  jobs:
-  - deployment: DeployToACI
-    displayName: Deploy to Azure Container Instances
-    pool:
-      name: 'Self-Hosted'
-    environment: 'dev'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureCLI@2
-            displayName: Deploy YARP Gateway to ACI
-            inputs:
-              azureSubscription: 'resourceManagerServiceConnection'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                $RESOURCE_GROUP = "pmplatform-rg"
-                $CONTAINER_NAME = "yarp-gateway"
-                $IMAGE = "el2toro/yarpapigateway:$(Build.BuildId)"
-                $LOCATION = "germanywestcentral"
+# - stage: Deploy
+#   displayName: Deploy to Azure
+#   dependsOn: Build
+#   jobs:
+#   - deployment: DeployToACI
+#     displayName: Deploy to Azure Container Instances
+#     pool:
+#       name: 'Self-Hosted'
+#     environment: 'dev'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task: AzureCLI@2
+#             displayName: Deploy YARP Gateway to ACI
+#             inputs:
+#               azureSubscription: 'resourceManagerServiceConnection'
+#               scriptType: 'ps'
+#               scriptLocation: 'inlineScript'
+#               inlineScript: |
+#                 $RESOURCE_GROUP = "pmplatform-rg"
+#                 $CONTAINER_NAME = "yarp-gateway"
+#                 $IMAGE = "el2toro/yarpapigateway:$(Build.BuildId)"
+#                 $LOCATION = "germanywestcentral"
 
-                Write-Host "Creating resource group if not exists..."
-                az group create --name $RESOURCE_GROUP --location $LOCATION
+#                 Write-Host "Creating resource group if not exists..."
+#                 az group create --name $RESOURCE_GROUP --location $LOCATION
 
-                Write-Host "Deploying container instance..."
-                az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
+#                 Write-Host "Deploying container instance..."
+#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
 
-          - task: AzureCLI@2
-            displayName: Deploy Auth.API to ACI
-            inputs:
-              azureSubscription: 'resourceManagerServiceConnection'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                $RESOURCE_GROUP = "pmplatform-rg"
-                $CONTAINER_NAME = "auth-api"
-                $IMAGE = "el2toro/authapi:$(Build.BuildId)"
-                $LOCATION = "germanywestcentral"
+          # - task: AzureCLI@2
+          #   displayName: Deploy Auth.API to ACI
+          #   inputs:
+          #     azureSubscription: 'resourceManagerServiceConnection'
+          #     scriptType: 'ps'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: |
+          #       $RESOURCE_GROUP = "pmplatform-rg"
+          #       $CONTAINER_NAME = "auth-api"
+          #       $IMAGE = "el2toro/authapi:$(Build.BuildId)"
+          #       $LOCATION = "germanywestcentral"
 
-                Write-Host "Creating resource group if not exists..."
-                az group create --name $RESOURCE_GROUP --location $LOCATION
+          #       Write-Host "Creating resource group if not exists..."
+          #       az group create --name $RESOURCE_GROUP --location $LOCATION
 
-                Write-Host "Deploying container instance..."
-                az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
+          #       Write-Host "Deploying container instance..."
+          #       az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
     
