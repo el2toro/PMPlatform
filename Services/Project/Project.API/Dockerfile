@@ -9,10 +9,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Services/Project.API/Project.API.csproj", "Services/Project.API/"]
-RUN dotnet restore "./Services/Project.API/Project.API.csproj"
+COPY ["Services/Project/Project.API/Project.API.csproj", "Services/Project/Project.API/"]
+RUN dotnet restore "./Services/Project/Project.API/Project.API.csproj"
 COPY . .
-WORKDIR "/src/Services/Project.API"
+WORKDIR "/src/Services/Project/Project.API"
 RUN dotnet build "./Project.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
