@@ -52,6 +52,38 @@ stages:
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'     
 
+    - task: Docker@2
+      displayName: Build and Push Project.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/projectapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Project/Project.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection' 
+
+    - task: Docker@2
+      displayName: Build and Push TaskService.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/tenantapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/TaskService/TaskService.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'  
+
+    - task: Docker@2
+      displayName: Build and Push Board.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/boardapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Board/Board.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'        
 # -----------------------------
 # Stage 2: Deploy to Azure
 # -----------------------------
