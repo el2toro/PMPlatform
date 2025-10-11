@@ -31,11 +31,22 @@ stages:
         containerRegistry: 'dockerHubServiceConnection'  
 
     - task: Docker@2
-      displayName: Build and Push to Docker Hub
+      displayName: Build and Push Auth.API to Docker Hub
       inputs:
         command: buildAndPush
         repository: 'el2toro/authapi'
         dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'   
+
+    - task: Docker@2
+      displayName: Build and Push Tenant.API to Docker Hub
+      inputs:
+        command: buildAndPush
+        repository: 'el2toro/tenantapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Tenant/Tenant.API/Dockerfile'
         tags: |
           $(Build.BuildId)
         buildContext: '$(Build.SourcesDirectory)'
