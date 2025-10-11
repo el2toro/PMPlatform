@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Tenant/Tenant.API/Tenant.API.csproj", "Services/Tenant/Tenant.API/"]
-RUN dotnet restore "./Services/Tenant.API/Tenant.API.csproj"
+RUN dotnet restore "./Services/Tenant/Tenant.API/Tenant.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Tenant/Tenant.API"
 RUN dotnet build "./Tenant.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
