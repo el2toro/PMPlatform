@@ -35,6 +35,12 @@ builder.Services.AddMessageBroker(builder.Configuration, typeof(TaskCreatedEvent
 builder.Services.AddSignalR();
 builder.Services.AddExceptionHandler<CustomExceptioHandler>();
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "TaskMicroservice";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
