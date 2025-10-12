@@ -19,16 +19,16 @@ stages:
     pool:
       name: 'Self-Hosted'
     steps:
-    - task: Docker@2
-      displayName: Build and Push ApiGateway to Docker Hub
-      inputs:
-        command: buildAndPush
-        repository: 'el2toro/yarpapigateway'
-        dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'  
+    # - task: Docker@2
+    #   displayName: Build and Push ApiGateway to Docker Hub
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: 'el2toro/yarpapigateway'
+    #     dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
+    #     tags: |
+    #       $(Build.BuildId)
+    #     buildContext: '$(Build.SourcesDirectory)'
+    #     containerRegistry: 'dockerHubServiceConnection'  
 
     - task: Docker@2
       displayName: Build and Push Auth.API to Docker Hub
