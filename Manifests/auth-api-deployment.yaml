@@ -24,7 +24,7 @@ spec:
       containers:
         - name: auth-api
           # Use placeholder for image tag; DevOps pipeline can override it
-          image: el2toro/auth-api:$(tagImage)
+          image: el2toro/auth-api:latest
           ports:
             - containerPort: 80
           # Optional: define environment variables if your app needs them
