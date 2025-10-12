@@ -288,7 +288,7 @@ stages:
               action: deploy
               kubernetesServiceConnection: 'kubernetesServiceConnection'
               namespace: default
-              manifests: 'manifests/auth-api-deployment.yaml'
+              manifests: 'Manifests/auth-api-deployment.yaml'
               containers: |
                 'el2toro/auth-api':$(imageTag)
 
