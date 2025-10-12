@@ -290,7 +290,7 @@ stages:
               namespace: default
               manifests: 'Manifests/auth-api-deployment.yaml'
               containers: |
-                'el2toro/auth-api':$(imageTag)
+                el2toro/auth-api:$(imageTag)
 
           # - task: KubernetesManifest@1
           #   displayName: Deploy Board.API
