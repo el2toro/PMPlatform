@@ -67,7 +67,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manifests", "Manifests", "{CF965754-CF50-4FB5-A187-BE0A28521E4C}"
 	ProjectSection(SolutionItems) = preProject
-		auth-api-deployment.yaml = auth-api-deployment.yaml
+		Manifests\auth-api-deployment.yaml = Manifests\auth-api-deployment.yaml
 	EndProjectSection
 EndProject
 Global
