@@ -156,18 +156,7 @@ stages:
                 az group create --name $RESOURCE_GROUP --location $LOCATION
 
                 Write-Host "Deploying container instance..."
-                az container create 
-                --resource-group $RESOURCE_GROUP 
-                --name $CONTAINER_NAME 
-                --image $IMAGE 
-                --os-type Linux 
-                --dns-name-label $CONTAINER_NAME 
-                --ports 8080 8081 
-                --cpu 1 
-                --memory 1 
-                --restart-policy Always
-                --registry-username 'el2toro'
-                --registry-password 'S5n4ekOqVQ'
+                az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1  --restart-policy Always --registry-username 'el2toro' --registry-password 'S5n4ekOqVQ'
     
           - task: AzureCLI@2
             displayName: Deploy Tenant.API to ACI
