@@ -13,59 +13,29 @@ public class ProjectRepository(ProjectDbContext dbContext) : IProjectRepository
         return createdProject;
     }
 
-    public async Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, Guid tenantId, CancellationToken cancellationToken)
+    public async Task DeleteProjectAsync(Guid tenantdId, Guid projectId, CancellationToken cancellationToken)
     {
         var project = await _dbContext.Projects
-            //   .Include(p => p.Tasks)
-            .AsNoTracking()
-            //   .Where(p => p.Id == projectId && p.TenantId == tenantId)
-            .Select(p => new ProjectDetailsDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                CreatedAt = p.CreatedAt,
-                CreatedBy = p.CreatedBy,
-                TenantId = p.TenantId,
-                ProjectStatus = p.ProjectStatus,
-                EndDate = p.EndDate,
-                //Tasks = p.Tasks.Select(t => new TaskItemDto
-                //{
-                //    Id = t.Id,
-                //    Title = t.Title,
-                //    Description = t.Description,
-                //    TaskStatus = t.TaskStatus,
-                //    AssignedTo = t.AssignedTo,
-                //    DueDate = t.DueDate,
-                //    CreatedAt = t.CreatedAt,
-                //    CreatedBy = t.CreatedBy,
-                //    ProjectId = t.ProjectId,
-                //    Subtasks = t.Subtasks.Select(st =>
-                //    new SubtaskDto(
-                //        st.Id,
-                //        st.TaskId,
-                //        st.Title,
-                //        st.IsCompleted
-                //    )).ToList(),
-                //    Comments = t.Comments.Select(c =>
-                //    new CommentDto
-                //    {
-                //        Id = c.Id,
-                //        Content = c.Content,
-                //        TaskId = c.TaskId,
-                //        CreatedAt = c.CreatedAt,
-                //        CreatedBy = c.UserId
-                //    }).ToList(),
+            .FirstOrDefaultAsync(project => project.TenantId == tenantdId && project.Id == projectId);
 
-                //}).ToList()
-            }).FirstOrDefaultAsync(cancellationToken);
-
-        ArgumentNullException.ThrowIfNull(project, nameof(project));
-
-        return project;
+        if (project is not null)
+        {
+            _dbContext.Projects.Remove(project);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 
-    public async Task<(IEnumerable<Models.Project>, int)> GetProjectsAsync(Guid tenantId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<Models.Project> GetProjectByIdAsync(Guid tenantId, Guid projectId, CancellationToken cancellationToken)
+    {
+        var project = await _dbContext.Projects
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == projectId && p.TenantId == tenantId, cancellationToken);
+
+        return project ?? new Models.Project();
+    }
+
+    public async Task<(IEnumerable<Models.Project>, int)>
+        GetProjectsAsync(Guid tenantId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var items = await _dbContext.Projects
             .AsNoTracking()
@@ -83,15 +53,14 @@ public class ProjectRepository(ProjectDbContext dbContext) : IProjectRepository
 
     public async Task<Models.Project> UpdateProjectAsync(ProjectDto projectDto, CancellationToken cancellationToken)
     {
-        var existingProject = await _dbContext.Projects.FindAsync(projectDto.Id, cancellationToken);
-        //TODO : handle not found
-        ArgumentNullException.ThrowIfNull(existingProject, nameof(existingProject));
+        var existingProject = await _dbContext.Projects
+            .FirstOrDefaultAsync(project => project.TenantId == projectDto.TenantId && project.Id == projectDto.Id, cancellationToken);
 
         projectDto.Adapt(existingProject);
 
         //TODO: move to handler/business logic
         existingProject.UpdatedAt = DateTime.UtcNow;
-        existingProject.UpdatedBy = Guid.Parse("3C484FF2-85DD-4A9B-989E-0C09FB3B8452");
+        existingProject.UpdatedBy = projectDto.CreatedBy;
 
         //var updatedProject = _dbContext.Projects.Update(existingProject);
         await _dbContext.SaveChangesAsync(cancellationToken);

@@ -35,8 +35,6 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
            .AsNoTracking()
            .FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Id == taskId, cancellationToken);
 
-        ArgumentNullException.ThrowIfNull(nameof(task));
-
         return task;
     }
 
@@ -47,8 +45,6 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
             .Include(t => t.Comments)
             .Include(t => t.Attachments)
             .FirstOrDefaultAsync(t => t.Id == task.Id, cancellationToken);
-
-        ArgumentNullException.ThrowIfNull(existingTask, nameof(existingTask));
 
         existingTask = task.Adapt<TaskItem>();
 
@@ -61,11 +57,9 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
     {
         var task = await _dbContext.Tasks.FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Id == taskId);
 
-        ArgumentNullException.ThrowIfNull(task, nameof(task));
-
         task.TaskStatus = status;
         task.UpdatedAt = DateTime.UtcNow;
-        _dbContext.Tasks.Update(task);
+        // _dbContext.Tasks.Update(task);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -84,5 +78,28 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
 
         _dbContext.Tasks.Remove(task);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<(int totalTasks, int completedTasks, int totalSubtasks, int completedSubtasks)>
+        GetTaskCountAsync(Guid projectId, CancellationToken cancellationToken)
+    {
+        var taskIds = await _dbContext.Tasks
+            .Where(task => task.ProjectId == projectId)
+            .Select(t => t.Id)
+            .ToListAsync();
+
+        int completedTasks = await _dbContext.Tasks
+            .Where(task => task.ProjectId == projectId && task.TaskStatus == TaskItemStatus.Done)
+            .CountAsync();
+
+        var totalSubtasks = await _dbContext.Subtasks
+            .Where(subtask => taskIds.Contains(subtask.TaskId))
+            .CountAsync();
+
+        var completedSubtasks = await _dbContext.Subtasks
+            .Where(subtask => taskIds.Contains(subtask.TaskId) && subtask.IsCompleted)
+            .CountAsync();
+
+        return (taskIds.Count, completedTasks, totalSubtasks, completedSubtasks);
     }
 }

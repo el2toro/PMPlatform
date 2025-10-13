@@ -1,7 +1,6 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
-using Project.API.TenantContext;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +11,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectHub, ProjectHub>();
 builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
 {
@@ -21,6 +21,11 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddHttpClient<UserServiceClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:5056/"); // replace with your service URL
+});
+
+builder.Services.AddHttpClient<TaskServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5057/"); // replace with your service URL
 });
 
 var assembly = typeof(Program).Assembly;

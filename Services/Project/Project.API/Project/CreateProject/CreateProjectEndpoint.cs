@@ -1,13 +1,13 @@
 ﻿namespace Project.API.Project.CreateProject;
 
-public record CreateProjectRequest(Guid tenantId, string Name, string? Description, DateTime StartDate, DateTime EndDate);
+public record CreateProjectRequest(Guid TenantId, string Name, string? Description, DateTime StartDate, DateTime EndDate);
 
 public class CreateProjectEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("tenants/{tenantId:guid}/projects",
-            async (Guid tenantId, CreateProjectRequest request, ISender sender) =>
+            async ([FromRoute] Guid tenantId, [FromBody] CreateProjectRequest request, [FromServices] ISender sender) =>
         {
             var command = request.Adapt<CreateProjectCommand>();
             var response = await sender.Send(command);
