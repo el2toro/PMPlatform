@@ -1,19 +1,23 @@
-﻿namespace Project.API.Project.UpdateProject;
+﻿using Core.Services;
+
+namespace Project.API.Project.UpdateProject;
 
 public record UpdateProjectCommand(Guid TenantId, ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
 public record UpdateProjectResult(ProjectDto ProjectDto);
 
 //TODO: Add request validation behavior, check ir url tenantId == request tenantId
-public class UpdateProjectHandler(IProjectRepository projectRepository, IPublishEndpoint publishEndpoint)
+public class UpdateProjectHandler(IProjectRepository projectRepository,
+    IPublishEndpoint publishEndpoint,
+    ICacheService cacheService)
     : IRequestHandler<UpdateProjectCommand, UpdateProjectResult>
 {
     public async Task<UpdateProjectResult> Handle(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
-        // var project = command.ProjectDto.Adapt<Models.Project>();
         var project = await projectRepository.UpdateProjectAsync(command.ProjectDto, cancellationToken);
         var result = MapToDto(command.ProjectDto.Progress, command.ProjectDto.Team, project);
 
-        await publishEndpoint.Publish<ProjectUpdatedEvent>(result);
+        await cacheService.DeleteAsync(command.ProjectDto.Id.ToString(), cancellationToken);
+        await publishEndpoint.Publish<ProjectUpdatedEvent>(result, cancellationToken);
 
         return new UpdateProjectResult(result);
     }
