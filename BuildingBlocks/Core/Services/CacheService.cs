@@ -7,15 +7,20 @@ public interface ICacheService
 {
     Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken);
     Task SetAsync<T>(string key, T value, CancellationToken cancellationToken, TimeSpan? absoluteExpireTime = null);
-    Task DeleteAsync<T>(string key, CancellationToken cancellationToken);
+    Task DeleteAsync(string key, CancellationToken cancellationToken);
 }
 
 public class CacheService(IDistributedCache distributedCache) : ICacheService
 {
     private readonly IDistributedCache _distributedCache = distributedCache;
-    public async Task DeleteAsync<T>(string key, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(string key, CancellationToken cancellationToken = default)
     {
-        await _distributedCache.RemoveAsync(key, cancellationToken);
+        var cachedValue = await _distributedCache.GetStringAsync(key, cancellationToken);
+
+        if (cachedValue is not null)
+        {
+            await _distributedCache.RemoveAsync(key, cancellationToken);
+        }
     }
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
