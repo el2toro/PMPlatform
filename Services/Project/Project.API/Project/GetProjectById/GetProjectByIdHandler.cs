@@ -1,27 +1,25 @@
-﻿using Core.Services;
+﻿namespace Project.API.Project.GetProjectById;
 
-namespace Project.API.Project.GetProjectById;
-
-public record GetProjectByIdQuery(Guid ProjectId, Guid TenantId) : IRequest<GetProjectByIdResult>;
+public record GetProjectByIdQuery(Guid ProjectId, Guid TenantId) : IQuery<GetProjectByIdResult>;
 public record GetProjectByIdResult(ProjectDto Project);
 
 public class GetProjectByIdHandler(IProjectRepository projectRepository,
     ICacheService cacheService)
-    : IRequestHandler<GetProjectByIdQuery, GetProjectByIdResult>
+    : IQueryHandler<GetProjectByIdQuery, GetProjectByIdResult>
 {
-    public async Task<GetProjectByIdResult> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetProjectByIdResult> Handle(GetProjectByIdQuery query, CancellationToken cancellationToken)
     {
-        var cachedProject = await cacheService.GetAsync<ProjectDto>(request.ProjectId.ToString(), cancellationToken);
+        var cachedProject = await cacheService.GetAsync<ProjectDto>(query.ProjectId.ToString(), cancellationToken);
 
         if (cachedProject is not null)
         {
             return new GetProjectByIdResult(cachedProject);
         }
 
-        var project = await projectRepository.GetProjectByIdAsync(request.TenantId, request.ProjectId, cancellationToken);
+        var project = await projectRepository.GetProjectByIdAsync(query.TenantId, query.ProjectId, cancellationToken);
         var projectDto = project.Adapt<ProjectDto>();
 
-        await cacheService.SetAsync<ProjectDto>(request.ProjectId.ToString(),
+        await cacheService.SetAsync<ProjectDto>(query.ProjectId.ToString(),
             projectDto,
             cancellationToken,
             TimeSpan.FromHours(1));

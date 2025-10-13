@@ -1,15 +1,7 @@
-﻿using Core.CQRS;
-using Core.Services;
-using FluentValidation;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Collections.Concurrent;
-using System.Data;
-using System.Text.Json;
+﻿namespace Project.API.Project.GetProjects;
 
-namespace Project.API.Project.GetProjects;
-
-public record GetProjectsQuery(Guid TenantId, int PageNumber, int PageSize) : IQuery<GetProjectsResponse>;
-public record GetProjectsResponse(PaginatedResponse PaginatedResponse);
+public record GetProjectsQuery(Guid TenantId, int PageNumber, int PageSize) : IQuery<GetProjectsResult>;
+public record GetProjectsResult(PaginatedResponse PaginatedResponse);
 
 public class GetProjectsQueryValidator : AbstractValidator<GetProjectsQuery>
 {
@@ -22,26 +14,32 @@ public class GetProjectsQueryValidator : AbstractValidator<GetProjectsQuery>
 
 public class GetProjectsHandler(IProjectRepository projectRepository,
    ICacheService cacheService,
-    UserServiceClient userServiceClient)
-    : IQueryHandler<GetProjectsQuery, GetProjectsResponse>
+    UserServiceClient userServiceClient,
+    TaskServiceClient taskServiceClient)
+    : IQueryHandler<GetProjectsQuery, GetProjectsResult>
 {
-    public async Task<GetProjectsResponse> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
+    public async Task<GetProjectsResult> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
     {
         string PAGINATED_RESPONSE_KEY = $"paginated-response-{query.PageNumber}&{query.PageSize}";
 
-        var cachedPaginatedResponse = await cacheService.GetAsync<PaginatedResponse>(PAGINATED_RESPONSE_KEY, cancellationToken);
-        if (cachedPaginatedResponse is not null)
-        {
-            return new GetProjectsResponse(cachedPaginatedResponse);
-        }
+        //var cachedPaginatedResponse = await cacheService.GetAsync<PaginatedResponse>(PAGINATED_RESPONSE_KEY, cancellationToken);
+        //if (cachedPaginatedResponse is not null)
+        //{
+        //    return new GetProjectsResult(cachedPaginatedResponse);
+        //}
 
         var (items, totalCount) = await projectRepository
             .GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
+
+
         var tasks = items.Select(async project =>
         {
             var team = await GetTeamAsync(project.TenantId);
-            return MapToDto(project, team);
+            var projectProgressDto = await taskServiceClient.GetProgresData(project.TenantId, project.Id);
+            // var projectProgressDto = await projectRepository.GetProjectProgressAsync("78025c9d-f872-413d-8f44-0d3178cc71a5");
+            var progress = CalculateProgress(projectProgressDto);
+            return MapToDto(project, team, progress);
         });
 
         var projectDtos = await Task.WhenAll(tasks);
@@ -56,7 +54,7 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
 
         await cacheService.SetAsync(PAGINATED_RESPONSE_KEY, response, cancellationToken, TimeSpan.FromHours(1));
 
-        return new GetProjectsResponse(response);
+        return new GetProjectsResult(response);
     }
 
     //TODO: to be reviewed
@@ -67,51 +65,49 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
         return data.Take(1);
     }
 
-    private ProjectDto MapToDto(Models.Project project, IEnumerable<UserDto> team)
+    private ProjectDto MapToDto(Models.Project project, IEnumerable<UserDto> team, int progress) => new()
     {
-        return new ProjectDto
-        {
-            Id = project.Id,
-            Name = project.Name,
-            Description = project.Description,
-            CreatedAt = project.CreatedAt,
-            CreatedBy = project.CreatedBy,
-            TenantId = project.TenantId,
-            ProjectStatus = project.ProjectStatus,
-            StartDate = project.StartDate,
-            EndDate = project.EndDate,
-            Team = team
-        };
-    }
+        Id = project.Id,
+        Name = project.Name,
+        Description = project.Description,
+        CreatedAt = project.CreatedAt,
+        CreatedBy = project.CreatedBy,
+        TenantId = project.TenantId,
+        ProjectStatus = project.ProjectStatus,
+        StartDate = project.StartDate,
+        EndDate = project.EndDate,
+        Team = team,
+        Progress = progress
+    };
 
-    // Simple progress calculation based on task statuses
+    //Simple progress calculation based on task statuses
     // TODO: Refine this logic as per actual requirements
-    //    private int CalculateProgress(IEnumerable<Models.TaskItem> tasks)
-    //    {
-    //        if (tasks.Count() == 0) return 0;
+    private int CalculateProgress(ProjectProgressDto progressDto)
+    {
 
-    //        if (tasks.All(t => t.TaskStatus == TaskItemStatus.Done)) return 100;
+        // if (tasks.Count() == 0) return 0;
 
-    //        tasks = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled);
+        // if (tasks.All(t => t.TaskStatus == TaskItemStatus.Done)) return 100;
 
-    //        int totalTasks = tasks.Count();
-    //        double sumTaskProgress = 0;
+        //  tasks = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled);
 
-    //        foreach (var task in tasks)
-    //        {
-    //            int totalSubtasks = task.Subtasks.Count();
-    //            int completedSubtasks = task.Subtasks.Count(st => st.IsCompleted);
-
-    //            double taskProgress = totalSubtasks > 0
-    //                ? ((double)completedSubtasks / totalSubtasks)
-    //                : (task.TaskStatus == TaskItemStatus.Done ? 1 : 0);
-
-    //            sumTaskProgress += taskProgress;
-    //        }
+        //  int totalTasks = tasks.Count();
+        //  double sumTaskProgress = 0;
 
 
-    //        return totalTasks > 0
-    //            ? (int)(100 * (sumTaskProgress / totalTasks))
-    //            : 0;
-    //    }
+        //    int totalSubtasks = task.Subtasks.Count();
+        //    int completedSubtasks = task.Subtasks.Count(st => st.IsCompleted);
+
+        double subtaskProgress =
+              ((double)progressDto.CompletedSubtasks / progressDto.TotalSubtasks);
+        //        : (task.TaskStatus == TaskItemStatus.Done ? 1 : 0);
+
+        //    sumTaskProgress += taskProgress;
+
+
+
+        return progressDto.TotalTasks > 0
+            ? (int)(100 * ((progressDto.CompletedTasks / progressDto.TotalTasks) + subtaskProgress))
+            : 0;
+    }
 }

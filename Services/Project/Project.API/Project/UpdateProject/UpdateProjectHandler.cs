@@ -1,15 +1,13 @@
-﻿using Core.Services;
+﻿namespace Project.API.Project.UpdateProject;
 
-namespace Project.API.Project.UpdateProject;
-
-public record UpdateProjectCommand(Guid TenantId, ProjectDto ProjectDto) : IRequest<UpdateProjectResult>;
+public record UpdateProjectCommand(Guid TenantId, ProjectDto ProjectDto) : ICommand<UpdateProjectResult>;
 public record UpdateProjectResult(ProjectDto ProjectDto);
 
-//TODO: Add request validation behavior, check ir url tenantId == request tenantId
+//TODO: Add request validation behavior, check if url tenantId == request tenantId
 public class UpdateProjectHandler(IProjectRepository projectRepository,
     IPublishEndpoint publishEndpoint,
     ICacheService cacheService)
-    : IRequestHandler<UpdateProjectCommand, UpdateProjectResult>
+    : ICommandHandler<UpdateProjectCommand, UpdateProjectResult>
 {
     public async Task<UpdateProjectResult> Handle(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
@@ -22,21 +20,18 @@ public class UpdateProjectHandler(IProjectRepository projectRepository,
         return new UpdateProjectResult(result);
     }
 
-    private ProjectDto MapToDto(int progress, IEnumerable<UserDto> team, Models.Project updatedProject)
+    private ProjectDto MapToDto(int progress, IEnumerable<UserDto> team, Models.Project updatedProject) => new()
     {
-        return new ProjectDto
-        {
-            Id = updatedProject.Id,
-            Name = updatedProject.Name,
-            Description = updatedProject.Description,
-            CreatedAt = updatedProject.CreatedAt,
-            CreatedBy = updatedProject.CreatedBy,
-            TenantId = updatedProject.TenantId,
-            ProjectStatus = updatedProject.ProjectStatus,
-            StartDate = updatedProject.StartDate,
-            EndDate = updatedProject.EndDate,
-            Progress = progress,
-            Team = team
-        };
-    }
+        Id = updatedProject.Id,
+        Name = updatedProject.Name,
+        Description = updatedProject.Description,
+        CreatedAt = updatedProject.CreatedAt,
+        CreatedBy = updatedProject.CreatedBy,
+        TenantId = updatedProject.TenantId,
+        ProjectStatus = updatedProject.ProjectStatus,
+        StartDate = updatedProject.StartDate,
+        EndDate = updatedProject.EndDate,
+        Progress = progress,
+        Team = team
+    };
 }
