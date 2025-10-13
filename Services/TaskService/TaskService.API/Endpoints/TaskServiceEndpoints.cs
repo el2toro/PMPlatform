@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskService.Application.Tasks.Commands.UpdateTaskStatus;
+using TaskService.Application.Tasks.Queries.GetTaskCount;
 using TaskService.Domain.Enums;
 
 namespace TaskService.API.Endpoints;
@@ -7,6 +8,8 @@ namespace TaskService.API.Endpoints;
 public class TaskServiceEndpoints : ICarterModule
 {
     public record UpdateTaskStatusRequest(Guid ProjectId, Guid TaskId, TaskItemStatus Status);
+
+    //TODO: Add endpoint details: name, description, produce response...
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("tenants/{tenantId}/projects/{projectId}/tasks/{taskId}",
@@ -50,6 +53,13 @@ public class TaskServiceEndpoints : ICarterModule
         {
             var result = await sender.Send(new UpdateTaskStatusCommand(request.ProjectId, request.TaskId, request.Status));
             return Results.Ok(result.Task);
+        });
+
+        app.MapGet("tenants/{tenantId}/projects/{projectId}/tasks/progress",
+            async (Guid tenantId, Guid projectId, ISender sender) =>
+        {
+            var result = await sender.Send(new GetTaskCountQuery(projectId));
+            return Results.Ok(result.TaskCount);
         });
     }
 }
