@@ -4,7 +4,7 @@ public class ProjectRepository(ProjectDbContext dbContext) : IProjectRepository
 {
     private readonly ProjectDbContext _dbContext = dbContext;
 
-    public async Task<Models.Project> CreateProjectAsync(Guid projectId, Models.Project project, CancellationToken cancellationToken)
+    public async Task<Models.Project> CreateProjectAsync(Models.Project project, CancellationToken cancellationToken)
     {
         var createdProject = _dbContext.Projects.Add(project).Entity;
 
