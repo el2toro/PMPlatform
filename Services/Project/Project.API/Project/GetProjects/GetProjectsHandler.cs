@@ -1,4 +1,5 @@
 ﻿using Core.CQRS;
+using Core.Services;
 using FluentValidation;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Concurrent;
@@ -20,52 +21,46 @@ public class GetProjectsQueryValidator : AbstractValidator<GetProjectsQuery>
 }
 
 public class GetProjectsHandler(IProjectRepository projectRepository,
-   IDistributedCache distributedCache,
+   ICacheService cacheService,
     UserServiceClient userServiceClient)
     : IQueryHandler<GetProjectsQuery, GetProjectsResponse>
 {
     public async Task<GetProjectsResponse> Handle(GetProjectsQuery query, CancellationToken cancellationToken)
     {
-        var dataString = await distributedCache.GetStringAsync("projects");
-        if (!string.IsNullOrEmpty(dataString))
+        string PAGINATED_RESPONSE_KEY = $"paginated-response-{query.PageNumber}&{query.PageSize}";
+
+        var cachedPaginatedResponse = await cacheService.GetAsync<PaginatedResponse>(PAGINATED_RESPONSE_KEY, cancellationToken);
+        if (cachedPaginatedResponse is not null)
         {
-            var responseData = JsonSerializer.Deserialize<PaginatedResponse>(dataString);
-            return new GetProjectsResponse(responseData);
+            return new GetProjectsResponse(cachedPaginatedResponse);
         }
 
-        var (items, totalCount) = await projectRepository.GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
+        var (items, totalCount) = await projectRepository
+            .GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
-        var safeDtosCollection = new ConcurrentBag<ProjectDto>();
-
-        var tasks = items.Select(project =>
-        // GetTeam runs in parallel
-        GetTeam(project.TenantId)
-        .ContinueWith(taskTeam =>
+        var tasks = items.Select(async project =>
         {
-            var team = taskTeam.Result;
-            var projectDtos = MapToDto(project, team);
+            var team = await GetTeamAsync(project.TenantId);
+            return MapToDto(project, team);
+        });
 
-            safeDtosCollection.Add(projectDtos);
-        }));
-
-        await Task.WhenAll(tasks);
+        var projectDtos = await Task.WhenAll(tasks);
 
         var response = new PaginatedResponse
         {
             PageNumber = query.PageNumber,
             PageSize = query.PageSize,
             TotalItems = totalCount,
-            Items = safeDtosCollection
+            Items = projectDtos
         };
 
-        var data = JsonSerializer.Serialize(response);
-
-        await distributedCache.SetStringAsync("projects", data);
+        await cacheService.SetAsync(PAGINATED_RESPONSE_KEY, response, cancellationToken, TimeSpan.FromHours(1));
 
         return new GetProjectsResponse(response);
     }
 
-    private async Task<IEnumerable<UserDto>> GetTeam(Guid teanantId)
+    //TODO: to be reviewed
+    private async Task<IEnumerable<UserDto>> GetTeamAsync(Guid teanantId)
     {
         var data = await userServiceClient.GetUsersByTenantIdAsync(teanantId);
 
