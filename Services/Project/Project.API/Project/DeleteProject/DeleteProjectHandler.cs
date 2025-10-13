@@ -1,6 +1,4 @@
-﻿using Core.CQRS;
-
-namespace Project.API.Project.DeleteProject;
+﻿namespace Project.API.Project.DeleteProject;
 
 public record DeleteProjectCommand(Guid TenantId, Guid ProjectId) : ICommand<DeleteProjectResult>;
 public record DeleteProjectResult(bool IsSuccess);
