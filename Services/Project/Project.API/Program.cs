@@ -1,6 +1,7 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
+using Core.Services;
 using Project.API.TenantContext;
 using System.Reflection;
 
@@ -12,6 +13,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectHub, ProjectHub>();
 builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
 {
