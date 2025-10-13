@@ -1,8 +1,6 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
-using Core.Services;
-using Project.API.TenantContext;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +21,11 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddHttpClient<UserServiceClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:5056/"); // replace with your service URL
+});
+
+builder.Services.AddHttpClient<TaskServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5057/"); // replace with your service URL
 });
 
 var assembly = typeof(Program).Assembly;
