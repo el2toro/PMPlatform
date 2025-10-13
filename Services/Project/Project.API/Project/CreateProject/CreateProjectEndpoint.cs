@@ -1,6 +1,6 @@
 ﻿namespace Project.API.Project.CreateProject;
 
-public record CreateProjectRequest(Guid tenantId, string Name, string? Description, DateTime StartDate, DateTime EndDate);
+public record CreateProjectRequest(Guid TenantId, string Name, string? Description, DateTime StartDate, DateTime EndDate);
 
 public class CreateProjectEndpoint : ICarterModule
 {
