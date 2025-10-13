@@ -1,6 +1,7 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using TaskService.Application.Interfaces;
 using TaskService.Application.Tasks.EventHandlers;
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<ITaskServiceRepository, TaskServiceRepository>();
 builder.Services.AddScoped<ITaskServiceHub, TaskServiceHub>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddCarter();
 //var assembly = typeof(Program).Assembly;
