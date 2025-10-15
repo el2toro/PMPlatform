@@ -1,6 +1,4 @@
-﻿using TaskService.Domain.Entities;
-
-namespace TaskService.Application.Dtos;
+﻿namespace TaskService.Application.Dtos;
 
 public record CommentDto
 {

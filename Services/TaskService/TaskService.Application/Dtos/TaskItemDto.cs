@@ -1,5 +1,4 @@
-﻿using TaskService.Domain.Entities;
-using TaskService.Domain.Enums;
+﻿using TaskService.Domain.Enums;
 
 namespace TaskService.Application.Dtos;
 

@@ -3,7 +3,6 @@ using Core.Behaviors;
 using Hangfire;
 using Report.API.BackgroundJobs;
 using Report.API.DataAccess;
-using Report.API.Hubs;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

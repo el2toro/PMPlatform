@@ -1,9 +1,9 @@
-﻿global using Mapster;
+﻿global using Core.Messaging.Events.Task;
+global using Mapster;
+global using MassTransit;
 global using MediatR;
+global using Microsoft.Extensions.Logging;
 global using TaskService.Application.Dtos;
+global using TaskService.Application.Interfaces;
 global using TaskService.Domain.Entities;
 global using TaskService.Domain.Interfaces;
-global using Core.Messaging.Events.Task;
-global using MassTransit;
-global using Microsoft.Extensions.Logging;
-global using TaskService.Application.Interfaces;
