@@ -105,14 +105,12 @@ public class AuthRepository(AuthDbContext authDbContext,
         return createdUser;
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
     {
-        var users = await _authContext.Users.Include(u => u.UserTenants)
+        return await _authContext.Users.Include(u => u.UserTenants)
+            .AsNoTracking()
             .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId))
-            .Select(user => new UserDto(user.Id, user.FirstName, user.LastName, user.Email))
             .ToListAsync();
-
-        return users;
     }
 
     public async Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken)
@@ -134,11 +132,11 @@ public class AuthRepository(AuthDbContext authDbContext,
             .ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken)
     {
         return await _authContext.Users
-            .Where(u => userIds.Contains(u.Id))
-            .Select(user => new UserDto(user.Id, user.FirstName, user.LastName, user.Email))
+            .AsNoTracking()
+            .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId) && userIds.Contains(u.Id))
             .ToListAsync(cancellationToken);
     }
 
