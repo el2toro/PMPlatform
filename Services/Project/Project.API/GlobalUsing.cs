@@ -14,4 +14,3 @@ global using Project.API.Enums;
 global using Project.API.Hubs;
 global using Project.API.Repository;
 global using Project.API.Services;
-global using Project.API.TenantContext;

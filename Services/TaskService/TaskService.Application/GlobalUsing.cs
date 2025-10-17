@@ -7,3 +7,5 @@ global using TaskService.Application.Dtos;
 global using TaskService.Application.Interfaces;
 global using TaskService.Domain.Entities;
 global using TaskService.Domain.Interfaces;
+global using Core.Services;
+global using TaskService.Domain.Exceptions;
