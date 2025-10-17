@@ -40,17 +40,11 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
 
     public async Task<TaskItem> UpdateTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        var existingTask = await _dbContext.Tasks
-            .Include(t => t.Subtasks)
-            .Include(t => t.Comments)
-            .Include(t => t.Attachments)
-            .FirstOrDefaultAsync(t => t.Id == task.Id, cancellationToken);
 
-        existingTask = task.Adapt<TaskItem>();
-
+        var updatedTask = _dbContext.Tasks.Update(task).Entity;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return existingTask;
+        return updatedTask;
     }
 
     public async Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, TaskItemStatus status, CancellationToken cancellationToken)

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tenant.API.Data;
 using Tenant.API.Services;
 
@@ -31,7 +30,8 @@ public class TenantRepository : ITenantRepository
         if (existingTenant != null)
         {
             return new();
-        };
+        }
+        ;
 
         var newTenant = new Models.Tenant
         {

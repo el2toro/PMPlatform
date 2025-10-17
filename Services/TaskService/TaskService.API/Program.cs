@@ -11,9 +11,12 @@ using TaskService.Infrastructure.Persistance;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<ITaskServiceRepository, TaskServiceRepository>();
 builder.Services.AddScoped<ITaskServiceHub, TaskServiceHub>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddScoped<TenantAwareContextService>();
 
 builder.Services.AddCarter();
 //var assembly = typeof(Program).Assembly;

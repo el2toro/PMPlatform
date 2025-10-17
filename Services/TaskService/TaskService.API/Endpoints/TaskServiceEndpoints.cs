@@ -34,7 +34,7 @@ public class TaskServiceEndpoints : ICarterModule
             return Results.Ok(result.Task);
         });
 
-        app.MapPut("tenanats/{tenantId}/projects/{projectId}/tasks",
+        app.MapPut("tenants/{tenantId}/projects/{projectId}/tasks",
             async (Guid tenantId, Guid projectId, [FromBody] TaskItemDto request, ISender sender) =>
         {
             var result = await sender.Send(new UpdateTaskCommand(request));

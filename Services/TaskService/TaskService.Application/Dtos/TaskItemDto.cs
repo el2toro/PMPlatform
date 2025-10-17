@@ -1,5 +1,4 @@
-﻿using TaskService.Domain.Entities;
-using TaskService.Domain.Enums;
+﻿using TaskService.Domain.Enums;
 
 namespace TaskService.Application.Dtos;
 
@@ -17,7 +16,7 @@ public record TaskItemDto
     public Guid CreatedBy { get; set; }
     public Guid UpdatedBy { get; set; }
 
-    public IEnumerable<SubtaskDto> Subtasks { get; set; } = new List<SubtaskDto>();
-    public IEnumerable<CommentDto> Comments { get; set; } = new List<CommentDto>();
-    public IEnumerable<AttachmentDto> Attachments { get; set; } = new List<AttachmentDto>();
+    public IEnumerable<SubtaskDto>? Subtasks { get; set; } = new List<SubtaskDto>();
+    public IEnumerable<CommentDto>? Comments { get; set; } = new List<CommentDto>();
+    public IEnumerable<AttachmentDto>? Attachments { get; set; } = new List<AttachmentDto>();
 }

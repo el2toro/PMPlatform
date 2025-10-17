@@ -31,13 +31,10 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
         var (items, totalCount) = await projectRepository
             .GetProjectsAsync(query.TenantId, query.PageNumber, query.PageSize, cancellationToken);
 
-
-
         var tasks = items.Select(async project =>
         {
             var team = await GetTeamAsync(project.TenantId);
             var projectProgressDto = await taskServiceClient.GetProgresData(project.TenantId, project.Id);
-            // var projectProgressDto = await projectRepository.GetProjectProgressAsync("78025c9d-f872-413d-8f44-0d3178cc71a5");
             var progress = CalculateProgress(projectProgressDto);
             return MapToDto(project, team, progress);
         });
@@ -84,30 +81,18 @@ public class GetProjectsHandler(IProjectRepository projectRepository,
     // TODO: Refine this logic as per actual requirements
     private int CalculateProgress(ProjectProgressDto progressDto)
     {
+        // Protect against division by zero
+        double taskProgress = progressDto.TotalTasks > 0
+            ? (double)progressDto.CompletedTasks / progressDto.TotalTasks
+            : 0.0;
 
-        // if (tasks.Count() == 0) return 0;
+        double subtaskProgress = progressDto.TotalSubtasks > 0
+            ? (double)progressDto.CompletedSubtasks / progressDto.TotalSubtasks
+            : 0.0;
 
-        // if (tasks.All(t => t.TaskStatus == TaskItemStatus.Done)) return 100;
+        // Combine them with equal weight (optional)
+        double totalProgress = (taskProgress + subtaskProgress) / 2.0;
 
-        //  tasks = tasks.Where(t => t.TaskStatus != TaskItemStatus.Cancelled);
-
-        //  int totalTasks = tasks.Count();
-        //  double sumTaskProgress = 0;
-
-
-        //    int totalSubtasks = task.Subtasks.Count();
-        //    int completedSubtasks = task.Subtasks.Count(st => st.IsCompleted);
-
-        double subtaskProgress =
-              ((double)progressDto.CompletedSubtasks / progressDto.TotalSubtasks);
-        //        : (task.TaskStatus == TaskItemStatus.Done ? 1 : 0);
-
-        //    sumTaskProgress += taskProgress;
-
-
-
-        return progressDto.TotalTasks > 0
-            ? (int)(100 * ((progressDto.CompletedTasks / progressDto.TotalTasks) + subtaskProgress))
-            : 0;
+        return (int)(totalProgress * 100);
     }
 }

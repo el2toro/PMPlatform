@@ -10,7 +10,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectHub, ProjectHub>();
-builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddScoped<TenantAwareContextService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>

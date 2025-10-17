@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Project.API.Project.DeleteProject;
+﻿namespace Project.API.Project.DeleteProject;
 
 public record DeleteProjectRequest(Guid TenantId, Guid ProjectId);
 
