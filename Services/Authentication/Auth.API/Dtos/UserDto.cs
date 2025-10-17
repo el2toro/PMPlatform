@@ -1,4 +1,13 @@
 ﻿namespace Auth.API.Dtos;
 
-public record UserDto(Guid Id, string FirstName, string LastName, string Email);
+public record UserDto
+{
+    public Guid Id { get; set; }
+    public string FirstName { get; set; } = default!;
+    public string LastName { get; set; } = default!;
+    public string Email { get; set; } = default!;
+    public string FullName { get; set; } = default!;
+
+};
+
 
