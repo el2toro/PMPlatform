@@ -22,10 +22,11 @@ public class UserRepository(AuthDbContext authDbContext) : IUserRepository
         return createdUser;
     }
 
-    public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetUsersAsync(Guid tenantId, CancellationToken cancellationToken)
     {
         return await authDbContext.Users
             .AsNoTracking()
+            .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId))
             .ToListAsync(cancellationToken);
     }
 
@@ -40,7 +41,7 @@ public class UserRepository(AuthDbContext authDbContext) : IUserRepository
         existingUser.Email = user.Email;
         existingUser.UpdatedAt = DateTime.UtcNow;
 
-        authDbContext.Users.Update(existingUser);
+        // authDbContext.Users.Update(existingUser);
         await authDbContext.SaveChangesAsync();
 
         return existingUser;
