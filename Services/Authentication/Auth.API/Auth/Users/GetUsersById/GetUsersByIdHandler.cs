@@ -11,6 +11,20 @@ public class GetUsersByIdHandler(IAuthRepository authRepository)
     public async Task<GetUsersByIdResult> Handle(GetUsersByIdQuery request, CancellationToken cancellationToken)
     {
         var users = await authRepository.GetUsersById(request.TenantId, request.UserIds, cancellationToken);
-        return new GetUsersByIdResult(users);
+        var usersDtos = MapToDto(users);
+        return new GetUsersByIdResult(usersDtos);
+    }
+
+    //TODO: move to mapper, it is a duplicated method some is in GetUsersByTenantIdHandler
+    private IEnumerable<UserDto> MapToDto(IEnumerable<User> users)
+    {
+        return users.Select(user => new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            FullName = $"{user.FirstName} {user.LastName}"
+        });
     }
 }
