@@ -8,14 +8,14 @@ public record CreateProjectCommand(Guid TenantdId,
 public record CreateProjectResult(ProjectDto ProjectDto);
 
 public class CreateProjectHandler(IProjectRepository projectRepository,
-    ITenantContext tenantContext,
+    TenantAwareContextService tenantContext,
     IPublishEndpoint publishEndpoint)
     : ICommandHandler<CreateProjectCommand, CreateProjectResult>
 {
     public async Task<CreateProjectResult> Handle(CreateProjectCommand command, CancellationToken cancellationToken)
     {
         var projectToBeCreated = MapCommandToProject(command, tenantContext);
-        var createdProject = await projectRepository.CreateProjectAsync(projectToBeCreated, cancellationToken);
+        var createdProject = await projectRepository.CreateProjectAsync(new Models.Project(), cancellationToken);
 
         var projectDto = createdProject.Adapt<ProjectDto>();
 
