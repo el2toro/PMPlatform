@@ -4,10 +4,8 @@ namespace Auth.API.Data;
 
 public class AuthDbContext : DbContext
 {
-    private readonly string _tenantSchema;
-    public AuthDbContext(DbContextOptions<AuthDbContext> options, string tenantSchema) : base(options)
+    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {
-        _tenantSchema = tenantSchema;
     }
 
     // DbSets
@@ -18,8 +16,6 @@ public class AuthDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        //modelBuilder.HasDefaultSchema(_tenantSchema);
 
         // User entity configuration
         modelBuilder.Entity<User>(entity =>
