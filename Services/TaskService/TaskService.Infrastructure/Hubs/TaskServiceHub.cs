@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Core.Services;
+using Microsoft.AspNetCore.SignalR;
 using TaskService.Application.Dtos;
 using TaskService.Application.Interfaces;
 
 namespace TaskService.Infrastructure.Hubs;
 
-public class TaskServiceHub(IHubContext<TaskServiceHub> hubContext) : Hub, ITaskServiceHub
+public class TaskServiceHub(IHubContext<TaskServiceHub> hubContext,
+    TenantAwareContextService tenantAwareContextService)
+    : Hub, ITaskServiceHub
 {
     private readonly IHubContext<TaskServiceHub> _hubContext = hubContext;
     public async Task SendCreatedTask(TaskItemDto task)
@@ -12,12 +15,12 @@ public class TaskServiceHub(IHubContext<TaskServiceHub> hubContext) : Hub, ITask
         await _hubContext.Clients.All.SendAsync("ReceiveCreatedTask", task);
     }
 
-    public async Task SendTaskAssigneChanged(Guid taskId, Guid assignedTo)
+    public async Task SendTaskAssignee(TaskItemDto task)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveTaskAssignee", taskId, assignedTo);
+        await _hubContext.Clients.User(tenantAwareContextService.ToString()!).SendAsync("ReceiveTaskAssignee", task);
     }
 
-    public async Task SendTaskStatusChanged(Guid taskId, int status)
+    public async Task SendTaskStatus(Guid taskId, TaskItemStatus status)
     {
         await _hubContext.Clients.All.SendAsync("ReceiveTaskStatus", taskId, status);
     }
@@ -25,5 +28,11 @@ public class TaskServiceHub(IHubContext<TaskServiceHub> hubContext) : Hub, ITask
     public async Task SendUpdatedTask(TaskItemDto task)
     {
         await _hubContext.Clients.All.SendAsync("ReceiveUpdatedTask", task);
+    }
+
+    public override Task OnConnectedAsync()
+    {
+        Console.WriteLine($"Connected user: {Context.User?.FindFirst("sub")?.Value}");
+        return base.OnConnectedAsync();
     }
 }
