@@ -1,4 +1,4 @@
-﻿namespace AuthService.Enums;
+﻿namespace Auth.API.Enums;
 
 public enum TenantPlan
 {

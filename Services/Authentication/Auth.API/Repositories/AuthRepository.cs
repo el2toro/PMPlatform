@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Auth.API.Interfaces;
+using Auth.API.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace AuthService.Repository;
+namespace Auth.API.Repository;
 
 public class AuthRepository(AuthDbContext authDbContext,
     IJwtTokenService jwtTokenService,
@@ -11,30 +13,10 @@ public class AuthRepository(AuthDbContext authDbContext,
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
     private readonly TenantServiceClient _tenantServiceClient = tenantServiceClient;
 
-    public async Task<UserProfileDto> Login(string email, string password, CancellationToken cancellationToken)
+    public async Task Login(RefreshToken refreshToken, CancellationToken cancellationToken)
     {
-        var user = await _authContext.Users
-            .Include(u => u.UserTenants)
-            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-
-        ArgumentNullException.ThrowIfNull(user, "User not found");
-
-        var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-
-        if (!isPasswordValid)
-        {
-            throw new Exception("Invalid password.");
-        }
-
-        var tenantId = user.UserTenants.FirstOrDefault()!.TenantId;
-        var userRole = user.UserTenants.FirstOrDefault()!.Role;
-        var token = _jwtTokenService.GenerateToken(user, userRole.ToString(), tenantId);
-        var refreshToken = _jwtTokenService.GenerateRefreshToken(tenantId, user.Id);
-
         _authContext.RefreshTokens.Add(refreshToken);
         await _authContext.SaveChangesAsync(cancellationToken);
-
-        return MapToUserProfile(user, token, refreshToken.Token, tenantId);
     }
 
     public async Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken)

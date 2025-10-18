@@ -1,4 +1,4 @@
-﻿namespace AuthService.Services;
+﻿namespace Auth.API.Services;
 
 public interface IJwtTokenService
 {

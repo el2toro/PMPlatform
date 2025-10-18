@@ -1,4 +1,6 @@
-﻿namespace Auth.API.Auth.Register;
+﻿using Auth.API.Interfaces;
+
+namespace Auth.API.Auth.Register;
 
 public record RegisterCommand(
     string FirstName,

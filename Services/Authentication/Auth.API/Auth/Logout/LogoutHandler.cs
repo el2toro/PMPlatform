@@ -1,4 +1,6 @@
-﻿namespace Auth.API.Auth.Logout;
+﻿using Auth.API.Interfaces;
+
+namespace Auth.API.Auth.Logout;
 
 public record LogoutCommand(string RefreshToken, Guid TenantId) : IRequest<LogoutResult>;
 public record LogoutResult(bool IsSuccess);

@@ -1,4 +1,6 @@
-﻿namespace Auth.API.Auth.RefreshToken;
+﻿using Auth.API.Interfaces;
+
+namespace Auth.API.Auth.RefreshToken;
 
 public record RefreshTokenCommand(string RefreshToken, Guid TenantId) : IRequest<RefreshTokenResult>;
 public record RefreshTokenResult(string RefreshToken, string AccessToken);

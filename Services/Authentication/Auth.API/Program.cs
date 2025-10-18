@@ -1,6 +1,8 @@
+using Auth.API.Interfaces;
 using Auth.API.Repository;
 using Core.Behaviors;
 using Core.Exceptions.Handler;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +12,12 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticationDb")));
 
 // Register JWT service
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<TenantAwareContextService>();
 
 builder.Services.AddHttpClient<TenantServiceClient>(client =>
 {
@@ -38,12 +43,6 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();
-
-//if (!app.Environment.IsDevelopment())
-//{
-//    app.UseHttpsRedirection();
-//}
-
 app.UseExceptionHandler(option => { });
 
 app.Run();

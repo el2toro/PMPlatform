@@ -1,7 +1,5 @@
-﻿namespace AuthService.Models;
-// -------------------
-// Refresh Token
-// -------------------
+﻿namespace Auth.API.Models;
+
 public class RefreshToken
 {
     public Guid Id { get; set; } = Guid.NewGuid();

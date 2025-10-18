@@ -1,4 +1,4 @@
-﻿namespace AuthService.Dtos;
+﻿namespace Auth.API.Dtos;
 
 public record UserProfileDto(
         Guid UserId,

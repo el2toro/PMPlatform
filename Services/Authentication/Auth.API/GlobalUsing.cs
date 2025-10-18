@@ -1,11 +1,11 @@
 ﻿global using Auth.API.Dtos;
 global using Auth.API.Services;
-global using AuthService.Data;
-global using AuthService.Dtos;
-global using AuthService.Enums;
-global using AuthService.Models;
-global using AuthService.Repository;
-global using AuthService.Services;
+global using Auth.API.Data;
+global using Auth.API.Dtos;
+global using Auth.API.Enums;
+global using Auth.API.Models;
+global using Auth.API.Repository;
+global using Auth.API.Services;
 global using Carter;
 global using Mapster;
 global using MediatR;

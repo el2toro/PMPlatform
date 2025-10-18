@@ -1,4 +1,4 @@
-﻿namespace AuthService.Models;
+﻿namespace Auth.API.Models;
 // -------------------
 // User-Tenant Membership
 // -------------------
