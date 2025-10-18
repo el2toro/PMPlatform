@@ -7,8 +7,8 @@ public class TaskAssigneeChangedEvendHandler
     public async Task Consume(ConsumeContext<TaskAssigneeChangedEvent> context)
     {
         logger.LogInformation("Task Event Handler: {TaskAssigneeChangedEvent}", context.Message.GetType().Name);
-        var taskAssigneeChangedEvent = context.Message;
+        var taskDto = context.Message.Adapt<TaskItemDto>();
 
-        await taskServiceHub.SendTaskAssigneChanged(taskAssigneeChangedEvent.Id, taskAssigneeChangedEvent.AssignedTo);
+        await taskServiceHub.SendTaskAssignee(taskDto);
     }
 }

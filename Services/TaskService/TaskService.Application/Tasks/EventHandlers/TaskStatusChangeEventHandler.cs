@@ -10,6 +10,6 @@ public class TaskStatusChangeEventHandler
 
         var taskStatusChangeEvent = context.Message;
 
-        await taskServiceHub.SendTaskStatusChanged(taskStatusChangeEvent.Id, taskStatusChangeEvent.TaskStatus);
+        //await taskServiceHub.SendTaskStatus(taskStatusChangeEvent.Id, taskStatusChangeEvent.TaskStatus);
     }
 }
