@@ -10,4 +10,8 @@
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\TaskService\TaskService.Domain\TaskService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
