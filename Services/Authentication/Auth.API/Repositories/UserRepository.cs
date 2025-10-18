@@ -49,6 +49,7 @@ public class UserRepository(AuthDbContext authDbContext) : IUserRepository
     public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken)
     {
         return await authDbContext.Users
+            .Include(u => u.UserTenants)
             .AsNoTracking()
             .Where(u => u.Email == email)
             .FirstOrDefaultAsync(cancellationToken);

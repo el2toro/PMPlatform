@@ -9,7 +9,7 @@ public record TaskItemDto
     public string? Description { get; set; }
     public DateTime DueDate { get; set; }
     public Guid ProjectId { get; set; }
-    public Guid AssignedTo { get; set; }
+    public Guid? AssignedTo { get; set; }
     public TaskItemStatus TaskStatus { get; set; } = TaskItemStatus.Backlog;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

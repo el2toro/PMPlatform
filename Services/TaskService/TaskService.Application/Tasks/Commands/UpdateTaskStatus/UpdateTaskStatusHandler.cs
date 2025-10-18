@@ -1,9 +1,7 @@
-﻿using TaskService.Domain.Enums;
-
-namespace TaskService.Application.Tasks.Commands.UpdateTaskStatus;
+﻿namespace TaskService.Application.Tasks.Commands.UpdateTaskStatus;
 
 
-public record UpdateTaskStatusCommand(Guid ProjectId, Guid TaskId, TaskItemStatus Status) : IRequest<UpdateTaskStatusResult>;
+public record UpdateTaskStatusCommand(Guid ProjectId, Guid TaskId, Domain.Enums.TaskItemStatus Status) : IRequest<UpdateTaskStatusResult>;
 public record UpdateTaskStatusResult(TaskItemDto Task);
 
 public class UpdateTaskStatusHandler(ITaskServiceRepository taskServiceRepository, IPublishEndpoint publishEndpoint)
@@ -14,12 +12,7 @@ public class UpdateTaskStatusHandler(ITaskServiceRepository taskServiceRepositor
         var updatedTask = await taskServiceRepository.UpdateTaskStatusAsync(command.ProjectId, command.TaskId, command.Status, cancellationToken);
         var result = updatedTask.Adapt<TaskItemDto>();
 
-        //TODO: remove casting
-        await publishEndpoint.Publish<TaskStatusChangedEvent>(new TaskStatusChangedEvent
-        {
-            Id = result.Id,
-            TaskStatus = (int)result.TaskStatus
-        });
+        await publishEndpoint.Publish<TaskUpdatedEvent>(result);
 
         return new UpdateTaskStatusResult(result);
     }

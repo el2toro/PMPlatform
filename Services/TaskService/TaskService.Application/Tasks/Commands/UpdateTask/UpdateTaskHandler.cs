@@ -29,6 +29,9 @@ public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository,
         var updatedTask = await taskServiceRepository.UpdateTaskAsync(taskItem, cancellationToken);
         var result = updatedTask.Adapt<TaskItemDto>();
 
+        if (tenantContext.UserId == command.Task.AssignedTo)
+            await publishEndpoint.Publish<TaskAssigneeChangedEvent>(result, cancellationToken);
+
         await publishEndpoint.Publish<TaskUpdatedEvent>(result);
 
         return new UpdateTaskResult(result);
