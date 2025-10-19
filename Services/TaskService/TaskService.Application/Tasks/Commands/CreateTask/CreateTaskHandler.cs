@@ -3,15 +3,20 @@
 public record CreateTaskCommand(TaskItemDto Task) : IRequest<CreateTaskResult>;
 public record CreateTaskResult(TaskItemDto Task);
 
-public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository, IPublishEndpoint publishEndpoint)
+public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository,
+    TenantAwareContextService tenantAwareContextService,
+    IPublishEndpoint publishEndpoint)
     : IRequestHandler<CreateTaskCommand, CreateTaskResult>
 {
     public async Task<CreateTaskResult> Handle(CreateTaskCommand command, CancellationToken cancellationToken)
     {
         var taskItem = command.Task.Adapt<TaskItem>();
+        Guid userId = tenantAwareContextService.UserId;
 
         taskItem.CreatedAt = DateTime.UtcNow;
         taskItem.UpdatedAt = DateTime.UtcNow;
+        taskItem.CreatedBy = userId;
+        taskItem.UpdatedBy = userId;
 
         var createdTask = await taskServiceRepository.CreateTaskAsync(taskItem, cancellationToken);
         var result = createdTask.Adapt<TaskItemDto>();
