@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskService.Infrastructure.Persistance;
 
@@ -11,9 +12,11 @@ using TaskService.Infrastructure.Persistance;
 namespace TaskService.Infrastructure.Persistance.Migrations
 {
     [DbContext(typeof(TaskServiceDbContext))]
-    partial class TaskServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018175142_UpdateDbContext")]
+    partial class UpdateDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,7 +79,7 @@ namespace TaskService.Infrastructure.Persistance.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Commnets");
                 });
 
             modelBuilder.Entity("TaskService.Domain.Entities.Subtask", b =>
