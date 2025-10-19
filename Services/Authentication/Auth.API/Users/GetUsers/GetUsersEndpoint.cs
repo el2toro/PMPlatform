@@ -10,12 +10,5 @@ public class GetUsersEndpoint : ICarterModule
             return Results.Ok(result.Users);
         })
         .WithDisplayName("GetUsesByTenantId");
-
-        app.MapGet("tenants/{tenantId}/Projects/{projectId}/users",
-            async (Guid tenantId, Guid projectId, ISender sender) =>
-        {
-            var result = await sender.Send(new GetUsersQuery(tenantId));
-            return Results.Ok(result.Users);
-        });
     }
 }

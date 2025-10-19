@@ -89,7 +89,7 @@ public class AuthRepository(AuthDbContext authDbContext,
 
     public async Task<IEnumerable<User>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
     {
-        return await _authContext.Users.Include(u => u.UserTenants)
+        return await _authContext.Users
             .AsNoTracking()
             .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId))
             .ToListAsync();
@@ -112,14 +112,6 @@ public class AuthRepository(AuthDbContext authDbContext,
         await _authContext.UserTenants
             .Where(ut => ut.TenantId == tenantId && ut.UserId == userId)
             .ExecuteDeleteAsync(cancellationToken);
-    }
-
-    public async Task<IEnumerable<User>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken)
-    {
-        return await _authContext.Users
-            .AsNoTracking()
-            .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId) && userIds.Contains(u.Id))
-            .ToListAsync(cancellationToken);
     }
 
     private User CreateUser(RegisterRequestDto request, CancellationToken cancellationToken)

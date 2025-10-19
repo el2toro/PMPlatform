@@ -9,5 +9,4 @@ public interface IAuthRepository
     Task<IEnumerable<User>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken);
     Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken);
     Task RemoveUserFromTenant(Guid tenantId, Guid userId, CancellationToken cancellationToken);
-    Task<IEnumerable<User>> GetUsersById(Guid tenantId, IEnumerable<Guid> userIds, CancellationToken cancellationToken);
 }
