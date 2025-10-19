@@ -1,8 +1,9 @@
+using Auth.API.Auth.Login;
 using Auth.API.Interfaces;
-using Auth.API.Repository;
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,10 +31,13 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(assembly);
 
+
+    config.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly);
     //Congigure Mediator pre behavior (execute before reach the handle method)
     config.AddOpenBehavior(typeof(ValidationBehavior<,>));
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
+builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 
 builder.Services.AddCarter();
 builder.Services.AddExceptionHandler<CustomExceptioHandler>();

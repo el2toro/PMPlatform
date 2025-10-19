@@ -1,10 +1,12 @@
 ﻿using Auth.API.Exceptions;
 using Auth.API.Interfaces;
+using Core.CQRS;
+using FluentValidation;
 using System.Security.Authentication;
 
 namespace Auth.API.Auth.Login;
 
-public record LoginCommand(string Email, string Password) : IRequest<LoginResult>;
+public record LoginCommand(string Email, string Password) : ICommand<LoginResult>;
 public record LoginResult(
         Guid UserId,
         Guid TenantId,
@@ -15,13 +17,26 @@ public record LoginResult(
         string RefreshToken,
         IEnumerable<string> Roles);
 
-public class LoginHandler(IAuthRepository repository,
+public class LoginCommandValidator : AbstractValidator<LoginCommand>
+{
+    public LoginCommandValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
+        RuleFor(x => x.Email).EmailAddress().WithMessage("Not valid email address");
+        RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
+    }
+}
+
+internal class LoginHandler(ILogger<LoginHandler> logger,
+    IAuthRepository repository,
     IUserRepository userRepository,
     IJwtTokenService jwtTokenService)
-    : IRequestHandler<LoginCommand, LoginResult>
+    : ICommandHandler<LoginCommand, LoginResult>
 {
     public async Task<LoginResult> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("LoginHandler started executing");
+
         var user = await userRepository.GetUserByEmail(command.Email, cancellationToken)
             ?? throw new UserNotFoundException(command.Email);
 
