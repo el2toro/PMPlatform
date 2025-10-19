@@ -4,7 +4,7 @@ public enum TenantRole
 {
     Owner = 1,
     Admin = 2,
-    Member = 3,
-    Viewer = 4
+    ProductManager = 3,
+    Contributor = 4
 }
 
