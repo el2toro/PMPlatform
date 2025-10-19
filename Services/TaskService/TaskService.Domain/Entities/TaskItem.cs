@@ -15,7 +15,7 @@ public class TaskItem
     public Guid UpdatedBy { get; set; }
 
     // Navigation
-    public List<Subtask> Subtasks { get; set; } = default!;
-    public List<Comment> Comments { get; set; } = default!;
-    public List<Attachment> Attachments { get; set; } = default!;
+    public List<Subtask>? Subtasks { get; set; } = default!;
+    public List<Comment>? Comments { get; set; } = default!;
+    public List<Attachment>? Attachments { get; set; } = default!;
 }
