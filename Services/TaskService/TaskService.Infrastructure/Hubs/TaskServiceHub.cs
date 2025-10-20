@@ -1,5 +1,6 @@
 ﻿using Core.Services;
 using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 using TaskService.Application.Dtos;
 using TaskService.Application.Interfaces;
 
@@ -34,5 +35,10 @@ public class TaskServiceHub(IHubContext<TaskServiceHub> hubContext,
     {
         Console.WriteLine($"Connected user: {Context.User?.FindFirst("sub")?.Value}");
         return base.OnConnectedAsync();
+    }
+
+    public async Task SendTaskDeleted(Guid taskId)
+    {
+        await _hubContext.Clients.All.SendAsync("ReceiveDeletedTask", taskId);
     }
 }
