@@ -18,10 +18,20 @@ public class CreateTaskHandler(ITaskServiceRepository taskServiceRepository,
         taskItem.CreatedBy = userId;
         taskItem.UpdatedBy = userId;
 
-        var createdTask = await taskServiceRepository.CreateTaskAsync(taskItem, cancellationToken);
+        if (taskItem is not null && taskItem.Comments?.Count > 0)
+        {
+            foreach (var comment in taskItem.Comments)
+            {
+                comment.CreatedAt = DateTime.UtcNow;
+                comment.UpdatedAt = DateTime.UtcNow;
+                comment.CommentedBy = userId;
+            }
+        }
+
+        var createdTask = await taskServiceRepository.CreateTaskAsync(taskItem!, cancellationToken);
         var result = createdTask.Adapt<TaskItemDto>();
 
-        await publishEndpoint.Publish<TaskCreatedEvent>(result);
+        await publishEndpoint.Publish<TaskCreatedEvent > (result);
 
         return new CreateTaskResult(result);
     }
