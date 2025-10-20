@@ -1,6 +1,7 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
 using Core.Messaging.MassTransit;
+using Project.API.EventHandlers;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +40,14 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddCarter();
 
-builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
+var eventHandlerAssemblies = new Assembly[]
+{
+    typeof(ProjectCreatedEventHandler).Assembly,
+    typeof(ProjectUpdatedEventHandler).Assembly,
+   // typeof(ProjectDeletedEventHandler).Assembly
+};
+
+builder.Services.AddMessageBroker(builder.Configuration, eventHandlerAssemblies);
 
 builder.Services.AddSignalR();
 builder.Services.AddExceptionHandler<CustomExceptioHandler>();
@@ -53,7 +61,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//app.UseHttpsRedirection(); //do u need that?
 app.MapCarter();
 
 app.MapHub<ProjectHub>("/hub/project");
