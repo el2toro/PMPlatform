@@ -15,7 +15,7 @@ public class CreateProjectHandler(IProjectRepository projectRepository,
     public async Task<CreateProjectResult> Handle(CreateProjectCommand command, CancellationToken cancellationToken)
     {
         var projectToBeCreated = MapCommandToProject(command, tenantContext);
-        var createdProject = await projectRepository.CreateProjectAsync(new Models.Project(), cancellationToken);
+        var createdProject = await projectRepository.CreateProjectAsync(projectToBeCreated, cancellationToken);
 
         var projectDto = createdProject.Adapt<ProjectDto>();
 
