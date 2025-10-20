@@ -27,16 +27,13 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
     }
 }
 
-internal class LoginHandler(ILogger<LoginHandler> logger,
-    IAuthRepository repository,
+internal class LoginHandler(IAuthRepository repository,
     IUserRepository userRepository,
     IJwtTokenService jwtTokenService)
     : ICommandHandler<LoginCommand, LoginResult>
 {
     public async Task<LoginResult> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("LoginHandler started executing");
-
         var user = await userRepository.GetUserByEmail(command.Email, cancellationToken)
             ?? throw new UserNotFoundException(command.Email);
 
