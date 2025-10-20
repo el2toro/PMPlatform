@@ -1,8 +1,10 @@
 using Core.Behaviors;
 using Core.Exceptions.Handler;
+using Core.Messaging.Events.Task;
 using Core.Messaging.MassTransit;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using TaskService.Application.Interfaces;
 using TaskService.Application.Tasks.EventHandlers;
 using TaskService.Infrastructure.Hubs;
@@ -19,10 +21,11 @@ builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<TenantAwareContextService>();
 
 builder.Services.AddCarter();
-//var assembly = typeof(Program).Assembly;
+var assembly = typeof(Program).Assembly;
 
 builder.Services.AddMediatR(config =>
 {
+    config.RegisterServicesFromAssembly(assembly);
     config.RegisterServicesFromAssembly(typeof(GetTaskByIdHandler).Assembly);
 
     //Congigure Mediator pre behavior (execute before reach the handle method)
@@ -35,7 +38,16 @@ builder.Services.AddDbContext<TaskServiceDbContext>(config =>
     config.UseSqlServer(builder.Configuration.GetConnectionString("TaskDb"));
 });
 
-builder.Services.AddMessageBroker(builder.Configuration, typeof(TaskCreatedEventHandler).Assembly);
+var eventHandlerAssemblies = new Assembly[]
+{
+    typeof(TaskCreatedEventHandler).Assembly,
+    typeof(TaskUpdatedEventHandler).Assembly,
+    typeof(TaskDeletedEventHandler).Assembly,
+    typeof(TaskStatusChangeEventHandler).Assembly,
+    typeof(TaskAssigneeChangedEvendHandler).Assembly,
+};
+
+builder.Services.AddMessageBroker(builder.Configuration, eventHandlerAssemblies);
 
 builder.Services.AddSignalR();
 builder.Services.AddExceptionHandler<CustomExceptioHandler>();
