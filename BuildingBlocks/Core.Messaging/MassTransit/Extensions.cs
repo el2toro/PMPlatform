@@ -8,15 +8,15 @@ namespace Core.Messaging.MassTransit;
 public static class Extensions
 {
     public static IServiceCollection
-        AddMessageBroker(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
+        AddMessageBroker(this IServiceCollection services, IConfiguration configuration, Assembly[]? assemblies = null)
     {
         services.AddMassTransit(config =>
         {
             config.SetKebabCaseEndpointNameFormatter();
 
-            if (assembly is not null)
+            if (assemblies is not null && assemblies.Any())
             {
-                config.AddConsumers(assembly);
+                config.AddConsumers(assemblies);
             }
 
             config.UsingRabbitMq((context, configurator) =>
