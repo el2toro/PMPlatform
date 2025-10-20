@@ -7,10 +7,8 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
     private readonly TaskServiceDbContext _dbContext = dbContext;
     public async Task<TaskItem> CreateTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        //TODO: task cannot be created with subtasks, comment, attachement it throws an error
-
         var createdTask = _dbContext.Tasks.Add(task).Entity;
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return createdTask;
     }
@@ -35,7 +33,7 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
            .AsNoTracking()
            .FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Id == taskId, cancellationToken);
 
-        return task;
+        return task!;
     }
 
     public async Task<TaskItem> UpdateTaskAsync(TaskItem task, CancellationToken cancellationToken)
@@ -60,16 +58,8 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
         return task;
     }
 
-    public async Task DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken)
+    public async Task DeleteTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        var task = await _dbContext.Tasks
-           .Include(t => t.Subtasks)
-           .Include(t => t.Comments)
-           .Include(t => t.Attachments)
-           .FirstOrDefaultAsync(t => t.Id == taskId, cancellationToken);
-
-        ArgumentNullException.ThrowIfNull(nameof(taskId));
-
         _dbContext.Tasks.Remove(task);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

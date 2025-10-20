@@ -7,7 +7,7 @@ public interface ITaskServiceRepository
     Task<TaskItem> GetTaskByIdAsync(Guid projectId, Guid taskId, CancellationToken cancellationToken);
     Task<TaskItem> UpdateTaskAsync(TaskItem taskDto, CancellationToken cancellationToken);
     Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, TaskItemStatus status, CancellationToken cancellationToken);
-    Task DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken);
+    Task DeleteTaskAsync(TaskItem task, CancellationToken cancellationToken);
     Task<(int totalTasks, int completedTasks, int totalSubtasks, int completedSubtasks)>
         GetTaskCountAsync(Guid projectId, CancellationToken cancellationToken);
 }
