@@ -9,3 +9,4 @@ global using TaskService.Domain.Entities;
 global using TaskService.Domain.Interfaces;
 global using Core.Services;
 global using TaskService.Domain.Exceptions;
+global using Core.CQRS;

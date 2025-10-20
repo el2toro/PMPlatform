@@ -12,7 +12,7 @@ public class ProjectHub(IHubContext<ProjectHub> hubContext) : Hub, IProjectHub
     private readonly IHubContext<ProjectHub> _hubContext = hubContext;
     public async Task SendProject(ProjectDto project)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveProjects", project);
+        await _hubContext.Clients.All.SendAsync("ReceiveCreatedProject", project);
     }
 
     public async Task SendUpdatedProject(ProjectDto project)
