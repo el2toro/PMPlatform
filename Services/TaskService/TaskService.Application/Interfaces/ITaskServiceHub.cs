@@ -8,4 +8,5 @@ public interface ITaskServiceHub
     Task SendUpdatedTask(TaskItemDto task);
     Task SendTaskAssignee(TaskItemDto task);
     Task SendTaskStatus(Guid taskId, TaskItemStatus status);
+    Task SendTaskDeleted(Guid taskId);
 }
