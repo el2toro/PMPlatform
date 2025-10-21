@@ -22,7 +22,7 @@ builder.Services.AddScoped<TenantAwareContextService>();
 
 builder.Services.AddHttpClient<TenantServiceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7090/"); // replace with your service URL
+    client.BaseAddress = new Uri("https://localhost:5052/"); // replace with your service URL
 });
 
 var assembly = typeof(Program).Assembly;
