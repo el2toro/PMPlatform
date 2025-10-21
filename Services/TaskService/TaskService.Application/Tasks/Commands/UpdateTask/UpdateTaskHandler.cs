@@ -15,6 +15,8 @@ public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository,
         var existingTask = await taskServiceRepository.GetTaskByIdAsync(command.Task.ProjectId, command.Task.Id, cancellationToken)
             ?? throw new TaskNotFoundException(command.Task.Id.ToString());
 
+        var assignedTo = existingTask.AssignedTo;
+
         existingTask = command.Task.Adapt<TaskItem>();
 
         var updatedTask = await taskServiceRepository.UpdateTaskAsync(existingTask, cancellationToken);
@@ -22,7 +24,7 @@ public class UpdateTaskHandler(ITaskServiceRepository taskServiceRepository,
 
         //Notify user on task assigned to them
         //TODO: notify assigned user not logged in user
-        if (tenantContext.UserId == command.Task.AssignedTo)
+        if (assignedTo != command.Task.AssignedTo)
             await publishEndpoint.Publish<TaskAssigneeChangedEvent>(result, cancellationToken);
 
         await publishEndpoint.Publish<TaskUpdatedEvent>(result);
