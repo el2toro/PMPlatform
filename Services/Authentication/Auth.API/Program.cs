@@ -42,11 +42,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 builder.Services.AddCarter();
 builder.Services.AddExceptionHandler<CustomExceptioHandler>();
 
-
+builder.Services.AddAntiforgery();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();
+app.UseAntiforgery();
 app.UseExceptionHandler(option => { });
 
 app.Run();

@@ -1,6 +1,10 @@
-﻿namespace Auth.API.Auth.Login;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Auth.API.Auth.Login;
 
 public record LoginRequest(string Email, string Password);
+public record GoogleLoginRequest(string Credential);
 public record LoginResponse(
         Guid UserId,
         Guid TenantId,
@@ -26,5 +30,21 @@ public class LoginEndpoint : ICarterModule
         .WithDescription("Login")
         .WithSummary("Login")
         .Produces<LoginResponse>();
+
+        app.MapPost("login/google", async (GoogleLoginRequest request, ISender sender) =>
+        {
+            // request.Credential contains the Google JWT
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Credential);
+            return Results.Ok(new
+            {
+                Email = payload.Email,
+                Name = payload.Name,
+                Picture = payload.Picture
+            });
+        })
+     .WithDisplayName("LoginGoogle")
+     .WithDescription("LoginGoogle")
+     .WithSummary("Login Google")
+     .Produces<LoginResponse>();
     }
 }
