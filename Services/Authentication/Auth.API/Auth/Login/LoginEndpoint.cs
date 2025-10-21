@@ -35,12 +35,10 @@ public class LoginEndpoint : ICarterModule
         {
             // request.Credential contains the Google JWT
             var payload = await GoogleJsonWebSignature.ValidateAsync(request.Credential);
-            return Results.Ok(new
-            {
-                Email = payload.Email,
-                Name = payload.Name,
-                Picture = payload.Picture
-            });
+
+            var response = await sender.Send(new GoogleLoginCommand(payload.Email, payload.Name));
+
+            return Results.Ok(response);
         })
      .WithDisplayName("LoginGoogle")
      .WithDescription("LoginGoogle")
