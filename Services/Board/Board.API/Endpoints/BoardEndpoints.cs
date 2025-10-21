@@ -13,13 +13,13 @@ public class BoardEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("project/{projectId}/boards/{boardId}", async (Guid projectId, Guid boardId, ISender sender) =>
+        app.MapGet("projects/{projectId}/boards/{boardId}", async (Guid projectId, Guid boardId, ISender sender) =>
         {
             var result = await sender.Send(new GetBoardByIdQuery(projectId, boardId));
             return Results.Ok(result.Board);
         });
 
-        app.MapGet("project/{projectId}/boards", async (Guid projectId, ISender sender) =>
+        app.MapGet("projects/{projectId}/boards", async (Guid projectId, ISender sender) =>
         {
             var result = await sender.Send(new GetBoardsQuery(projectId));
             return Results.Ok(result.Boards);
