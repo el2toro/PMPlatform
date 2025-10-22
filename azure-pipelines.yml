@@ -19,16 +19,16 @@ stages:
     pool:
       name: 'Self-Hosted'
     steps:
-    # - task: Docker@2
-    #   displayName: Build and Push ApiGateway to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/yarpapigateway'
-    #     dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'  
+    - task: Docker@2
+      displayName: Build and Push ApiGateway to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/yarpapigateway'
+        dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'  
 
     - task: Docker@2
       displayName: Build and Push Auth.API to Docker Hub
@@ -41,71 +41,71 @@ stages:
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'   
 
-    # - task: Docker@2
-    #   displayName: Build and Push Tenant.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/tenantapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/Tenant/Tenant.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'     
+    - task: Docker@2
+      displayName: Build and Push Tenant.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/tenantapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Tenant/Tenant.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
 
-    # - task: Docker@2
-    #   displayName: Build and Push Project.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/projectapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/Project/Project.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection' 
+    - task: Docker@2
+      displayName: Build and Push Project.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/projectapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Project/Project.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection' 
 
-    # - task: Docker@2
-    #   displayName: Build and Push TaskService.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/taskapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/TaskService/TaskService.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'  
+    - task: Docker@2
+      displayName: Build and Push TaskService.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/taskapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/TaskService/TaskService.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'  
 
-    # - task: Docker@2
-    #   displayName: Build and Push Board.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/boardapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/Board/Board.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'        
+    - task: Docker@2
+      displayName: Build and Push Board.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/boardapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Board/Board.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'        
 
-    # - task: Docker@2
-    #   displayName: Build and Push Report.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/reportapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/Report/Report.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'     
+    - task: Docker@2
+      displayName: Build and Push Report.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/reportapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Report/Report.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
 
-    # - task: Docker@2
-    #   displayName: Build and Push Notification.API to Docker Hub
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: 'el2toro/notificationapi'
-    #     dockerfile: '$(Build.SourcesDirectory)/Services/Notification/Notification.API/Dockerfile'
-    #     tags: |
-    #       $(Build.BuildId)
-    #     buildContext: '$(Build.SourcesDirectory)'
-    #     containerRegistry: 'dockerHubServiceConnection'     
+    - task: Docker@2
+      displayName: Build and Push Notification.API to Docker Hub
+      inputs:
+        command: BuildAndPush
+        repository: 'el2toro/notificationapi'
+        dockerfile: '$(Build.SourcesDirectory)/Services/Notification/Notification.API/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: 'dockerHubServiceConnection'     
 # -----------------------------
 # Stage 2: Deploy to Azure
 # -----------------------------
@@ -283,6 +283,16 @@ stages:
           - checkout: self
 
           - task: KubernetesManifest@1
+            displayName: Deploy YarpApiGateway.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/yarpapigateway-deployment.yaml'
+              containers: |
+                el2toro/yarpapigateway:$(Build.BuildId)
+
+          - task: KubernetesManifest@1
             displayName: Deploy Auth.API
             inputs:
               action: deploy
@@ -292,12 +302,62 @@ stages:
               containers: |
                 el2toro/authapi:$(Build.BuildId)
 
-          # - task: KubernetesManifest@1
-          #   displayName: Deploy Board.API
-          #   inputs:
-          #     action: deploy
-          #     kubernetesServiceConnection: 'AKS-Connection'
-          #     namespace: default
-          #     manifests: 'manifests/board-api-deployment.yaml'
-          #     containers: |
-          #       $(dockerHubRepoBoard):$(imageTag)
+          - task: KubernetesManifest@1
+            displayName: Deploy Board.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/board-api-deployment.yaml'
+              containers: |
+                el2toro/boardapi:$(Build.BuildId)
+
+          - task: KubernetesManifest@1
+            displayName: Deploy Tenant.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/tenant-api-deployment.yaml'
+              containers: |
+                el2toro/tenantapi:$(Build.BuildId)  
+
+          - task: KubernetesManifest@1
+            displayName: Deploy Project.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/project-api-deployment.yaml'
+              containers: |
+                el2toro/projectapi:$(Build.BuildId)  
+
+          - task: KubernetesManifest@1
+            displayName: Deploy TaskService.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/task-api-deployment.yaml'
+              containers: |
+                el2toro/taskapi:$(Build.BuildId) 
+
+          - task: KubernetesManifest@1
+            displayName: Deploy Report.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/report-api-deployment.yaml'
+              containers: |
+                el2toro/reportapi:$(Build.BuildId)     
+
+          - task: KubernetesManifest@1
+            displayName: Deploy Notification.API
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
+              namespace: default
+              manifests: 'Manifests/notification-api-deployment.yaml'
+              containers: |
+                el2toro/notificationapi:$(Build.BuildId)                   
