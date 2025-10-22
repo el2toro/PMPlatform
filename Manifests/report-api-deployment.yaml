@@ -20,7 +20,7 @@ spec:
         app: report-api
     spec:
       containers:
-        - name: notification-api
+        - name: report-api
           # Use placeholder for image tag; DevOps pipeline can override it
           image: el2toro/reportapi:latest
           ports:
