@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11018.127
+VisualStudioVersion = 18.0.11111.16 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{00D6311A-C386-44CD-A6E4-3E9DC621DEA3}"
 EndProject
@@ -11,27 +11,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "BuildingBlocks\Core
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TaskService", "TaskService", "{2581D6B2-F2A7-4C6F-8AD5-D609583B0311}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Application", "Services\TaskService\TaskService.Application\TaskService.Application.csproj", "{6FB59BBB-D0DE-6D9A-767C-848C6C0FCE8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskService.Application", "Services\TaskService\TaskService.Application\TaskService.Application.csproj", "{6FB59BBB-D0DE-6D9A-767C-848C6C0FCE8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Domain", "Services\TaskService\TaskService.Domain\TaskService.Domain.csproj", "{5EB4C43A-431B-97E8-5A13-7C99B99FDA4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskService.Domain", "Services\TaskService\TaskService.Domain\TaskService.Domain.csproj", "{5EB4C43A-431B-97E8-5A13-7C99B99FDA4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Infrastructure", "Services\TaskService\TaskService.Infrastructure\TaskService.Infrastructure.csproj", "{F707379C-165F-71DC-0B73-777129AC363F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskService.Infrastructure", "Services\TaskService\TaskService.Infrastructure\TaskService.Infrastructure.csproj", "{F707379C-165F-71DC-0B73-777129AC363F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{984BF99C-995B-406D-9288-6153CE00C779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YarpApiGateway", "ApiGateway\YarpApiGateway\YarpApiGateway.csproj", "{1FDA3660-D667-4A14-BC28-8B6EACCF2017}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YarpApiGateway", "ApiGateway\YarpApiGateway\YarpApiGateway.csproj", "{1FDA3660-D667-4A14-BC28-8B6EACCF2017}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.API", "Services\TaskService\TaskService.API\TaskService.API.csproj", "{681464FF-467A-4828-183B-BC425646B83F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskService.API", "Services\TaskService\TaskService.API\TaskService.API.csproj", "{681464FF-467A-4828-183B-BC425646B83F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Board", "Board", "{8819FCB1-A1E9-48F3-8A80-2E84F38B9A73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.Domain", "Services\Board\Board.Domain\Board.Domain.csproj", "{3A7CA8C5-AB62-494F-8E25-E1AA9EE5AC81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Board.Domain", "Services\Board\Board.Domain\Board.Domain.csproj", "{3A7CA8C5-AB62-494F-8E25-E1AA9EE5AC81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.API", "Services\Board\Board.API\Board.API.csproj", "{6E12E107-F4A4-115B-8EF5-ABA8536A5D9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Board.API", "Services\Board\Board.API\Board.API.csproj", "{6E12E107-F4A4-115B-8EF5-ABA8536A5D9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.Application", "Services\Board\Board.Application\Board.Application.csproj", "{35E890D3-1A55-7406-1FD1-884A2115DBBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Board.Application", "Services\Board\Board.Application\Board.Application.csproj", "{35E890D3-1A55-7406-1FD1-884A2115DBBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.Infrastructure", "Services\Board\Board.Infrastructure\Board.Infrastructure.csproj", "{806778EB-41A0-F9D8-A849-61D66A369E51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Board.Infrastructure", "Services\Board\Board.Infrastructure\Board.Infrastructure.csproj", "{806778EB-41A0-F9D8-A849-61D66A369E51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{7C64A308-4949-4389-8B44-560EC753C1B7}"
 EndProject
@@ -45,17 +45,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{7F37
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tenant", "Tenant", "{2D3E73F7-F709-4183-A195-F65641A99F79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.API", "Services\Tenant\Tenant.API\Tenant.API.csproj", "{9119B19C-1ECC-0878-21B2-B46B2FFE2E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tenant.API", "Services\Tenant\Tenant.API\Tenant.API.csproj", "{9119B19C-1ECC-0878-21B2-B46B2FFE2E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.API", "Services\Project\Project.API\Project.API.csproj", "{7AE17206-BDCE-B6C2-5F33-027E3D25A054}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.API", "Services\Project\Project.API\Project.API.csproj", "{7AE17206-BDCE-B6C2-5F33-027E3D25A054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.API", "Services\Authentication\Auth.API\Auth.API.csproj", "{24DF4C10-671F-EBA0-4B50-5714B365CA1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Services\Authentication\Auth.API\Auth.API.csproj", "{24DF4C10-671F-EBA0-4B50-5714B365CA1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.API", "Services\Notification\Notification.API\Notification.API.csproj", "{C19F2A7D-BE7D-46A3-A714-FF46E36FB205}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notification.API", "Services\Notification\Notification.API\Notification.API.csproj", "{C19F2A7D-BE7D-46A3-A714-FF46E36FB205}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.API", "Services\Report\Report.API\Report.API.csproj", "{423C8CDD-9E83-402D-AFF9-E970378C402F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.API", "Services\Report\Report.API\Report.API.csproj", "{423C8CDD-9E83-402D-AFF9-E970378C402F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Messaging", "BuildingBlocks\Core.Messaging\Core.Messaging.csproj", "{75A56847-6A11-47DE-9833-4B4BA8E7F3F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Messaging", "BuildingBlocks\Core.Messaging\Core.Messaging.csproj", "{75A56847-6A11-47DE-9833-4B4BA8E7F3F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Billing", "Billing", "{F55AB359-33A8-4653-8283-D6FF5B4A7C7C}"
 EndProject
@@ -68,9 +68,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manifests", "Manifests", "{CF965754-CF50-4FB5-A187-BE0A28521E4C}"
 	ProjectSection(SolutionItems) = preProject
 		Manifests\auth-api-deployment.yaml = Manifests\auth-api-deployment.yaml
+		board-api-deployment.yaml = board-api-deployment.yaml
+		notification-api-deployment.yaml = notification-api-deployment.yaml
+		project-api-deployment.yaml = project-api-deployment.yaml
+		report-api-deployment.yaml = report-api-deployment.yaml
+		tenant-api-deployment.yaml = tenant-api-deployment.yaml
+		Manifests\task-api-deployment.yaml = Manifests\task-api-deployment.yaml
+		yarpapigateway-deployment.yaml = yarpapigateway-deployment.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attachement.API", "..\Services\Attachement\Attachement.API\Attachement.API.csproj", "{CB0E330F-CAD1-43F0-9643-68ABC9FF6AE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attachement.API", "..\Services\Attachement\Attachement.API\Attachement.API.csproj", "{CB0E330F-CAD1-43F0-9643-68ABC9FF6AE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

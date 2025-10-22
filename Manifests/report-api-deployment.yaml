@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: report-api
+  labels:
+    app: report-api
+spec:
+  replicas: 2  # number of pods
+  selector:
+    matchLabels:
+      app: report-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: report-api
+    spec:
+      containers:
+        - name: notification-api
+          # Use placeholder for image tag; DevOps pipeline can override it
+          image: el2toro/reportapi:latest
+          ports:
+            - containerPort: 8080
+          # Optional: define environment variables if your app needs them
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+      # If using private Docker Hub images, include the secret:
+      # imagePullSecrets:
+      #   - name: dockerhub-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: report-api-service
+spec:
+  type: LoadBalancer  # public access; use ClusterIP if internal only
+  selector:
+    app: report-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
