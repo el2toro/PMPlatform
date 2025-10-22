@@ -1,363 +1,86 @@
 trigger:
 - master
 
-resources:
-- repo: self
+pool:
+  name: 'Self-Hosted'
 
 variables:
-  tag: '$(Build.BuildId)'
+  imageName: 'el2toro/pmplatform-fe'  # Docker Hub repo name
 
 stages:
-# -----------------------------
-# Stage 1: Build & Push Docker
-# -----------------------------
-- stage: BuildAndPush
-  displayName: Build image
+
+# --------------------
+# 🛠 BUILD STAGE
+# --------------------
+- stage: Build
+  displayName: Build and Push Docker Image
   jobs:
   - job: Build
-    displayName: Build
     pool:
       name: 'Self-Hosted'
     steps:
-    - task: Docker@2
-      displayName: Build and Push ApiGateway to Docker Hub
+    - task: NodeTool@0
       inputs:
-        command: BuildAndPush
-        repository: 'el2toro/yarpapigateway'
-        dockerfile: '$(Build.SourcesDirectory)/ApiGateway/YarpApiGateway/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'  
+        versionSpec: '20.x'
+      displayName: 'Install Node.js 20.x'
+
+    - script: |
+        cd pmplatform-fe/
+        npm install -g @angular/cli
+        npm install
+        ng build --configuration=production
+      displayName: 'Build Angular App'
 
     - task: Docker@2
-      displayName: Build and Push Auth.API to Docker Hub
+      displayName: 'Build and Push Docker Image to Docker Hub'
       inputs:
-        command: BuildAndPush
-        repository: 'el2toro/authapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
+        containerRegistry: 'dockerHubServiceConnection'
+        repository: '$(imageName)'
+        command: 'BuildAndPush'
+        Dockerfile: '$(Build.SourcesDirectory)/pmplatform-fe/Dockerfile'
         tags: |
           $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'   
+          latest
+        buildContext: '$(Build.SourcesDirectory)/pmplatform-fe'
 
-    - task: Docker@2
-      displayName: Build and Push Tenant.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/tenantapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Tenant/Tenant.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'     
-
-    - task: Docker@2
-      displayName: Build and Push Project.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/projectapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Project/Project.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection' 
-
-    - task: Docker@2
-      displayName: Build and Push TaskService.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/taskapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/TaskService/TaskService.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'  
-
-    - task: Docker@2
-      displayName: Build and Push Board.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/boardapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Board/Board.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'        
-
-    - task: Docker@2
-      displayName: Build and Push Report.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/reportapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Report/Report.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'     
-
-    - task: Docker@2
-      displayName: Build and Push Notification.API to Docker Hub
-      inputs:
-        command: BuildAndPush
-        repository: 'el2toro/notificationapi'
-        dockerfile: '$(Build.SourcesDirectory)/Services/Notification/Notification.API/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-        buildContext: '$(Build.SourcesDirectory)'
-        containerRegistry: 'dockerHubServiceConnection'     
 # -----------------------------
-# Stage 2: Deploy to Azure
+# 🚀 DEPLOYMENT STAGES (Optional)
 # -----------------------------
-# - stage: Deploy
-#   displayName: Deploy to Azure
+# - stage: Development
+#   displayName: 'Deploy to Development'
 #   dependsOn: Build
+#   condition: succeeded()
 #   jobs:
-#   - deployment: DeployToACI
-#     displayName: Deploy to Azure Container Instances
+#   - deployment: DeployDev
 #     pool:
 #       name: 'Self-Hosted'
-#     environment: 'dev'
+#     environment: Development
 #     strategy:
 #       runOnce:
 #         deploy:
 #           steps:
-#           - task: AzureCLI@2
-#             displayName: Deploy YARP Gateway to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "yarp-gateway"
-#                 $IMAGE = "el2toro/yarpapigateway:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
+#           - script: echo "Pull and deploy el2toro/pmplatform-fe:$(Build.BuildId) to Dev"
+#             displayName: 'Deploy Docker Image to Dev'
 
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
+# - stage: Acceptance
+#   dependsOn: [ Development ]
+#   displayName: 'Deploy to Acceptance'
+#   jobs:
+#   - job: DeployAcceptance
+#     displayName: 'DeployAcceptance'
+#     steps:
+#     - script: echo "Deploying Docker Image to Acceptance"
 
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-
-#           - task: AzureCLI@2
-#             displayName: Deploy Auth.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "auth-api"
-#                 $IMAGE = "el2toro/authapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1  --restart-policy Always --registry-username 'el2toro' --registry-password 'S5n4ekOqVQ'
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy Tenant.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "tenant-api"
-#                 $IMAGE = "el2toro/tenantapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy Project.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "project-api"
-#                 $IMAGE = "el2toro/projectapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy TaskService.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "task-api"
-#                 $IMAGE = "el2toro/taskapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy Board.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "board-api"
-#                 $IMAGE = "el2toro/boardapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy Notification.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "notofication-api"
-#                 $IMAGE = "el2toro/notificationapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-#           - task: AzureCLI@2
-#             displayName: Deploy Report.API to ACI
-#             inputs:
-#               azureSubscription: 'resourceManagerServiceConnection'
-#               scriptType: 'ps'
-#               scriptLocation: 'inlineScript'
-#               inlineScript: |
-#                 $RESOURCE_GROUP = "pmplatform-rg"
-#                 $CONTAINER_NAME = "report-api"
-#                 $IMAGE = "el2toro/reportapi:$(Build.BuildId)"
-#                 $LOCATION = "germanywestcentral"
-
-#                 Write-Host "Creating resource group if not exists..."
-#                 az group create --name $RESOURCE_GROUP --location $LOCATION
-
-#                 Write-Host "Deploying container instance..."
-#                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
-    
-  
-# --- DEPLOY TO AKS ---
-- stage: Deploy
-  displayName: Deploy to AKS
-  dependsOn: BuildAndPush
+- stage: Production
+ # dependsOn: [ Acceptance ]
+  displayName: 'Deploy to Production'
   jobs:
-  - deployment: deployToAKS
-    environment: aks
+  - deployment: DeployProduction
     pool:
       name: 'Self-Hosted'
+    environment: Production
     strategy:
       runOnce:
         deploy:
           steps:
-          - checkout: self
-
-          - task: KubernetesManifest@1
-            displayName: Deploy YarpApiGateway.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/yarpapigateway-deployment.yaml'
-              containers: |
-                el2toro/yarpapigateway:$(Build.BuildId)
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Auth.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/auth-api-deployment.yaml'
-              containers: |
-                el2toro/authapi:$(Build.BuildId)
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Board.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/board-api-deployment.yaml'
-              containers: |
-                el2toro/boardapi:$(Build.BuildId)
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Tenant.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/tenant-api-deployment.yaml'
-              containers: |
-                el2toro/tenantapi:$(Build.BuildId)  
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Project.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/project-api-deployment.yaml'
-              containers: |
-                el2toro/projectapi:$(Build.BuildId)  
-
-          - task: KubernetesManifest@1
-            displayName: Deploy TaskService.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/task-api-deployment.yaml'
-              containers: |
-                el2toro/taskapi:$(Build.BuildId) 
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Report.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/report-api-deployment.yaml'
-              containers: |
-                el2toro/reportapi:$(Build.BuildId)     
-
-          - task: KubernetesManifest@1
-            displayName: Deploy Notification.API
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
-              namespace: default
-              manifests: 'Manifests/notification-api-deployment.yaml'
-              containers: |
-                el2toro/notificationapi:$(Build.BuildId)                   
+          - script: echo "Deploying Docker Image to Production"
