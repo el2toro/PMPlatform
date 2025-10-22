@@ -40,6 +40,7 @@ stages:
           $(Build.BuildId)
         buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: 'dockerHubServiceConnection'   
+        arguments: '--platform linux/amd64'
 
     # - task: Docker@2
     #   displayName: Build and Push Tenant.API to Docker Hub
@@ -270,7 +271,7 @@ stages:
 # --- DEPLOY TO AKS ---
 - stage: Deploy
   displayName: Deploy to AKS
-  dependsOn: buildAndPush
+  dependsOn: BuildAndPush
   jobs:
   - deployment: deployToAKS
     environment: aks
