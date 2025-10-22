@@ -26,7 +26,7 @@ spec:
           # Use placeholder for image tag; DevOps pipeline can override it
           image: el2toro/auth-api:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           # Optional: define environment variables if your app needs them
           env:
             - name: ASPNETCORE_ENVIRONMENT
@@ -45,5 +45,5 @@ spec:
     app: auth-api
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
