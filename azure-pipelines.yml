@@ -288,7 +288,7 @@ stages:
             displayName: Deploy Auth.API
             inputs:
               action: deploy
-              kubernetesServiceConnection: 'kubernetesServiceConnection'
+              kubernetesServiceConnection: 'pmplatformKubernetesServiceConnection'
               namespace: default
               manifests: 'Manifests/auth-api-deployment.yaml'
               containers: |
