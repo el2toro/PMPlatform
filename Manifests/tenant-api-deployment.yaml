@@ -8,7 +8,7 @@ spec:
   replicas: 2  # number of pods
   selector:
     matchLabels:
-      app: project-api
+      app: tenant-api
   strategy:
     type: RollingUpdate
     rollingUpdate:
