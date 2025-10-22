@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-api
+  name: board-api
   labels:
-    app: auth-api
+    app: board-api
 spec:
   replicas: 2  # number of pods
   selector:
