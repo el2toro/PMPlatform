@@ -11,7 +11,7 @@ stages:
 # -----------------------------
 # Stage 1: Build & Push Docker
 # -----------------------------
-- stage: Build
+- stage: BuildAndPush
   displayName: Build image
   jobs:
   - job: Build
@@ -33,7 +33,7 @@ stages:
     - task: Docker@2
       displayName: Build and Push Auth.API to Docker Hub
       inputs:
-        command: buildAndPush
+        command: BuildAndPush
         repository: 'el2toro/authapi'
         dockerfile: '$(Build.SourcesDirectory)/Services/Authentication/Auth.API/Dockerfile'
         tags: |
@@ -266,13 +266,11 @@ stages:
 #                 Write-Host "Deploying container instance..."
 #                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
     
-  variables:
-    imageTag: '$(Build.BuildId)'  # Define a static tag here
   
 # --- DEPLOY TO AKS ---
 - stage: Deploy
   displayName: Deploy to AKS
-  #dependsOn: buildAndPush
+  dependsOn: buildAndPush
   jobs:
   - deployment: deployToAKS
     environment: aks
@@ -292,7 +290,7 @@ stages:
               namespace: default
               manifests: 'Manifests/auth-api-deployment.yaml'
               containers: |
-                el2toro/auth-api:$(imageTag)
+                el2toro/auth-api:$(Build.BuildId)
 
           # - task: KubernetesManifest@1
           #   displayName: Deploy Board.API
