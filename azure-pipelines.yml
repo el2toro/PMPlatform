@@ -266,7 +266,9 @@ stages:
 #                 Write-Host "Deploying container instance..."
 #                 az container create --resource-group $RESOURCE_GROUP --name $CONTAINER_NAME --image $IMAGE --os-type Linux --dns-name-label $CONTAINER_NAME --ports 8080 8081 --cpu 1 --memory 1 --restart-policy Always
     
-
+  variables:
+    imageTag: '$(Build.BuildId)'  # Define a static tag here
+  
 # --- DEPLOY TO AKS ---
 - stage: Deploy
   displayName: Deploy to AKS
