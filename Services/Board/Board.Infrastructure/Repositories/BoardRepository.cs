@@ -31,9 +31,10 @@ public class BoardRepository(BoardDbContext dbContext)
     public async Task<Domain.Entities.Board>
         GetBoardByIdAsync(Guid projectId, Guid boardId, CancellationToken cancellationToken)
     {
+        //TODO: ADD b.Id == boardId &&
         return await dbContext.Boards
             .Include(b => b.Columns)
-            .FirstOrDefaultAsync(b => b.Id == boardId && b.ProjectId == projectId, cancellationToken)
+            .FirstOrDefaultAsync(b => b.ProjectId == projectId, cancellationToken)
             ?? new Domain.Entities.Board();
     }
 
