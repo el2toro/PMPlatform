@@ -41,6 +41,7 @@ public class DataAccess(IConfiguration configuration) : IDataAccess
     {
         try
         {
+            //TODO: to be reviewed, query based on tenantId
             using var connection = new SqlConnection(configuration.GetConnectionString("ProjectDb"));
             var projectQuery = "SELECT TOP 5 Name, EndDate FROM Projects AS Projects";
             analyticsDto.Projects = await connection.QueryAsync<ProjectDto>(projectQuery);
