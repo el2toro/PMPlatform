@@ -17,21 +17,13 @@ A scalable, cloud-native **Project Management Platform** built with **.NET 8**, 
 
 ## 🏗️ Architecture Overview
 
-Frontend (Angular)
-│
-▼
-YARP API Gateway (.NET 8)
-│
-▼
-┌──────────────────────────────┐
-│ Auth Service (JWT, Google) │
-│ Board Service (Projects) │
-│ Task Service (Workflow) │
-│ Notification (SignalR) │
-└──────────────────────────────┘
-↕
-RabbitMQ Event Bus
-
+flowchart TD
+    A[Frontend<br>Angular App] --> B[YARP API Gateway<br>.NET 8]
+    B --> C1[Auth Service<br>JWT + Google OAuth]
+    B --> C2[Board Service<br>Project Logic]
+    B --> C3[Task Service<br>Workflow Management]
+    B --> C4[Notification Service<br>SignalR, Emails]
+    C1 & C2 & C3 & C4 --> D[RabbitMQ Event Bus<br>(Pub/Sub)]
 
 ---
 
