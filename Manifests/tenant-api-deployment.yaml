@@ -8,7 +8,7 @@ spec:
   replicas: 2  # number of pods
   selector:
     matchLabels:
-      app: project-api
+      app: tenant-api
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -38,10 +38,10 @@ kind: Service
 metadata:
   name: tenant-api-service
 spec:
-  type: LoadBalancer  # public access; use ClusterIP if internal only
+  type: ClusterIP  # public access; use ClusterIP if internal only
   selector:
     app: tenant-api
   ports:
     - protocol: TCP
-      port: 8080
+      port: 80
       targetPort: 8080

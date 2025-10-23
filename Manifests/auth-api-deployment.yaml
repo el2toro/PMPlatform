@@ -40,10 +40,10 @@ kind: Service
 metadata:
   name: auth-api-service
 spec:
-  type: LoadBalancer  # public access; use ClusterIP if internal only
+  type: ClusterIP  # LoadBalancer public access; use ClusterIP if internal only
   selector:
     app: auth-api
   ports:
     - protocol: TCP
-      port: 8080
+      port: 80
       targetPort: 8080
