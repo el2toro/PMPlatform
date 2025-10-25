@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskService.Application.Tasks.Commands.UpdateTaskStatus;
+using TaskService.Application.Tasks.Queries.GetAllTasks;
 using TaskService.Application.Tasks.Queries.GetTaskCount;
+using TaskService.Application.Tasks.Queries.GetUserAssignedTasks;
 using TaskService.Domain.Enums;
 
 namespace TaskService.API.Endpoints;
@@ -60,6 +62,20 @@ public class TaskServiceEndpoints : ICarterModule
         {
             var result = await sender.Send(new GetTaskCountQuery(projectId));
             return Results.Ok(result.TaskCount);
+        });
+
+        app.MapGet("tenants/{tenantId}/tasks",
+        async (Guid tenantId, ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllTasksQuery(tenantId));
+            return Results.Ok(result.Tasks);
+        });
+
+        app.MapGet("tenants/{tenantId}/tasks/users/{userId}",
+        async (Guid tenantId, Guid userId, ISender sender) =>
+        {
+            var result = await sender.Send(new GetUserAssignedTasksQuery(tenantId, userId));
+            return Results.Ok(result.Tasks);
         });
     }
 }
