@@ -1,13 +1,12 @@
-﻿using Auth.API.Interfaces;
-using Core.Services;
+﻿using Core.Services;
 
 namespace Auth.API.Users.CreateUser;
 
-public record CreateUserCommand(UserDto User) : IRequest<CreateUserResult>;
+public record CreateUserCommand(UserDto User) : ICommand<CreateUserResult>;
 public record CreateUserResult(UserDto User);
 public class CreateUserHandler(IUserRepository userRepository,
     TenantAwareContextService tenantAwareContextService)
-    : IRequestHandler<CreateUserCommand, CreateUserResult>
+    : ICommandHandler<CreateUserCommand, CreateUserResult>
 {
     public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
