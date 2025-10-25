@@ -1,6 +1,4 @@
-﻿using Mapster;
-
-namespace TaskService.Infrastructure.Repositories;
+﻿namespace TaskService.Infrastructure.Repositories;
 
 public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServiceRepository
 {
@@ -85,5 +83,19 @@ public class TaskServiceRepository(TaskServiceDbContext dbContext) : ITaskServic
             .CountAsync();
 
         return (taskIds.Count, completedTasks, totalSubtasks, completedSubtasks);
+    }
+
+    public async Task<IEnumerable<TaskItem>> GetAllTasksAsync(Guid tenantId, CancellationToken cancellationToken)
+    {
+        //TODO: return task of a specific tenant
+        return await _dbContext.Tasks.ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<TaskItem>> GetUserAssigendTasksAsync(Guid tenantId, Guid userId, CancellationToken cancellationToken)
+    {
+        //TODO: return task of a specific tenant
+        return await _dbContext.Tasks
+            .Where(t => t.AssignedTo == userId)
+            .ToListAsync(cancellationToken);
     }
 }

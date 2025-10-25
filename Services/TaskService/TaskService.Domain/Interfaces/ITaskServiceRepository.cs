@@ -8,6 +8,9 @@ public interface ITaskServiceRepository
     Task<TaskItem> UpdateTaskAsync(TaskItem taskDto, CancellationToken cancellationToken);
     Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, TaskItemStatus status, CancellationToken cancellationToken);
     Task DeleteTaskAsync(TaskItem task, CancellationToken cancellationToken);
+    Task<IEnumerable<TaskItem>> GetAllTasksAsync(Guid tenantId, CancellationToken cancellationToken);
+    Task<IEnumerable<TaskItem>> GetUserAssigendTasksAsync(Guid tenantId, Guid userId, CancellationToken cancellationToken);
     Task<(int totalTasks, int completedTasks, int totalSubtasks, int completedSubtasks)>
         GetTaskCountAsync(Guid projectId, CancellationToken cancellationToken);
+
 }
