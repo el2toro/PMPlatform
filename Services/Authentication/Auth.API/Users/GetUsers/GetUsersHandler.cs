@@ -1,12 +1,10 @@
-﻿using Auth.API.Interfaces;
+﻿namespace Auth.API.Users.GetUsers;
 
-namespace Auth.API.Users.GetUsers;
-
-public record GetUsersQuery(Guid TenantId) : IRequest<GetUsersResult>;
+public record GetUsersQuery(Guid TenantId) : IQuery<GetUsersResult>;
 public record GetUsersResult(IEnumerable<UserDto> Users);
 
 public class GetUsersHandler(IUserRepository userRepository)
-    : IRequestHandler<GetUsersQuery, GetUsersResult>
+    : IQueryHandler<GetUsersQuery, GetUsersResult>
 {
     public async Task<GetUsersResult> Handle(GetUsersQuery query, CancellationToken cancellationToken)
     {
@@ -22,9 +20,9 @@ public class GetUsersHandler(IUserRepository userRepository)
         {
             Id = user.Id,
             Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            FullName = $"{user.FirstName} {user.LastName}"
+            FirstName = user?.FirstName!,
+            LastName = user?.LastName!,
+            FullName = $"{user?.FirstName} {user?.LastName}"
         });
     }
 }

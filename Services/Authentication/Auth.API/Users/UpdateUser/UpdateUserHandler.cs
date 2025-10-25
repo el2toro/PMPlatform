@@ -1,8 +1,4 @@
-﻿using Auth.API.Exceptions;
-using Auth.API.Interfaces;
-using Core.CQRS;
-
-namespace Auth.API.Users.UpdateUser;
+﻿namespace Auth.API.Users.UpdateUser;
 
 public record UpdateUserCommand(UserDto User) : ICommand<UpdateUserResult>;
 public record UpdateUserResult(UserDto User);

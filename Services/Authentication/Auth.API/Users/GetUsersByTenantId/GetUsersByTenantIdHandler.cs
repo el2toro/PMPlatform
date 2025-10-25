@@ -1,15 +1,13 @@
-﻿using Auth.API.Interfaces;
+﻿namespace Auth.API.Users.GetUsersByTenantId;
 
-namespace Auth.API.Users.GetUsersByTenantId;
-
-public record GetUsersByTenantIdQuery(Guid TenantId) : IRequest<GetUsersByTenantIdResult>;
+public record GetUsersByTenantIdQuery(Guid TenantId) : IQuery<GetUsersByTenantIdResult>;
 public record GetUsersByTenantIdResult(IEnumerable<UserDto> Users);
-public class GetUsersByTenantIdHandler(IAuthRepository authRepository)
-    : IRequestHandler<GetUsersByTenantIdQuery, GetUsersByTenantIdResult>
+public class GetUsersByTenantIdHandler(IUserRepository userRepository)
+    : IQueryHandler<GetUsersByTenantIdQuery, GetUsersByTenantIdResult>
 {
     public async Task<GetUsersByTenantIdResult> Handle(GetUsersByTenantIdQuery request, CancellationToken cancellationToken)
     {
-        var users = await authRepository.GetUsersByTenantId(request.TenantId, cancellationToken);
+        var users = await userRepository.GetUsersByTenantId(request.TenantId, cancellationToken);
         var usersDtos = MapToDto(users);
         return new GetUsersByTenantIdResult(usersDtos);
     }
@@ -21,9 +19,9 @@ public class GetUsersByTenantIdHandler(IAuthRepository authRepository)
         {
             Id = user.Id,
             Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            FullName = $"{user.FirstName} {user.LastName}"
+            FirstName = user?.FirstName!,
+            LastName = user?.LastName!,
+            FullName = $"{user?.FirstName} {user?.LastName}"
         });
     }
 }
