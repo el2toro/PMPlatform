@@ -1,17 +1,13 @@
-﻿using Auth.API.Interfaces;
-using Auth.API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 
-namespace Auth.API.Repository;
+namespace Auth.API.Repositories;
 
 public class AuthRepository(AuthDbContext authDbContext,
-    IJwtTokenService jwtTokenService,
-    TenantServiceClient tenantServiceClient) : IAuthRepository
+    IJwtTokenService jwtTokenService)
+    : IAuthRepository
 {
     private readonly AuthDbContext _authContext = authDbContext;
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
-    private readonly TenantServiceClient _tenantServiceClient = tenantServiceClient;
 
     public async Task Login(RefreshToken refreshToken, CancellationToken cancellationToken)
     {
@@ -19,20 +15,9 @@ public class AuthRepository(AuthDbContext authDbContext,
         await _authContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Logout(string refreshToken, Guid tenantId, CancellationToken cancellationToken)
+    public async Task Logout(RefreshToken refreshToken, CancellationToken cancellationToken)
     {
-        var user = await _authContext.Users
-        .Include(u => u.RefreshTokens)
-        .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t =>
-            t.Token == refreshToken), cancellationToken); //TODO: add tenantId condition && t.TenantId == tenantId
-
-        ArgumentNullException.ThrowIfNull(user, "User not found");
-
-        var token = user.RefreshTokens.Single(t =>
-            t.Token == refreshToken); //TODO: add tenantId condition && t.TenantId == tenantId
-
-        token.RevokedAt = DateTime.UtcNow;
-
+        _authContext.RefreshTokens.Update(refreshToken);
         await _authContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -43,9 +28,7 @@ public class AuthRepository(AuthDbContext authDbContext,
         var user = await _authContext.Users
         .Include(u => u.RefreshTokens)
         .Include(u => u.UserTenants)
-        //.ThenInclude(ut => ut.Tenant)
-        .SingleOrDefaultAsync(u =>
-            u.RefreshTokens.Any(t => t.Token == refreshToken)); //TODO: add tenantId condition && t.TenantId == tenantId
+        .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken), cancellationToken); //TODO: add tenantId condition && t.TenantId == tenantId
 
         ArgumentNullException.ThrowIfNull(user, "User not found");
 
@@ -72,86 +55,12 @@ public class AuthRepository(AuthDbContext authDbContext,
         return new TokenResponseDto(newRefreshToken.Token, jwtToken);
     }
 
-    public async Task<User> RegisterUser(RegisterRequestDto request, CancellationToken cancellationToken)
+    public async Task<RefreshToken> GetRefreshTokenAsync(Guid tenantId, string refreshToken, CancellationToken cancellationToken)
     {
-        var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
-
-        if (user != null)
-        {
-            throw new Exception("User with this email already exists.");
-        }
-
-        var createdUser = CreateUser(request, cancellationToken);
-        await _authContext.SaveChangesAsync(cancellationToken);
-
-        return createdUser;
-    }
-
-    public async Task<IEnumerable<User>> GetUsersByTenantId(Guid tenantId, CancellationToken cancellationToken)
-    {
-        return await _authContext.Users
-            .AsNoTracking()
-            .Where(u => u.UserTenants.Any(ut => ut.TenantId == tenantId))
-            .ToListAsync();
-    }
-
-    public async Task AddUserToTenant(Guid tenantId, Guid userId, TenantRole role, CancellationToken cancellationToken)
-    {
-        _authContext.UserTenants.Add(new UserTenant
-        {
-            TenantId = tenantId,
-            UserId = userId,
-            Role = role
-        });
-
-        await _authContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task RemoveUserFromTenant(Guid tenantId, Guid userId, CancellationToken cancellationToken)
-    {
-        await _authContext.UserTenants
-            .Where(ut => ut.TenantId == tenantId && ut.UserId == userId)
-            .ExecuteDeleteAsync(cancellationToken);
-    }
-
-    private User CreateUser(RegisterRequestDto request, CancellationToken cancellationToken)
-    {
-        var user = new User
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        return _authContext.Users.Add(user).Entity;
-    }
-
-    private void AssignUserToTenant(Guid userId, Guid tenantId)
-    {
-        _authContext.UserTenants.Add(new UserTenant
-        {
-            UserId = userId,
-            TenantId = tenantId,
-            Role = TenantRole.Admin,
-            CreatedAt = DateTime.UtcNow
-        });
-    }
-
-    private UserProfileDto MapToUserProfile(User user, string token, string refreshToken, Guid tenantId)
-    {
-        var roles = user.UserTenants.Select(ut => ut.Role.ToString());
-
-        return new UserProfileDto(
-            user.Id,
-            tenantId,
-            user.Email,
-            user.FirstName,
-            user.LastName,
-            token,
-            refreshToken,
-            roles);
+        return await authDbContext.Users
+        .Include(u => u.RefreshTokens)
+        .Where(u => u.UserTenants.Any(t => t.TenantId == tenantId) && u.RefreshTokens.Any(t => t.Token == refreshToken))
+        .Select(u => u.RefreshTokens.SingleOrDefault())
+        .SingleOrDefaultAsync(cancellationToken) ?? default!;
     }
 }
