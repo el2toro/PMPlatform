@@ -3,6 +3,15 @@
 public record LogoutCommand(string RefreshToken, Guid TenantId) : ICommand<LogoutResult>;
 public record LogoutResult(bool IsSuccess);
 
+public class LogoutCommandValidator : AbstractValidator<LogoutCommand>
+{
+    public LogoutCommandValidator()
+    {
+        RuleFor(x => x.RefreshToken).NotEmpty().WithMessage("Refresh token is required");
+        RuleFor(x => x.TenantId).NotEmpty().WithMessage("TenantId is required");
+    }
+}
+
 public class LogoutHandler(IAuthRepository authRepository)
     : ICommandHandler<LogoutCommand, LogoutResult>
 {

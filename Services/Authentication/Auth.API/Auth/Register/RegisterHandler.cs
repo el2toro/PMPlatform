@@ -8,6 +8,15 @@ public record RegisterCommand(
     string TenantName) : ICommand<RegisterResult>;
 public record RegisterResult(RegisterResponseDto RegisterDto);
 
+public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
+{
+    public RegisterCommandValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
+        RuleFor(x => x.Email).EmailAddress().WithMessage("Wrong email addresss");
+    }
+}
+
 public class RegisterHandler(IUserRepository userRepository,
     TenantServiceClient tenantServiceClient)
     : ICommandHandler<RegisterCommand, RegisterResult>
