@@ -2,6 +2,14 @@
 
 public record GetUsersByTenantIdQuery(Guid TenantId) : IQuery<GetUsersByTenantIdResult>;
 public record GetUsersByTenantIdResult(IEnumerable<UserDto> Users);
+
+public class GetUsersByTenantIdQueryValidator : AbstractValidator<GetUsersByTenantIdQuery>
+{
+    public GetUsersByTenantIdQueryValidator()
+    {
+        RuleFor(x => x.TenantId).NotEmpty().WithMessage("TenantId is required");
+    }
+}
 public class GetUsersByTenantIdHandler(IUserRepository userRepository)
     : IQueryHandler<GetUsersByTenantIdQuery, GetUsersByTenantIdResult>
 {

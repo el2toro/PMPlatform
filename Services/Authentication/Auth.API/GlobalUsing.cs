@@ -13,3 +13,4 @@ global using Auth.API.Interfaces;
 global using Auth.API.Exceptions;
 global using Microsoft.EntityFrameworkCore;
 global using Core.Exceptions;
+global using Core.Services;

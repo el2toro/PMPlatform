@@ -3,6 +3,17 @@
 public record UpdateUserCommand(UserDto User) : ICommand<UpdateUserResult>;
 public record UpdateUserResult(UserDto User);
 
+public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
+{
+    public UpdateUserCommandValidator()
+    {
+        RuleFor(x => x.User.Id).NotEmpty().WithMessage("Id is required");
+        RuleFor(x => x.User.Email).NotEmpty().WithMessage("Email is required");
+        RuleFor(x => x.User.FirstName).NotEmpty().WithMessage("FirstName is required");
+        RuleFor(x => x.User.LastName).NotEmpty().WithMessage("LastName is required");
+    }
+}
+
 public class UpdateUserHandler(IUserRepository userRepository)
     : ICommandHandler<UpdateUserCommand, UpdateUserResult>
 {

@@ -3,6 +3,15 @@
 public record GetUserByIdQuery(Guid TenantId, Guid UserId) : IQuery<GetUserByIdResult>;
 public record GetUserByIdResult(UserDto User);
 
+public class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>
+{
+    public GetUserByIdQueryValidator()
+    {
+        RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required");
+        RuleFor(x => x.TenantId).NotEmpty().WithMessage("TenantId is required");
+    }
+}
+
 public class GetUserByIdHandler(IUserRepository userRepository)
     : IQueryHandler<GetUserByIdQuery, GetUserByIdResult>
 {

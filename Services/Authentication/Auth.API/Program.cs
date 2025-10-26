@@ -2,8 +2,6 @@ using Auth.API.Auth.Login;
 using Auth.API.Repositories;
 using Core.Behaviors;
 using Core.Exceptions.Handler;
-using Core.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

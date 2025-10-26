@@ -2,6 +2,16 @@
 
 public record DeleteUserCommand(Guid UserId, Guid TenantId) : ICommand<DeleteUserResult>;
 public record DeleteUserResult(bool IsSuccess);
+
+public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
+{
+    public DeleteUserCommandValidator()
+    {
+        RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required");
+        RuleFor(x => x.TenantId).NotEmpty().WithMessage("TenantId is required");
+    }
+}
+
 public class DeleteUserHandler(IUserRepository userRepository)
     : ICommandHandler<DeleteUserCommand, DeleteUserResult>
 {

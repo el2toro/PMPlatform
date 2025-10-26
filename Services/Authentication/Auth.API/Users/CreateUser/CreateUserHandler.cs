@@ -1,9 +1,18 @@
-﻿using Core.Services;
-
-namespace Auth.API.Users.CreateUser;
+﻿namespace Auth.API.Users.CreateUser;
 
 public record CreateUserCommand(UserDto User) : ICommand<CreateUserResult>;
 public record CreateUserResult(UserDto User);
+
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+{
+    public CreateUserCommandValidator()
+    {
+        RuleFor(x => x.User.Email).NotEmpty().WithMessage("Email is required");
+        RuleFor(x => x.User.FirstName).NotEmpty().WithMessage("FirstName is required");
+        RuleFor(x => x.User.LastName).NotEmpty().WithMessage("LastName is required");
+    }
+}
+
 public class CreateUserHandler(IUserRepository userRepository,
     TenantAwareContextService tenantAwareContextService)
     : ICommandHandler<CreateUserCommand, CreateUserResult>
