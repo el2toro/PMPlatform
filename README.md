@@ -16,7 +16,7 @@ A scalable project management app, built with **.NET 8**, **Angular 20**, and **
 ---
 
 ## 🏗️ Architecture Overview
-
+```mermaid
 flowchart TD
     A[Frontend<br>Angular App] --> B[YARP API Gateway<br>.NET 8]
     B --> C1[Auth Service<br>JWT + Google OAuth]
@@ -24,7 +24,7 @@ flowchart TD
     B --> C3[Task Service<br>Workflow Management]
     B --> C4[Notification Service<br>SignalR, Emails]
     C1 & C2 & C3 & C4 --> D[RabbitMQ Event Bus<br>Pub/Sub]
-
+```
 ---
 
 ## 🛠️ Tech Stack
