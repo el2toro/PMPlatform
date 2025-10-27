@@ -94,6 +94,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.API.Tests", "..\Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attachement.API", "Services\Attachement\Attachement.API\Attachement.API.csproj", "{B09DA8A4-84DB-01BB-7D38-57195227EA7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Board.Tests", "Services\Board\Board.Tests\Board.Tests.csproj", "{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +178,10 @@ Global
 		{B09DA8A4-84DB-01BB-7D38-57195227EA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B09DA8A4-84DB-01BB-7D38-57195227EA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B09DA8A4-84DB-01BB-7D38-57195227EA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,6 +218,7 @@ Global
 		{EF13DAB5-0B6F-4C04-BEEF-7683FBC09385} = {559DCCCF-31D5-46C0-8EFB-24EAEDB93B8F}
 		{C9794AD1-F823-4495-AB16-7513425CF7B8} = {656F06A4-799F-41F8-A8E1-2A66DEAE039B}
 		{B09DA8A4-84DB-01BB-7D38-57195227EA7F} = {1D5E5BF2-5C08-4647-866F-9226797D51BC}
+		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C} = {8819FCB1-A1E9-48F3-8A80-2E84F38B9A73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}
