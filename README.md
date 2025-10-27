@@ -5,6 +5,24 @@ It allows teams to collaborate efficiently through boards, tasks, and real-time 
 
 ---
 
+## 📸 Screenshots
+#### 🔐 Authentication
+![Login](Docs/Images/login.png) 
+
+#### 🏠 Dashboard
+![Dashboard](Docs/Images/projects.png) 
+
+#### 🗂️ Kanban  Board
+![Board](Docs/Images/board.png) 
+
+#### 📋 Tasks
+![Task](Docs/Images/tasks.png) 
+
+#### 👤 Profile
+![Task](Docs/Images/profile.png) 
+
+---
+
 ## 🚀 Key Features
 
 ### 🔐 Authentication & Authorization
