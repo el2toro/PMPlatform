@@ -1,6 +1,6 @@
 # 🧩 Project Management Platform
 
-A scalable, cloud-native **Project Management Platform** built with **.NET 8**, **Angular 17**, and **Azure**, designed for teams and enterprises to collaborate through projects, boards, and tasks.
+A scalable project management app, built with **.NET 8**, **Angular 20**, and **Azure**, designed for teams to collaborate through projects, boards, and tasks.
 
 ---
 
@@ -23,15 +23,15 @@ flowchart TD
     B --> C2[Board Service<br>Project Logic]
     B --> C3[Task Service<br>Workflow Management]
     B --> C4[Notification Service<br>SignalR, Emails]
-    C1 & C2 & C3 & C4 --> D[RabbitMQ Event Bus<br>(Pub/Sub)]
+    C1 & C2 & C3 & C4 --> D[RabbitMQ Event Bus<br>Pub/Sub]
 
 ---
 
-## 🧱 Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|-------------|
-| Frontend | Angular 17, PrimeNG |
+| Frontend | Angular 20, PrimeNG |
 | Backend | .NET 8 Web APIs |
 | Gateway | YARP |
 | Messaging | RabbitMQ + MassTransit |
@@ -73,9 +73,3 @@ Docker images pushed via Azure DevOps
 Ingress NGINX routes external traffic to YARP Gateway
 
 AKS manifests deployed via pipeline stages (Dev → QA → Prod)
-
-📄 Documentation
-
-Full technical documentation (architecture, CI/CD, API endpoints, and environments):
-
-📘 /docs/README_DETAILED.md
