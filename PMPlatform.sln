@@ -100,6 +100,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.API.Tests", "Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.API.Tests", "Services\Report\Report.API.Tests\Report.API.Tests.csproj", "{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Tests", "Services\TaskService\TaskService.Tests\TaskService.Tests.csproj", "{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,10 @@ Global
 		{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -233,6 +239,7 @@ Global
 		{86037DF8-F3CD-4F00-B59B-4ACF69DBDE7C} = {8819FCB1-A1E9-48F3-8A80-2E84F38B9A73}
 		{750B74D4-1152-438A-BD40-662B084C3918} = {7F375FB3-4D47-4B80-A498-84C40D54162F}
 		{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89} = {E9C8FC3F-A374-4A95-BCBD-7AD6C1CD9D1A}
+		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}
