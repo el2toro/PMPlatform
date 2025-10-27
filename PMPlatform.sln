@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.API.Tests", "Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskService.Tests", "Services\TaskService\TaskService.Tests\TaskService.Tests.csproj", "{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.API.Tests", "Services\Tenant\Tenant.API.Tests\Tenant.API.Tests.csproj", "{439FB1C9-3155-454A-94CF-511465EF0008}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -200,6 +202,10 @@ Global
 		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439FB1C9-3155-454A-94CF-511465EF0008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439FB1C9-3155-454A-94CF-511465EF0008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439FB1C9-3155-454A-94CF-511465EF0008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439FB1C9-3155-454A-94CF-511465EF0008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -240,6 +246,7 @@ Global
 		{750B74D4-1152-438A-BD40-662B084C3918} = {7F375FB3-4D47-4B80-A498-84C40D54162F}
 		{6AAB6C80-F76C-4A54-AF15-7CC055ED3A89} = {E9C8FC3F-A374-4A95-BCBD-7AD6C1CD9D1A}
 		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
+		{439FB1C9-3155-454A-94CF-511465EF0008} = {2D3E73F7-F709-4183-A195-F65641A99F79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}
