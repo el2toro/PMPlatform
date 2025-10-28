@@ -1,8 +1,10 @@
 ﻿using Auth.API.Auth.Login;
+using Auth.API.Exceptions;
 using Auth.API.Interfaces;
 using Auth.API.Models;
 using Auth.API.Services;
 using Moq;
+using System.Security.Authentication;
 
 namespace Auth.API.Tests.Auth.Handlers;
 
@@ -22,7 +24,7 @@ public class LoginHandlerTests
     }
 
     [Fact]
-    public async Task Login_ShouldAuthenticateTheUser_Return_LoginResult()
+    public async Task Login_ShouldAuthenticateUser_Returns_LoginResult()
     {
         var user = new User
         {
@@ -34,14 +36,14 @@ public class LoginHandlerTests
             CreatedAt = new DateTime(2024, 5, 12, 14, 30, 0),
             UpdatedAt = DateTime.Now,
             UserTenants = new List<UserTenant>
-    {
-        new UserTenant
-        {
-            UserId = Guid.Parse("f6a2b3b5-2c3f-4d8f-8b0b-1a4e6b2e9a3c"),
-            TenantId = Guid.NewGuid(),
-            Role = Enums.TenantRole.Admin
-        },
-    }
+            {
+                new()
+                {
+                    UserId = Guid.Parse("f6a2b3b5-2c3f-4d8f-8b0b-1a4e6b2e9a3c"),
+                    TenantId = Guid.NewGuid(),
+                    Role = Enums.TenantRole.Admin
+                }
+            }
         };
 
         var refreshToken = new RefreshToken
@@ -71,5 +73,39 @@ public class LoginHandlerTests
 
         Assert.NotNull(result);
         Assert.Equal(result.Email, loginCommand.Email);
+    }
+
+    [Fact]
+    public async Task Login_WhenUserIsNull_Throws_UserNotFoundException()
+    {
+        User user = null!;
+
+        _userRepository.Setup(x => x.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+           .ReturnsAsync(user);
+
+        var exception = await Assert.ThrowsAsync<UserNotFoundException>(
+             async () => await _loginHandler
+             .Handle(new LoginCommand("alice.johnson@example.com", "Password123"), CancellationToken.None));
+
+        Assert.Equal("Entity \"User\" (alice.johnson@example.com) was not found.", exception.Message);
+    }
+
+    [Fact]
+    public async Task Login_WhenInvalidPassword_Throws_InvalidCredentialException()
+    {
+        User user = new()
+        {
+            //Hashed password is Password123
+            PasswordHash = "$2b$10$rM3Jy6CZFDUbg8P2igFiAedhg9FAwzDRmTpsNXuAbzQZk8vUvnPOO"
+        };
+
+        _userRepository.Setup(x => x.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+           .ReturnsAsync(user);
+
+        var exception = await Assert.ThrowsAsync<InvalidCredentialException>(
+             async () => await _loginHandler
+             .Handle(new LoginCommand("alice.johnson@example.com", "WrongPassword123"), CancellationToken.None));
+
+        Assert.Equal("Invalid Password", exception.Message);
     }
 }

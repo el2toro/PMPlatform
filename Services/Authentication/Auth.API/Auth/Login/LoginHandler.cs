@@ -38,7 +38,7 @@ public class LoginHandler(IAuthRepository authRepository,
             ?? throw new UserNotFoundException(command.Email);
 
         if (!IsValidPassword(command.Password, user?.PasswordHash!))
-            throw new InvalidCredentialException();
+            throw new InvalidCredentialException("Invalid Password");
 
         Guid tenantId = user!.UserTenants.FirstOrDefault()!.TenantId;
         TenantRole userRole = user.UserTenants.FirstOrDefault()!.Role;
