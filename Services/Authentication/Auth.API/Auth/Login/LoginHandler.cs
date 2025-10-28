@@ -27,7 +27,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
     }
 }
 
-internal class LoginHandler(IAuthRepository repository,
+public class LoginHandler(IAuthRepository authRepository,
     IUserRepository userRepository,
     IJwtTokenService jwtTokenService)
     : ICommandHandler<LoginCommand, LoginResult>
@@ -37,15 +37,15 @@ internal class LoginHandler(IAuthRepository repository,
         var user = await userRepository.GetUserByEmail(command.Email, cancellationToken)
             ?? throw new UserNotFoundException(command.Email);
 
-        if (!IsValidPassword(command.Password, user.PasswordHash))
+        if (!IsValidPassword(command.Password, user?.PasswordHash!))
             throw new InvalidCredentialException();
 
-        Guid tenantId = user.UserTenants.FirstOrDefault()!.TenantId;
+        Guid tenantId = user!.UserTenants.FirstOrDefault()!.TenantId;
         TenantRole userRole = user.UserTenants.FirstOrDefault()!.Role;
         string token = jwtTokenService.GenerateToken(user, userRole.ToString(), tenantId);
         var refreshToken = jwtTokenService.GenerateRefreshToken(tenantId, user.Id);
 
-        await repository.Login(refreshToken, cancellationToken);
+        await authRepository.Login(refreshToken, cancellationToken);
 
         var result = MapToDto(user, tenantId, token, refreshToken, userRole);
 
@@ -63,8 +63,8 @@ internal class LoginHandler(IAuthRepository repository,
             UserId: user.Id,
             TenantId: tenantId,
             Email: user.Email,
-            FirstName: user.FirstName,
-            LastName: user.LastName,
+            FirstName: user?.FirstName!,
+            LastName: user?.LastName!,
             Token: token,
             RefreshToken: refreshToken.Token,
             Roles: new List<string> { role.ToString() }
@@ -148,8 +148,8 @@ internal class GoogleLoginHandler(IAuthRepository repository,
             UserId: user.Id,
             TenantId: tenantId,
             Email: user.Email,
-            FirstName: user.FirstName,
-            LastName: user.LastName,
+            FirstName: user?.FirstName!,
+            LastName: user?.LastName!,
             Token: token,
             RefreshToken: refreshToken.Token,
             Roles: new List<string> { role.ToString() }
