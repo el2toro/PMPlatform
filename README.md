@@ -5,24 +5,6 @@ It allows teams to collaborate efficiently through boards, tasks, and real-time 
 
 ---
 
-## 📸 Screenshots
-#### 🔐 Authentication
-![Login](Docs/Images/login.png) 
-
-#### 🏠 Dashboard
-![Dashboard](Docs/Images/projects.png) 
-
-#### 🗂️ Kanban  Board
-![Board](Docs/Images/board.png) 
-
-#### 📋 Tasks
-![Task](Docs/Images/tasks.png) 
-
-#### 👤 Profile
-![Task](Docs/Images/profile.png) 
-
----
-
 ## 🚀 Key Features
 
 ### 🔐 Authentication & Authorization
@@ -120,10 +102,10 @@ cd project-management-platform
 docker-compose up --build
 
 # Run frontend
-cd frontend
+git https://github.com/el2toro/pm-platform-fe.git
+cd pm-platform-fe
 npm install
 ng serve
-
 
 ☁️ Deployment
 
