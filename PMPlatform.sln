@@ -104,6 +104,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.API.Tests", "Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.API.Tests", "Services\Authentication\Auth.API.Tests\Auth.API.Tests.csproj", "{1FB162B3-2BEA-F81F-4FF0-98A6285F8610}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boart.Test", "..\Services\Board\Boart.Test\Boart.Test.csproj", "{EA1EDB70-9081-433A-BBAF-BB04E66BD599}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +208,10 @@ Global
 		{1FB162B3-2BEA-F81F-4FF0-98A6285F8610}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FB162B3-2BEA-F81F-4FF0-98A6285F8610}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FB162B3-2BEA-F81F-4FF0-98A6285F8610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA1EDB70-9081-433A-BBAF-BB04E66BD599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA1EDB70-9081-433A-BBAF-BB04E66BD599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA1EDB70-9081-433A-BBAF-BB04E66BD599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA1EDB70-9081-433A-BBAF-BB04E66BD599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,6 +253,7 @@ Global
 		{DA1033B5-D8F9-46B9-BA93-74B92DB07F65} = {2581D6B2-F2A7-4C6F-8AD5-D609583B0311}
 		{439FB1C9-3155-454A-94CF-511465EF0008} = {2D3E73F7-F709-4183-A195-F65641A99F79}
 		{1FB162B3-2BEA-F81F-4FF0-98A6285F8610} = {656F06A4-799F-41F8-A8E1-2A66DEAE039B}
+		{EA1EDB70-9081-433A-BBAF-BB04E66BD599} = {7C64A308-4949-4389-8B44-560EC753C1B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A8EFE9-683A-42FB-B8E0-59AEC5287592}
