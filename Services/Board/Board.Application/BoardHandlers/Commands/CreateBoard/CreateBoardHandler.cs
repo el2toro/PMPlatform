@@ -1,7 +1,18 @@
-﻿namespace Board.Application.BoardHandlers.Commands.CreateBoard;
+﻿using FluentValidation;
+
+namespace Board.Application.BoardHandlers.Commands.CreateBoard;
 
 public record CreateBoardCommand(BoardDto Board) : IRequest<CreateBoardResult>;
 public record CreateBoardResult(BoardDto Board);
+
+public class CreateBoardCommandValidator : AbstractValidator<CreateBoardCommand>
+{
+    public CreateBoardCommandValidator()
+    {
+
+    }
+}
+
 public class CreateBoardHandler(IBoardRepository boardRepository)
     : IRequestHandler<CreateBoardCommand, CreateBoardResult>
 {
